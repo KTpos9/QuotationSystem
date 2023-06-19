@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model QuotationSystem.Models.Item.ItemViewModel
+@{
+    ViewData["Title"] = "Item List";
+}
+<div class="container pt-5">
+    <div class="d-flex flex-column" style="gap:1rem">
+        <!--Search form-->
+        <form class="d-flex" style="gap:1rem;">
+            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
+                <div>Item Code:</div>
+                <input class="form-control" type="text" id="textId"/>
+            </div>
+
+            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
+                <div>Item Name:</div>
+                <input class="form-control" type="text" id="textName"/>
+            </div>
+
+            <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <!--Add Button-->
+        <div class="d-flex w-100 justify-content-end">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-plus"></i>Upload Item</button>
+        </div>
+        <!--Modal-->
+        <vc:add-item-modal></vc:add-item-modal>
+        <div id="edit-item">
+        </div>
+        <form asp-controller="Item" asp-action="DeleteItem" method="post" id="delete-item">
+        </form>
+
+        <!--table-->
+        <table id="item-table" class="table table-striped"></table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            var colOptions = [
+                { title: "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+                { title: "Item Code", data: "itemCode" },
+                { title: "Item Name", data: "itemName" },
+                { title: "Description", data: "itemDesc" },
+                { title: "Unit Price", data: "unitPrice", className: "text-center" },
+                { title: "Unit", data: "unit", className: "text-center" },
+                { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
+                { title: "Action", data: "itemCode", render: renderActionButtons }
+            ];
+            table = $('#item-table').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "searching": false,
+                "pageLength": 20,
+                "displayStart": 0,
+                "ajax": {
+                    url: "@Url.Action("Search")",
+                    type: "POST",
+                    data: (opt) => {
+                        console.log($('#search-criteria').serializeToJSON());
+                        //console.table(opt);
+                        return {
+                            itemCode: `${$('#textId').val()}`,
+                            itemName: `${$('#textName').val()}`,
+                            option: opt
+                        };
+                    },
+                    error: handlerDataTableError
+                },
+                "columns": colOptions,
+            });
+
+            $("#search-button").click(() => {
+                table.ajax.reload();
+            });
+        });
+
+        function renderActionButtons(data, type, row) {
+            if (row.activeStatus === 'Y') {
+                return `<div class="d-flex justify-content-center" style="gap:.5rem">
+                            <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        </div>`;
+            }
+            return `<div class="d-flex justify-content-center" style="gap:.5rem">
+                        <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-danger" onclick="getDeleteItemModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                     </div>`;
+        }
+        function renderActiveStatus(data, type, row) {
+            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+        }
+        function editItem(itemCode) {
+            $.ajax({
+                url: '@Url.Action("GetEditItemModal")',
+                type: 'POST',
+                data: { itemCode: itemCode },
+                success: (result) => {
+                    $("#edit-item").html(result);
+                    $("#editItemModalCenter").modal("show");
+                },
+                error: (data) => {
+                    console.log(data);
+                }
+            });
+        }
+        function getDeleteItemModal(itemCode) {
+            $.ajax({
+                url: '@Url.Action("GetDeleteItemModal")',
+                type: 'POST',
+                data: { itemCode: itemCode },
+                success: (result) => {
+                    $("#delete-item").html(result);
+                    $("#deleteItemModal").modal("show");
+                }
+            });
+        }
+        function deleteItem(itemCode) {
+            $.ajax({
+                url: '@Url.Action("DeleteItem")',
+                type: 'DELETE',
+                data: { itemCode: itemCode },
+                success: () => {
+                    $("#deleteItemModal").modal("toggle");
+                    $('#item-table').DataTable().ajax.reload();
+                }
+            });
+        }
+
+        function handlerDataTableError(xhr, error, code) {
+            var isUnauthorized = code === "Unauthorized";
+            if (isUnauthorized) {
+                alert("Session Timeout");
+            }
+        }
+    </script>
+}

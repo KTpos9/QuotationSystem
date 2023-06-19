@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model QuotationSystem.Models.User.UserViewModel
+@{
+
+}
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form class="modal-content" asp-controller="User" asp-action="AddUser" method="post">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">User Management</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column" style="gap:.5rem">
+                    <div class="row">
+                        <div class="col-3">
+                            <div>User ID:</div>
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" asp-for="User.UserId" />
+                            <span asp-validation-for="User.UserId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <div>Name:</div>
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" asp-for="User.UserName"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <div>Department:</div>
+                        </div>
+                        <div class="col">
+                            <select asp-for="User.DepartmentId" asp-items="ViewBag.DepartmentIds" class="form-control">
+                                <option value="">-Select-</option>
+                            </select>
+                            @*<input class="form-control" type="text" asp-for="User.DepartmentId"/>*@
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">
+                            <div>Active:</div>
+                        </div>
+                        <div class="col">
+                            <input class="form-check-label" type="checkbox" checked asp-for='User.ActiveStatus'/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <div>Permission Menu:</div>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex flex-column" style="gap:.5rem">
+                                <div class="form-check">
+                                    <input class="form-check-input" id="UserManagement" type="checkbox" value="USS010" name="permissions" checked />
+                                    <label class="form-check-label" for="UserManagement">User Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="ITS010" name="permissions" checked />
+                                    <label class="form-check-label" for="ItemManagement">Item Management</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="QTS020" name="permissions" />
+                                    <label class="form-check-label" for="QuotationManagement">Quotation Management</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>

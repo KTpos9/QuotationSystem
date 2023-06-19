@@ -1,0 +1,135 @@
+﻿html, body {
+    font-family: "Kanit", "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.label {
+    font-family: "Kanit", "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.text-green {
+    color: #1ab394;
+}
+
+.text-blue {
+    color: #1c84c6;
+}
+
+.text-yellow {
+    color: #f8ac59;
+}
+
+.text-red {
+    color: #ed5565;
+}
+
+.nav-header {
+    background-size: 100% 100%;
+}
+
+.page-title {
+    padding-left: 25px;
+    margin-top: 17px;
+    margin-bottom: 17px;
+}
+
+a.language {
+    display: inline-block !important;
+}
+
+    a.language.active {
+        text-decoration: underline !important;
+    }
+
+.navbar-right {
+    float: right;
+}
+
+p {
+    margin: 0 0 6px;
+}
+
+.table > thead:first-child > tr:first-child > th:first-child {
+    border-radius: 2px 0 0 0;
+}
+
+.table > thead:first-child > tr:first-child > th:last-child {
+    border-radius: 0 2px 0 0;
+}
+
+td.center {
+    text-align: center;
+}
+
+div.amcharts-chart-div > a {
+    display: none !important;
+}
+
+.image-rounded {
+    border-radius: 12%;
+}
+
+.float-e-margins .btn {
+    margin-bottom: 0;
+}
+
+.label-beta {
+    margin-left: 5px;
+    padding: 2px 6px;
+    background-color: #1ab394;
+    color: white;
+}
+
+.table-bordered {
+    border: 1px solid #CECECE;
+}
+
+    .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+        border: 1px solid #CECECE;
+    }
+
+.team-members img.img-circle {
+    width: 56px;
+    height: 56px;
+}
+
+div.ibox-content > form > div > div > div > button {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.ibox-tools {
+    padding-right: 10px;
+}
+
+div.ibox-title > div > a {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+/* tag list */
+.tag-list li a.active {
+    background-color: #1ab394;
+    border-color: #1ab394;
+    color: white;
+}
+
+/* Sweet Alert 2*/
+.swal2-overlay {
+    z-index: 10000 !important;
+}
+
+.swal2-modal {
+    z-index: 11000 !important;
+}

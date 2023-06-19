@@ -1,0 +1,144 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Quotation List";
+}
+<div class="container pt-5">
+    <div class="d-flex flex-column" style="gap:1rem">
+        <!--Search form-->
+        <form class="d-flex" style="gap:1rem;">
+            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
+                <div>Quotaition No.:</div>
+                <input class="form-control" type="text" />
+            </div>
+
+            <div class="d-flex align-items-center" style="gap:.5rem;">
+                <div>Date:</div>
+                <input class="form-control" type="date" />
+                <div>to</div>
+                <input class="form-control" type="date" />
+            </div>
+
+            <div class="d-flex align-items-center" style="gap:.5rem;">
+                <div>Customer:</div>
+                <input class="form-control" type="text" />
+            </div>
+
+            <button class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <!--Add Button-->
+        <div class="d-flex w-100 justify-content-end">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#quotationManagement"><i class="fa-solid fa-plus"></i>Add New</button>
+        </div>
+        <!--Modal-->
+        <vc:add-quotation-modal></vc:add-quotation-modal>
+
+        <!--table-->
+        <table class="table" id="quotation-table"></table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            var colOptions = [
+                { title: "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+                { title: "Date", data: "createDate" },
+                { title: "Quotation No.", data: "quotationNo" },
+                { title: "Customer", data: "customerName" },
+                { title: "Seller", data: "seller", className: "text-center" },
+                { title: "Total", data: "total", className: "text-center" },
+                { title: "Grand Total", data: "grandTotal", className: "text-center" },
+                { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
+                { title: "Action", data: "itemCode", render: renderActionButtons }
+            ];
+            table = $('#quotation-table').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "searching": false,
+                "pageLength": 20,
+                "displayStart": 0,
+                "ajax": {
+                    url: "@Url.Action("Search")",
+                    type: "POST",
+                    data: (opt) => {
+                        console.log($('#search-criteria').serializeToJSON());
+                        //console.table(opt);
+                        return {
+                            itemCode: `${$('#textId').val()}`,
+                            itemName: `${$('#textName').val()}`,
+                            option: opt
+                        };
+                    },
+                    error: handlerDataTableError
+                },
+                "columns": colOptions,
+            });
+
+            $("#search-button").click(() => {
+                table.ajax.reload();
+            });
+        });
+
+        function renderActionButtons(data, type, row) {
+            if (row.activeStatus === 'Y') {
+                return `<div class="d-flex justify-content-center" style="gap:.5rem">
+                            <button class="btn btn-primary" onclick="editQuotation('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        </div>`;
+            }
+            return `<div class="d-flex justify-content-center" style="gap:.5rem">
+                        <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-danger" onclick="getDeleteQuotationModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                     </div>`;
+        }
+        function renderActiveStatus(data, type, row) {
+            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+        }
+        function editQuotation(itemCode) {
+            $.ajax({
+                url: '@Url.Action("GetEditQuotationModal")',
+                type: 'POST',
+                data: { itemCode: itemCode },
+                success: (result) => {
+                    $("#edit-item").html(result);
+                    $("#editItemModalCenter").modal("show");
+                },
+                error: (data) => {
+                    console.log(data);
+                }
+            });
+        }
+        function getDeleteQuotationModal(itemCode) {
+            $.ajax({
+                url: '@Url.Action("GetDeleteQuotationModal")',
+                type: 'POST',
+                data: { itemCode: itemCode },
+                success: (result) => {
+                    $("#delete-item").html(result);
+                    $("#deleteItemModal").modal("show");
+                }
+            });
+        }
+        function deleteQuotation(itemCode) {
+            $.ajax({
+                url: '@Url.Action("DeleteQuotation")',
+                type: 'DELETE',
+                data: { itemCode: itemCode },
+                success: () => {
+                    $("#deleteUserModal").modal("toggle");
+                    $('#user-table').DataTable().ajax.reload();
+                }
+            });
+        }
+
+        function handlerDataTableError(xhr, error, code) {
+            var isUnauthorized = code === "Unauthorized";
+            if (isUnauthorized) {
+                alert("Session Timeout");
+            }
+        }
+    </script>
+}

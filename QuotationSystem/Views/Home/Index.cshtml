@@ -1,0 +1,107 @@
+﻿@model QuotationSystem.Models.Home.HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container pt-3">
+
+    <!--summary card-->
+    <div class="d-flex flex-column">
+        <div class="row" style="gap:1rem;">
+            <div class="col bg-success">
+                <div class="d-flex flex-column text-right">
+                    <h2>Quotation Today</h2>
+                    <h1 class="m-2 font-weight-bolder">@Model.QuotationHeader.Count</h1>
+                </div>
+            </div>
+
+            <div class="col bg-primary">
+                <div class="d-flex flex-column text-right">
+                    <h2>Quotation Weekly</h2>
+                    <h1 class="m-2 font-weight-bolder">@Model.WeeklyCount</h1>
+                </div>
+            </div>
+
+            <div class="col bg-warning">
+                <div class="d-flex flex-column text-right">
+                    <h2>Quotation Monthly</h2>
+                    <h1 class="m-2 font-weight-bolder">@Model.MonthlyCount</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--table-->
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Date</th>
+                <th scope="col">Quotation No.</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Seller</th>
+                <th scope="col">Total</th>
+                <th scope="col">Grand Total</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ 
+                int index = 1;
+            }
+            @foreach(var quotationHeader in Model.QuotationHeader)
+            { 
+                <tr>
+                    <th scope="row">@index</th>
+                    <td>@quotationHeader.UpdateDate</td>
+                    <td>@quotationHeader.QuotationNo</td>
+                    <td>@quotationHeader.CustomerName</td>
+                    <td>@quotationHeader.Seller</td>
+                    <td>@quotationHeader.Total</td>
+                    <td>@quotationHeader.GrandTotal</td>
+                    <td>
+                        @if (quotationHeader.ActiveStatus == "Y")
+                        {
+                            <div class="text-success">Active</div>
+                        }
+                        else
+                        {
+                            <div class="text-danger">Inactive</div>
+                        }
+                    </td>
+                </tr>
+                index++;
+            }
+            <tr>
+                <th scope="row">1</th>
+                <td>4/5/2023</td>
+                <td>QT230400999</td>
+                <td>Good Morning</td>
+                <td>david</td>
+                <td>300,000.00</td>
+                <td>321,000.00</td>
+                <td>Active</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>4/5/2023</td>
+                <td>QT230400131</td>
+                <td>September One</td>
+                <td>david</td>
+                <td>2,540,000.00</td>
+                <td>2,717,000.00</td>
+                <td>Active</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>4/5/2023</td>
+                <td>QT230400132</td>
+                <td>Solar Ring</td>
+                <td>david</td>
+                <td>87,540.00</td>
+                <td>93,667.00</td>
+                <td>Active</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

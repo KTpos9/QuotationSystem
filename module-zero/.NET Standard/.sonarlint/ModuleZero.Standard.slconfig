@@ -1,0 +1,12 @@
+{
+  "ServerUri": "http://117.121.215.100:9000",
+  "Organization": null,
+  "ProjectKey": "com.iconext:zero",
+  "ProjectName": "NuGet-Zero",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AWOI9O8pNBR4SJqkX7_r",
+      "ProfileTimestamp": "2019-08-02T10:41:53+07:00"
+    }
+  }
+}

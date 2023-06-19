@@ -1,0 +1,22 @@
+﻿@model Zero.Integration.Sentry.ViewComponents.SentryViewComponentModel
+
+@if (Model.Option.Enabled)
+{
+    <script>
+        $.ajax({
+            url: '@Url.Action("GetDsn","Sentry")',
+            type: 'GET',
+            success: function (result) {
+                Sentry.init({ dsn: result.dsn });
+                Sentry.setUser({
+                    "id": "@Model.UserContext?.Id",
+                    "username": "@Model.UserContext?.Username"
+                });
+            }
+        });
+
+        RSVP.on('error', function(error) {
+            Sentry.captureException(error);
+        });
+    </script>
+}

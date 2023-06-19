@@ -1,0 +1,31 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model QuotationSystem.Models.Account.LoginViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="con">
+        <form class="d-flex flex-column" style="gap: .5rem; width:400px" asp-controller="Account" asp-action="Login" method="post">
+            <div class="d-flex justify-content-center">
+                <h3>Welcome to Quotation System</h3>
+            </div>
+            <div>
+                <input class="form-control" asp-for="UserId" type="text" placeholder="Username" />
+            </div>
+            <span asp-validation-for="UserId" class="text-danger"></span>
+            <div>
+                <input class="form-control" asp-for="Password" type="password" placeholder="Password" />
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+@{
+}

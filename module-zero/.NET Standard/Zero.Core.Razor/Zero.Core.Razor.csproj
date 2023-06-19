@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Version>5.0.0</Version>
+    <Company>iCONEXT CO., LTD.</Company>
+    <Authors>Research and Development Team</Authors>
+    <Copyright>Copyright © 2018 - iCONEXT CO., LTD.</Copyright>
+    <LangVersion>latest</LangVersion>
+    <RazorCompileToolset>RazorSdk</RazorCompileToolset>
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <EmbedRazorGenerateSources>true</EmbedRazorGenerateSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.Extensions" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
