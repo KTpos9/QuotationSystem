@@ -76,6 +76,9 @@ namespace QuotationSystem.Controllers
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
                     var data = ExcelToList<MItem>(worksheet);
+                    //validation
+                    //dup pk => intersection
+                    //empty cell
                     await itemRepository.AddItemByExcel(data);
                     memoryStream.Dispose();
                 }
@@ -111,7 +114,7 @@ namespace QuotationSystem.Controllers
                 //map the value from the excel file to the given type
                 for (int i = 0; i < properties.Length - propertiesNotInExcelColumn; i++)
                 {
-                    int col = columnInfo.SingleOrDefault(c => c.ColumnName == properties[i].Name).Index;
+                    int col = columnInfo.FirstOrDefault(c => c.ColumnName == properties[i].Name).Index;//singleordefault
                     var val = worksheet.Cells[row, col].Value;
                     var propertyType = properties[i].PropertyType;
                     properties[i].SetValue(obj, Convert.ChangeType(val, propertyType));
@@ -128,5 +131,6 @@ namespace QuotationSystem.Controllers
             }
             return list;
         }
+        private 
     }
 }
