@@ -25,6 +25,8 @@ namespace QuotationSystem.Validators.User
                 .Cascade(CascadeMode.Stop)
                  .NotEmpty()
                  .WithMessage("Please enter User ID")
+                 .Length(1,50)
+                 .WithMessage("Username too long")
                  .Must((model, userId) => !IsExistUser(userId))
                      .WithMessage("User ID already exist");
             RuleFor(u => u.Username)
