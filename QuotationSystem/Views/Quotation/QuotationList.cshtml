@@ -141,4 +141,28 @@
             }
         }
     </script>
+
+    <script>
+        let lineNo = 4;
+        $(document).ready(() => {
+            $("#btnAddRow").click(() => {
+                markup = `
+                            <tr>
+                                <td>${lineNo}</td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                                <td><input class="form-control" type="text" /></td>
+                            </tr>`;
+                console.log("button clicked");
+                tableBody = $("#item-table tr:nth-last-child(2)");
+                tableBody.after(markup);
+                lineNo++;
+            });
+        });
+    </script>
 }
