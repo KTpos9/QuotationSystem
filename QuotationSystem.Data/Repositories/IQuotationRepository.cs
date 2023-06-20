@@ -9,8 +9,8 @@ namespace QuotationSystem.Data.Repositories
         List<TQuotationHeader> GetTodayQuotationHeader();
         DataTableResultModel<TQuotationHeader> GetQuotationList(DataTableOptionModel dtOption, string customer = "", string qutoationNo = "");
         TQuotationHeader GetQuotationById(string quotationNo);
-        void AddQuotation(TQuotationHeader quotation);
-        void EditQuotation(TQuotationHeader quotation);
+        void AddQuotation(TQuotationDetail quotation);
+        void EditQuotation(TQuotationDetail quotation);
         void DeleteQuotation(string quotationNo);
         int GetWeeklyCount();
         int GetMonthlyCount();

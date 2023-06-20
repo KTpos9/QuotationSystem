@@ -49,7 +49,7 @@ namespace QuotationSystem.Data.Repositories
                 //    .ToList();
             }
         }
-        public void AddQuotation(TQuotationHeader quotation)
+        public void AddQuotation(TQuotationDetail quotation)
         {
             using (var db = new QuotationContext(option))
             {
@@ -71,7 +71,7 @@ namespace QuotationSystem.Data.Repositories
                 db.SaveChanges();
             }
         }
-        public void EditQuotation(TQuotationHeader quotation)
+        public void EditQuotation(TQuotationDetail quotation)
         {
 
         }
