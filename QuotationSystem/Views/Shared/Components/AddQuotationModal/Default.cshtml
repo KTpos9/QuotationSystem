@@ -1,7 +1,8 @@
-﻿@{
+﻿@model QuotationSystem.Models.Quotation.QuotationViewModel
+@{
 }
 <div class="modal fade" id="quotationManagement" tabindex="-1" role="dialog" aria-labelledby="quotationModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
         <form class="modal-content" asp-controller="Quotation" asp-action="" method="post">
             <div class="modal-header">
                 <h3 class="modal-title" id="exampleModalLongTitle">Quotation Management</h3>
@@ -15,12 +16,12 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="d-flex flex-column" style="gap:1rem">
-                                    <div class="d-flex align-items-center">
-                                        <div class="d-flex align-items-center" style="white-space:nowrap">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 1rem">
                                             <label class="m-0">Quotation No.:</label>
                                             <input class="form-control" type="text" readonly />
                                         </div>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center" style="gap: 1rem">
                                             <label class="m-0">Date:</label>
                                             <input class="form-control" type="date" readonly />
                                         </div>
@@ -61,8 +62,8 @@
                                     </div>
 
                                     <div>
-                                        <label class="m-0">Active:</label>
-                                        <input class="form-check" type="checkbox" checked />
+                                        <label class="m-0" for="checkbox">Active:</label>
+                                        <input class="form-check" type="checkbox" checked id="checkbox"/>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +72,7 @@
 
                     <div class="d-flex flex-column">
                         <h5>Item List</h5>
-                        <table class="table">
+                        <table class="table" id="item-table">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -121,6 +122,7 @@
                                     <td><input class="form-control" type="text" /></td>
                                     <td><input class="form-control" type="text" /></td>
                                 </tr>
+                                <tr><td><button type="button" id="btnAddRow">add row</button></td>/tr>
                             </tbody>
                         </table>
                     </div>
