@@ -136,7 +136,7 @@ namespace QuotationSystem.Controllers
         {
             List<MItem> list = new();
 
-            for (int row = 2; row < worksheet.Dimension.Rows; row++)
+            for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 MItem item = new MItem
                 {
