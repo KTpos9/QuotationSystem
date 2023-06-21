@@ -75,7 +75,7 @@ namespace QuotationSystem.Controllers
                 using (ExcelPackage package = new ExcelPackage(memoryStream))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
-                    var data = ExcelToList<MItem>(worksheet);
+                    var data = ExcelToItemList(worksheet);
                     //validation
                     //dup pk => intersection
                     //empty cell
@@ -131,6 +131,28 @@ namespace QuotationSystem.Controllers
             }
             return list;
         }
-        private 
+
+        private List<MItem> ExcelToItemList(ExcelWorksheet worksheet)
+        {
+            List<MItem> list = new();
+
+            for (int row = 2; row < worksheet.Dimension.Rows; row++)
+            {
+                MItem item = new MItem
+                {
+                    ItemCode = worksheet.Cells[row,1].Value.ToString(),
+                    ItemName = worksheet.Cells[row, 2].Value.ToString(),
+                    ItemDesc = worksheet.Cells[row, 3].Value.ToString(),
+                    UnitPrice = Convert.ToDouble(worksheet.Cells[row, 4].Value),
+                    Unit = worksheet.Cells[row, 5].Value.ToString(),
+                    Remark = worksheet.Cells[row, 6].Value is null ? "" : worksheet.Cells[row, 6].Value.ToString(),
+                    ActiveStatus = worksheet.Cells[row, 7].Value.ToString(),
+                };
+
+                list.Add(item);
+            }
+
+            return list;
+        }
     }
 }
