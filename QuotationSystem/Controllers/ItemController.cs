@@ -11,6 +11,10 @@ using OfficeOpenXml;
 using QuotationSystem.Data.Models;
 using Zero.Core.Mvc.Extensions;
 using Zero.Core.Mvc.Models.DataTables;
+using System.Text;
+using System.ComponentModel;
+using QuotationSystem.Data.Helpers;
+using QuotationSystem.Helpers;
 
 namespace QuotationSystem.Controllers
 {
@@ -59,100 +63,31 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> FileUpload(IFormFile file)
         {
-            await UploadFile(file);
-            return RedirectToAction("ItemList");
-        }
-        private async Task UploadFile(IFormFile file)
-        {
             try
             {
-                if (file.Length == 0 || file == null)
-                {
-                    return;
-                }
                 var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
                 using (ExcelPackage package = new ExcelPackage(memoryStream))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
-                    var data = ExcelToItemList(worksheet);
-                    //validation
-                    //dup pk => intersection
-                    //empty cell
-                    await itemRepository.AddItemByExcel(data);
+                    var excelHelper = new ExcelItemValidation(worksheet, new StringBuilder());
+                    var result = excelHelper.ExcelToItemList();
+
+                    if (!excelHelper.IsValidFormat)
+                    {
+                        memoryStream.Dispose();
+                        return File(Encoding.UTF8.GetBytes(excelHelper.ErrorLog.ToString()), "text/plain", "ErrorLog.txt");
+                    }
+                    await itemRepository.AddItemByExcel(result.ToList());
                     memoryStream.Dispose();
                 }
-                //string filename = file.FileName;
-                //string path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Upload"));
-                //using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
-                //{
-                //    await file.CopyToAsync(filestream);
-                //}
+                return RedirectToAction("ItemList");
             }
             catch (NullReferenceException)
             {
                 throw;
                 //return BadRequest("Check file format and try again");
             }
-        }
-        private List<T> ExcelToList<T>(ExcelWorksheet worksheet)
-        {
-            List<T> list = new List<T>();
-
-            //get first row(column name)
-            var columnInfo = Enumerable.Range(1, worksheet.Dimension.Columns).Select(x =>
-                new {Index = x, ColumnName = worksheet.Cells[1,x].Value.ToString() }
-            );
-
-            for(int row = 2; row < worksheet.Dimension.Rows; row++)
-            {
-                T obj = (T)Activator.CreateInstance(typeof(T));
-                var properties = typeof(T).GetProperties();
-                int propertiesNotInExcelColumn = properties.Length - columnInfo.ToList().Count;
-
-                //loop over the properties according to the excel column name count
-                //map the value from the excel file to the given type
-                for (int i = 0; i < properties.Length - propertiesNotInExcelColumn; i++)
-                {
-                    int col = columnInfo.FirstOrDefault(c => c.ColumnName == properties[i].Name).Index;//singleordefault
-                    var val = worksheet.Cells[row, col].Value;
-                    var propertyType = properties[i].PropertyType;
-                    properties[i].SetValue(obj, Convert.ChangeType(val, propertyType));
-                }
-
-                //foreach (var property in typeof(T).GetProperties())
-                //{
-                //    int col = columnInfo.SingleOrDefault(c => c.ColumnName == property.Name).Index;
-                //    var val = worksheet.Cells[row, col].Value;
-                //    var propertyType = property.PropertyType;
-                //    property.SetValue(obj, Convert.ChangeType(val, propertyType));
-                //}
-                list.Add(obj);
-            }
-            return list;
-        }
-
-        private List<MItem> ExcelToItemList(ExcelWorksheet worksheet)
-        {
-            List<MItem> list = new();
-
-            for (int row = 2; row <= worksheet.Dimension.Rows; row++)
-            {
-                MItem item = new MItem
-                {
-                    ItemCode = worksheet.Cells[row,1].Value.ToString(),
-                    ItemName = worksheet.Cells[row, 2].Value.ToString(),
-                    ItemDesc = worksheet.Cells[row, 3].Value.ToString(),
-                    UnitPrice = Convert.ToDouble(worksheet.Cells[row, 4].Value),
-                    Unit = worksheet.Cells[row, 5].Value.ToString(),
-                    Remark = worksheet.Cells[row, 6].Value is null ? "" : worksheet.Cells[row, 6].Value.ToString(),
-                    ActiveStatus = worksheet.Cells[row, 7].Value.ToString(),
-                };
-
-                list.Add(item);
-            }
-
-            return list;
         }
     }
 }
