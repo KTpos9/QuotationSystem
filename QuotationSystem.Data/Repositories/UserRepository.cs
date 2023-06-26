@@ -75,10 +75,13 @@ namespace QuotationSystem.Data.Repositories
                 {
                     MenuId = m.MenuId
                 }).ToList();
-                if (user.ActiveStatus == "false")
+
+                user.ActiveStatus = user.ActiveStatus switch
                 {
-                    user.ActiveStatus = "N";
-                }
+                    "false" => "N",
+                    _ => "Y"
+                };
+
                 foreach (var permission in permissions)
                 {
                     user.MUserPermissions.Where(x => x.MenuId == permission).FirstOrDefault().ActiveStatus = "Y";
@@ -94,19 +97,20 @@ namespace QuotationSystem.Data.Repositories
                 var userToUpdate = db.MUsers.Include(u => u.MUserPermissions).FirstOrDefault(x => x.UserId == user.UserId);
                 userToUpdate.UserName = user.UserName;
                 userToUpdate.DepartmentId = user.DepartmentId;
-                userToUpdate.ActiveStatus = user.ActiveStatus;
-                if(user.ActiveStatus == "false")
+
+                userToUpdate.ActiveStatus = user.ActiveStatus switch
                 {
-                    userToUpdate.ActiveStatus = "N";
-                }
+                    "false" => "N",
+                    _ => "Y"
+                };
 
                 foreach (var userPermission in userToUpdate.MUserPermissions)
                 {
-                    userPermission.ActiveStatus = "N";
-                    if (permissions.Any(p => p == userPermission.MenuId))
+                    userPermission.ActiveStatus = permissions.Any(p => p == userPermission.MenuId) switch
                     {
-                        userPermission.ActiveStatus = "Y";
-                    }
+                        true => "Y",
+                        _ => "N"
+                    };
                 }
 
                 db.CurrentUser = currentUser;
