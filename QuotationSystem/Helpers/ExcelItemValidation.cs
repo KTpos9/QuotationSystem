@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace QuotationSystem.Helpers
 {
@@ -34,7 +33,7 @@ namespace QuotationSystem.Helpers
                         ItemName = _worksheet.Cells[row, 2].Value.ToString(),
                         ItemDesc = _worksheet.Cells[row, 3].Value.ToString(),
                         UnitPrice = Convert.ToDouble(_worksheet.Cells[row, 4].Value),
-                        Unit = _worksheet.Cells[row, 5].Value.ToString(),
+                        UnitId = _worksheet.Cells[row, 5].Value.ToString(),
                         Remark = _worksheet.Cells[row, 6].Value is null ? "" : _worksheet.Cells[row, 6].Value.ToString(),
                         ActiveStatus = _worksheet.Cells[row, 7].Value.ToString(),
                     };
@@ -90,12 +89,17 @@ namespace QuotationSystem.Helpers
         }
         private bool IsValidExcelData()
         {
+            HashSet<string> itemCode = new();
             for(int row = 2; row <= _worksheet.Dimension.Rows; row++)
             {
                 ErrorLog.Append(_worksheet.Cells[row, 1].Value.ToString() switch
                 {
                     null => $"ItemCode at row {row} column 1 is required and cannot be null.\n",
                     "" => $"ItemCode at row {row} column 1 is required and cannot be empty.\n",
+                    _ => ""
+                }).Append(itemCode.Add(_worksheet.Cells[row, 1].Value.ToString()) switch
+                {
+                    false => $"ItemCode {_worksheet.Cells[row, 1].Value} at row {row} column 1 is dulplicated.\n",
                     _ => ""
                 }).Append(_worksheet.Cells[row, 2].Value.ToString() switch
                 {

@@ -16,7 +16,7 @@ namespace QuotationSystem.Data.Models
         public string ItemName { get; set; }
         public string ItemDesc { get; set; }
         public double UnitPrice { get; set; }
-        public string Unit { get; set; }
+        public string UnitId { get; set; }
         public string Remark { get; set; }
         public string ActiveStatus { get; set; }
         public DateTime CreateDate { get; set; }
@@ -24,6 +24,7 @@ namespace QuotationSystem.Data.Models
         public DateTime? UpdateDate { get; set; }
         public string UpdateBy { get; set; }
 
+        public virtual MUnit Unit { get; set; }
         public virtual ICollection<TQuotationDetail> TQuotationDetails { get; set; }
     }
 }

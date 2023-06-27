@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MDepartment : IUpdateable
+    public partial class MUnit : IUpdateable
     {
-        public MDepartment()
+        public MUnit()
         {
-            MUsers = new HashSet<MUser>();
+            MItems = new HashSet<MItem>();
         }
 
-        public string DepartmentId { get; set; }
-        public string DepartmentName { get; set; }
-        public string DepartmentDesc { get; set; }
+        public string UnitId { get; set; }
+        public string UnitName { get; set; }
+        public string UnitDesc { get; set; }
         public string Remark { get; set; }
         public string ActiveStatus { get; set; }
         public DateTime CreateDate { get; set; }
@@ -22,6 +22,6 @@ namespace QuotationSystem.Data.Models
         public DateTime? UpdateDate { get; set; }
         public string UpdateBy { get; set; }
 
-        public virtual ICollection<MUser> MUsers { get; set; }
+        public virtual ICollection<MItem> MItems { get; set; }
     }
 }

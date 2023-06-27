@@ -22,6 +22,7 @@ namespace QuotationSystem.Data
         public virtual DbSet<MDepartment> MDepartments { get; set; }
         public virtual DbSet<MItem> MItems { get; set; }
         public virtual DbSet<MMenu> MMenus { get; set; }
+        public virtual DbSet<MUnit> MUnits { get; set; }
         public virtual DbSet<MUser> MUsers { get; set; }
         public virtual DbSet<MUserPermission> MUserPermissions { get; set; }
         public virtual DbSet<TQuotationDetail> TQuotationDetails { get; set; }
@@ -29,14 +30,6 @@ namespace QuotationSystem.Data
 
         public string CurrentUser { get; set; } = "Admin";
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=ICNB1603096; Initial Catalog=Quotation; Integrated Security=True; TrustServerCertificate=True;");
-            }
-        }
         public override int SaveChanges()
         {
             DateTime now = DateTime.UtcNow;
@@ -132,7 +125,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DepartmentDesc)
                     .HasMaxLength(150)
@@ -153,7 +147,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<MItem>(entity =>
@@ -180,8 +175,7 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnName("create_date");
 
                 entity.Property(e => e.ItemDesc)
                     .HasMaxLength(30)
@@ -196,10 +190,10 @@ namespace QuotationSystem.Data
                     .HasMaxLength(150)
                     .HasColumnName("remark");
 
-                entity.Property(e => e.Unit)
+                entity.Property(e => e.UnitId)
                     .IsRequired()
                     .HasMaxLength(30)
-                    .HasColumnName("unit");
+                    .HasColumnName("unit_id");
 
                 entity.Property(e => e.UnitPrice).HasColumnName("unit_price");
 
@@ -210,6 +204,12 @@ namespace QuotationSystem.Data
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
                     .HasColumnName("update_date");
+
+                entity.HasOne(d => d.Unit)
+                    .WithMany(p => p.MItems)
+                    .HasForeignKey(d => d.UnitId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_m_item_m_unit");
             });
 
             modelBuilder.Entity<MMenu>(entity =>
@@ -250,6 +250,53 @@ namespace QuotationSystem.Data
                 entity.Property(e => e.Remark)
                     .HasMaxLength(150)
                     .HasColumnName("remark");
+
+                entity.Property(e => e.UpdateBy)
+                    .HasMaxLength(30)
+                    .HasColumnName("update_by");
+
+                entity.Property(e => e.UpdateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("update_date");
+            });
+
+            modelBuilder.Entity<MUnit>(entity =>
+            {
+                entity.HasKey(e => e.UnitId);
+
+                entity.ToTable("m_unit");
+
+                entity.Property(e => e.UnitId)
+                    .HasMaxLength(30)
+                    .HasColumnName("unit_id");
+
+                entity.Property(e => e.ActiveStatus)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("active_status")
+                    .IsFixedLength(true);
+
+                entity.Property(e => e.CreateBy)
+                    .HasMaxLength(30)
+                    .HasColumnName("create_by");
+
+                entity.Property(e => e.CreateDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("create_date");
+
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(150)
+                    .HasColumnName("remark");
+
+                entity.Property(e => e.UnitDesc)
+                    .HasMaxLength(150)
+                    .HasColumnName("unit_desc");
+
+                entity.Property(e => e.UnitName)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnName("unit_name");
 
                 entity.Property(e => e.UpdateBy)
                     .HasMaxLength(30)
@@ -369,13 +416,12 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.Menu)
                     .WithMany(p => p.MUserPermissions)
                     .HasForeignKey(d => d.MenuId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_m_user_permission_m_menu");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.MUserPermissions)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_m_user_permission_m_user");
             });
 
@@ -429,7 +475,6 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.ItemCodeNavigation)
                     .WithMany(p => p.TQuotationDetails)
                     .HasForeignKey(d => d.ItemCode)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_t_quotation_detail_m_item");
 
                 entity.HasOne(d => d.QuotationNoNavigation)

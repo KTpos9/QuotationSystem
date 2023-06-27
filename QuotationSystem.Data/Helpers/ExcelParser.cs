@@ -106,7 +106,7 @@ namespace QuotationSystem.Data.Helpers
                     "" => 0,
                     string str => double.TryParse(str, out var parsedValue) ? parsedValue : 0
                 },
-                Unit = GetSheetStr(worksheet, row, 5),
+                UnitId = GetSheetStr(worksheet, row, 5),
                 Remark = GetSheetStr(worksheet, row, 6),
                 ActiveStatus = GetSheetStr(worksheet, row, 7) switch
                 {
