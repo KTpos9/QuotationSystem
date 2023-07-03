@@ -22,10 +22,12 @@ namespace QuotationSystem.Controllers
     {
         private readonly IUserRepository userRepository;
         private readonly IItemRepository itemRepository;
-        public ItemController(IUserRepository userRepository, IItemRepository itemRepository)
+        private readonly IUnitRepository unitRepository;
+        public ItemController(IUserRepository userRepository, IItemRepository itemRepository, IUnitRepository unitRepository)
         {
             this.userRepository = userRepository;
             this.itemRepository = itemRepository;
+            this.unitRepository = unitRepository;
         }
         public IActionResult ItemList()
         {
@@ -43,7 +45,8 @@ namespace QuotationSystem.Controllers
             var item = itemRepository.GetItemById(itemCode);
             var model = new ItemViewModel
             {
-                Item = item
+                Item = item,
+                UnitLists = unitRepository.GetAllUnitIds()
             };
             return PartialView("_EditItemPartial", model);
         }
