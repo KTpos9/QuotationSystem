@@ -416,12 +416,13 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.Menu)
                     .WithMany(p => p.MUserPermissions)
                     .HasForeignKey(d => d.MenuId)
-                    .OnDelete(DeleteBehavior.Cascade)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_m_user_permission_m_menu");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.MUserPermissions)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_m_user_permission_m_user");
             });
 
@@ -475,6 +476,7 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.ItemCodeNavigation)
                     .WithMany(p => p.TQuotationDetails)
                     .HasForeignKey(d => d.ItemCode)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_t_quotation_detail_m_item");
 
                 entity.HasOne(d => d.QuotationNoNavigation)
