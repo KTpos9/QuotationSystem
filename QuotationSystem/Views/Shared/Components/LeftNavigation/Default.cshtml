@@ -13,25 +13,25 @@
                     </span>
                 </div>
             </li>
-            <li class="">
+            <li class="@Html.IsSelected(controllers: "Home")">
                 <a href="@Url.Action("Index", "Home")">
                     <i class="fa fa-address-book"></i>
                     <span class="nav-label">Home</span>
                 </a>
             </li>
-            <li class="">
+            <li class="@Html.IsSelected(controllers: "User")">
                 <a href="@Url.Action("UserList", "User")">
                     <i class="fa fa-user"></i>
                     <span class="nav-label">User</span>
                 </a>
             </li>
-            <li class="">
+            <li class="@Html.IsSelected(controllers: "Item")">
                 <a href="@Url.Action("ItemList", "Item")">
                     <i class="fa fa-users"></i>
                     <span class="nav-label">Item</span>
                 </a>
             </li>
-            <li class="">
+            <li class="@Html.IsSelected(controllers: "Quotation")">
                 <a href="@Url.Action("QuotationList", "Quotation")">
                     <i class="fa fa-users"></i>
                     <span class="nav-label">Quotation</span>
