@@ -29,13 +29,13 @@ namespace QuotationSystem.Helpers
                 {
                     MItem item = new MItem
                     {
-                        ItemCode = _worksheet.Cells[row, 1].Value.ToString(),
-                        ItemName = _worksheet.Cells[row, 2].Value.ToString(),
-                        ItemDesc = _worksheet.Cells[row, 3].Value.ToString(),
+                        ItemCode = (string)_worksheet.Cells[row, 1].Value,
+                        ItemName = (string)_worksheet.Cells[row, 2].Value,
+                        ItemDesc = (string)_worksheet.Cells[row, 3].Value,
                         UnitPrice = Convert.ToDouble(_worksheet.Cells[row, 4].Value),
-                        UnitId = _worksheet.Cells[row, 5].Value.ToString(),
-                        Remark = _worksheet.Cells[row, 6].Value is null ? "" : _worksheet.Cells[row, 6].Value.ToString(),
-                        ActiveStatus = _worksheet.Cells[row, 7].Value.ToString(),
+                        UnitId = (string)_worksheet.Cells[row, 5].Value,
+                        Remark = _worksheet.Cells[row, 6].Value is null ? "" : (string)_worksheet.Cells[row, 6].Value,
+                        ActiveStatus = (string)_worksheet.Cells[row, 7].Value,
                     };
 
                     list.Add(item);
@@ -92,36 +92,42 @@ namespace QuotationSystem.Helpers
             HashSet<string> itemCode = new();
             for(int row = 2; row <= _worksheet.Dimension.Rows; row++)
             {
-                ErrorLog.Append(_worksheet.Cells[row, 1].Value.ToString() switch
+                ErrorLog.Append(_worksheet.Cells[row, 1].Value switch
                 {
                     null => $"ItemCode at row {row} column 1 is required and cannot be null.\n",
+                    string s when s.Length > 30 => $"ItemCode at row {row} column 1 must be less than or equal to 30 characters.\n",
+                    string s when !itemCode.Add(s) => $"ItemCode {s} at row {row} column 1 is duplicated.\n",
                     "" => $"ItemCode at row {row} column 1 is required and cannot be empty.\n",
                     _ => ""
-                }).Append(itemCode.Add(_worksheet.Cells[row, 1].Value.ToString()) switch
-                {
-                    false => $"ItemCode {_worksheet.Cells[row, 1].Value} at row {row} column 1 is dulplicated.\n",
-                    _ => ""
-                }).Append(_worksheet.Cells[row, 2].Value.ToString() switch
+                }).Append(_worksheet.Cells[row, 2].Value switch
                 {
                     null => $"ItemName at row {row} column 2 is required and cannot be null.\n",
                     "" => $"ItemName at row {row} column 2 is required and cannot be empty.\n",
+                    string s when s.Length > 30 => $"ItemName at row {row} column 2 must be less than or equal to 30 characters.\n",
                     _ => ""
-                }).Append(_worksheet.Cells[row, 3].Value.ToString() switch
+                }).Append(_worksheet.Cells[row, 3].Value switch
                 {
                     null => $"ItemDesc at row {row} column 3 is required and cannot be null.\n",
                     "" => $"ItemDesc at row {row} column 3 is required and cannot be empty.\n",
+                    string s when s.Length > 30 => $"ItemDesc at row {row} column 3 must be less than or equal to 30 characters.\n",
                     _ => ""
-                }).Append(_worksheet.Cells[row, 4].Value.ToString() switch
+                }).Append(_worksheet.Cells[row, 4].Value switch
                 {
                     null => $"UnitPrice at row {row} column 4 is required and cannot be null.\n",
                     "" => $"UnitPrice at row {row} column 4 is required and cannot be empty.\n",
-                    string s => double.TryParse(s, out _) ? "" : $"ItemDesc at row {row} column 4 must be a number.\n"
-                }).Append(_worksheet.Cells[row, 5].Value.ToString() switch
+                    string s when !double.TryParse(s, out var _) => $"ItemDesc at row {row} column 4 must be a number.\n",
+                    _ => ""
+                }).Append(_worksheet.Cells[row, 5].Value switch
                 {
                     null => $"Unit at row {row} column 5 is required and cannot be null.\n",
                     "" => $"Unit at row {row} column 5 is required and cannot be empty.\n",
+                    string s when s.Length > 30 => $"Unit at row {row} column 5 must be less than or equal to 30 characters.\n",
                     _ => ""
-                }).Append(_worksheet.Cells[row, 7].Value.ToString() switch
+                }).Append(_worksheet.Cells[row, 6].Value is null ? "" : _worksheet.Cells[row, 6].Value.ToString() switch
+                {
+                    string s when s.Length > 150 => $"Unit at row {row} column 6 must be less than or equal to 150 characters.\n",
+                    _ => string.Empty
+                }).Append(_worksheet.Cells[row, 7].Value switch
                 {
                     null => $"ActiveStatus at row {row} column 7 is required and cannot be null.\n",
                     "" => $"ActiveStatus at row {row} column 7 is required and cannot be empty.\n",
