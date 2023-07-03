@@ -25,7 +25,7 @@
                             <div>Item Name:</div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="text" asp-for="Item.ItemName" />
+                            <input class="form-control" type="text" asp-for="Item.ItemName" required maxlength="30"/>
                         </div>
                     </div>
                     <div class="row">
@@ -33,7 +33,7 @@
                             <div>Description:</div>
                         </div>
                         <div class="col">
-                            <textarea class="form-control" asp-for="Item.ItemDesc"></textarea>
+                            <textarea class="form-control" asp-for="Item.ItemDesc" maxlength="30"></textarea>
                         </div>
                     </div>
                     <div class="row">
@@ -41,7 +41,7 @@
                             <div>Unit Price:</div>
                         </div>
                         <div class="col">
-                            <input class="form-control" type="number" asp-for="Item.UnitPrice" />
+                            <input class="form-control" type="number" asp-for="Item.UnitPrice" required/>
                         </div>
                     </div>
                     <div class="row">
@@ -49,11 +49,8 @@
                             <div>Unit:</div>
                         </div>
                         <div class="col">
-                            <select class="custom-select" asp-for="Item.Unit">
-                                <option selected value="PCS">PCS</option>
-                                <option value="">1</option>
-                                <option value="">2</option>
-                                <option value="">3</option>
+                            <select class="custom-select" asp-for="Item.Unit" asp-items="Model.UnitLists" required>
+                                <option selected value="">-Select-</option>
                             </select>
 
                         </div>
@@ -63,7 +60,7 @@
                             <div>Remark:</div>
                         </div>
                         <div class="col">
-                            <textarea class="form-control" asp-for="Item.Remark"></textarea>
+                            <textarea class="form-control" asp-for="Item.Remark" maxlength="150"></textarea>
                         </div>
                     </div>
                     @{
