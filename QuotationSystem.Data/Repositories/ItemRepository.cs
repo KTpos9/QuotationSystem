@@ -47,7 +47,7 @@ namespace QuotationSystem.Data.Repositories
                         ItemName = i.ItemName,
                         ItemDesc = i.ItemDesc,
                         UnitPrice = i.UnitPrice,
-                        Unit = i.Unit,
+                        UnitId = i.UnitId,
                         ActiveStatus = i.ActiveStatus
                     })
                     .ToDataTableResult(dtOption);
