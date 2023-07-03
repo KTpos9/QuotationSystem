@@ -31,7 +31,6 @@ namespace QuotationSystem.Controllers
         public IActionResult UserList()
         {
             departmentList = this.departmentRepository.GetAllDepartmentIds();
-            ViewBag.DepartmentIds = departmentList;
             return View();
         }
         [HttpPost]
