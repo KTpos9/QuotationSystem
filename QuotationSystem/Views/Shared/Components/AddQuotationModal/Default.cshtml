@@ -3,7 +3,7 @@
 }
 <div class="modal fade" id="quotationManagement" tabindex="-1" role="dialog" aria-labelledby="quotationModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
-        <form class="modal-content" asp-controller="Quotation" asp-action="" method="post">
+        <form class="modal-content" id="quotationForm" method="post">
             <div class="modal-header">
                 <h3 class="modal-title" id="exampleModalLongTitle">Quotation Management</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -19,7 +19,7 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center" style="white-space: nowrap; gap: 1rem">
                                             <label class="m-0">Quotation No.:</label>
-                                            <input class="form-control" type="text" id="textQuotationNo" readonly />
+                                            <input class="form-control" type="text" id="textQuotationNo" />
                                         </div>
                                         <div class="d-flex align-items-center" style="gap: 1rem">
                                             <label class="m-0">Date:</label>
@@ -58,7 +58,7 @@
 
                                     <div>
                                         <label class="m-0">Vat:</label>
-                                        <input class="form-control" id="textVat" type="number" readonly placeholder="7%" />
+                                        <input class="form-control" id="textVat" type="number" placeholder="7%" value="0.7" readonly  />
                                     </div>
 
                                     <div>
@@ -87,31 +87,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr class="item-row">
                                     <td>1</td>
-                                    <td><input class="form-control" type="text" id="textItemCode"/></td>
-                                    <td><input class="form-control" type="text" id="textItemName"/></td>
+                                    <td><input class="form-control" type="text" id="textItemCode" required/></td>
+                                    <td><input class="form-control" type="text" id="textItemName"required/></td>
                                     <td><input class="form-control" type="text" id="textDescription"/></td>
-                                    <td><input class="form-control" type="text" id="textQty"/></td>
-                                    <td><input class="form-control" type="text" id="textUnit"/></td>
-                                    <td><input class="form-control" type="text" id="textUnitPrice"/></td>
-                                    <td><input class="form-control" type="text" id="textDiscount"/></td>
-                                    <td><input class="form-control" type="text" id="textTotal"/></td>
+                                    <td><input class="form-control" type="number" id="textQty" min="0" required/></td>
+                                    <td><input class="form-control" type="text" id="textUnit" required/></td>
+                                    <td><input class="form-control" type="number" id="textUnitPrice" required/></td>
+                                    <td><input class="form-control" type="number" id="textDiscount" min="0" required/></td>
+                                    <td><input class="form-control" type="number" id="textTotal" min="0" required/></td>
                                 </tr>
-
-                                <tr>
-                                    <td>2</td>
-                                    <td><input class="form-control" type="text" id="textItemCode" /></td>
-                                    <td><input class="form-control" type="text" id="textItemName" /></td>
-                                    <td><input class="form-control" type="text" id="textDescription" /></td>
-                                    <td><input class="form-control" type="text" id="textQty" /></td>
-                                    <td><input class="form-control" type="text" id="textUnit" /></td>
-                                    <td><input class="form-control" type="text" id="textUnitPrice" /></td>
-                                    <td><input class="form-control" type="text" id="textDiscount" /></td>
-                                    <td><input class="form-control" type="text" id="textTotal" /></td>
-                                </tr>
-
-                                <tr><td><button type="button" id="btnAddRow">add row</button></td></tr>
+                                <tr><td class="text-center" rowspan="9"><button type="button" class="btn btn-primary" id="btnAddRow">add row</button></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -119,77 +106,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" id="saveBtn" class="btn btn-primary">Save</button>
+                <button type="button" id="saveQuotationBtn" class="btn btn-primary">Preview & Save</button>
             </div>
         </form>
     </div>
 </div>
-
-@section Scripts{
-    <script>
-        function submitQuotationForm() {
-            let itemList = new Array();
-            $("#itemListTable").find("tr:gt(0)").each(() => {
-                let itemCode = $(this).find("tr:eq(1)").val();
-                let itemName = $(this).find("tr:eq(2)").val();
-                let itemDesc = $(this).find("tr:eq(3)").val();
-                let Qty = $(this).find("tr:eq(4)").val();
-                let unitId = $(this).find("tr:eq(5)").val();
-                let unitPrice = $(this).find("tr:eq(6)").val();
-                let discount = $(this).find("tr:eq(7)").val();
-                let total = $(this).find("tr:eq(8)").val();
-
-                let quotationInfo = {
-                    itemCode: itemCode,
-                    itemName: itemName,
-                    itemDesc: itemDesc,
-                    Qty: Qty,
-                    unitId: unitId,
-                    unitPrice: unitPrice,
-                    discount: discount,
-                    total: total
-                };
-                itemList.push(quotationInfo);
-                $.ajax({
-                    url: '@Url.Action("")',
-                    type: 'POST',
-                    data: {
-                        quotationNo: $('#textQuotationNo').val(),
-                        customerName: $('#textCusName').val(),
-                        customerAddress: $('#textCusAddress').val(),
-                        customerContact: $('#textCusContact').val(),
-                        taxId: $('#textTaxId').val(),
-                        seller: $('#textSellerName').val(),
-                        vat: $('#textVat').val(),
-                        activeStatus: $('#activeCheckbox').val(),
-                        itemList: JSON.stringify(itemList)
-                    }
-                })
-            });
-        }
-    </script>
-
-    <script>
-        let lineNo = 4;
-        $(document).ready(() => {
-            $("#btnAddRow").click(() => {
-                markup = `
-                        <tr>
-                            <td>${lineNo}</td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                            <td><input class="form-control" type="text" /></td>
-                        </tr>`;
-                console.log("button clicked");
-                tableBody = $("#item-table tr:nth-last-child(2)");
-                tableBody.after(markup);
-                lineNo++;
-            });
-        });
-    </script>
-}

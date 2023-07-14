@@ -56,6 +56,7 @@
             table = $('#quotation-table').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "autoWidth": true,
                 "bLengthChange": false,
                 "bFilter": true,
                 "searching": false,
@@ -77,10 +78,11 @@
                 },
                 "columns": colOptions,
             });
-
+            $(window).trigger('resize');
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
+            $('#saveQuotationBtn').on('click', submitQuotationForm);
         });
 
         function renderActionButtons(data, type, row) {
@@ -140,24 +142,73 @@
                 alert("Session Timeout");
             }
         }
+
+        function submitQuotationForm() {
+            let itemList = new Array();
+            $("#item-table").find(".item-row").each(() => {
+                let itemCode = $(this).find("td:eq(1) input").val();
+                let itemName = $(this).find("td:eq(2) input").val();
+                let itemDesc = $(this).find("td:eq(3) input").val();
+                let Qty = $(this).find("td:eq(4) input").val();
+                let unitId = $(this).find("td:eq(5) input").val();
+                let unitPrice = $(this).find("td:eq(6) input").val();
+                let discount = $(this).find("td:eq(7) input").val();
+                let total = $(this).find("td:eq(8) input").val();
+
+                let QuotationItemViewModel = {
+                    itemCode: itemCode,
+                    itemName: itemName,
+                    itemDesc: itemDesc,
+                    Qty: Qty,
+                    unitId: unitId,
+                    unitPrice: unitPrice,
+                    discount: discount,
+                    total: total
+                };
+                itemList.push(QuotationItemViewModel);
+            });
+            let model = {
+                quotationNo: $('#textQuotationNo').val(),
+                customer: $('#textCusName').val(),
+                customerAddress: $('#textCusAddress').val(),
+                customerContact: $('#textCusContact').val(),
+                taxId: $('#textTaxId').val(),
+                salesName: $('#textSellerName').val(),
+                vat: $('#textVat').val(),
+                activeStatus: $('#activeCheckbox').val(),
+            }
+            $.ajax({
+                url: '@Url.Action("AddQuotation")',
+                type: 'POST',
+                data: {
+                    model: model,
+                    itemList: itemList
+                },
+                success: (data, textStatus) => {
+                    console.log(data);
+                    window.location.href = `@Url.Action("PreviewQuotation","Quotation")?quotationNo=${model.quotationNo}`;
+                }
+            });
+        }
+
     </script>
 
     <script>
-        let lineNo = 4;
+        let lineNo = 3;
         $(document).ready(() => {
             $("#btnAddRow").click(() => {
                 markup = `
-                            <tr>
-                                <td>${lineNo}</td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                            </tr>`;
+                        <tr class="item-row">
+                            <td>${lineNo}</td>
+                            <td><input class="form-control" type="text" id="textItemCode" /></td>
+                            <td><input class="form-control" type="text" id="textItemName" /></td>
+                            <td><input class="form-control" type="text" id="textDescription" /></td>
+                            <td><input class="form-control" type="number" id="textQty" /></td>
+                            <td><input class="form-control" type="text" id="textUnit" /></td>
+                            <td><input class="form-control" type="text" id="textUnitPrice" /></td>
+                            <td><input class="form-control" type="number" id="textDiscount" /></td>
+                            <td><input class="form-control" type="text" id="textTotal" /></td>
+                        </tr>`;
                 console.log("button clicked");
                 tableBody = $("#item-table tr:nth-last-child(2)");
                 tableBody.after(markup);
