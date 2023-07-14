@@ -2,6 +2,9 @@
 using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Repositories;
 using QuotationSystem.Models.Quotation;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using Zero.Core.Mvc.Extensions;
 using Zero.Core.Mvc.Models.DataTables;
@@ -19,9 +22,16 @@ namespace QuotationSystem.Controllers
         {
             return View();
         }
-        public IActionResult AddQuotation(QuotationViewModel model)
+        public IActionResult PreviewQuotation(string quotationNo)
         {
-            if (ModelState.IsValid)
+            var model = quotationRepository.GetQuotationById(quotationNo);
+
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult AddQuotation(QuotationViewModel model, List<QuotationItemViewModel> itemList)
+        {
+            try
             {
                 var quotationHeader = new TQuotationHeader
                 {
@@ -31,20 +41,28 @@ namespace QuotationSystem.Controllers
                     CustomerAddress = model.CustomerAddress,
                     Seller = model.SalesName,
                     Vat = model.Vat,
-                    ActiveStatus = model.ActiveStatus,
-                    GrandTotal = model.ItemList.Sum(x => x.UnitPrice) * (100 + model.Vat)/100
+                    ActiveStatus = model.ActiveStatus switch
+                    {
+                        "on" => "Y",
+                        _ => "N"
+                    }
+                    ,
+                    Total = itemList.Sum(item => double.Parse(item.unitPrice)),
+                    TQuotationDetails = itemList.Select(item => new TQuotationDetail
+                    {
+                        ItemCode = item.itemCode,
+                        ItemQty = item.Qty,
+                        DiscountPercent = item.discount / 100,
+                        Remark = item.itemDesc
+                    }).ToList()
                 };
-                var quotationDetail = new TQuotationDetail
-                {
-                    ItemQty = model.ItemList.Count,
-                    ActiveStatus = model.ActiveStatus,
-                    
-                    QuotationNoNavigation = quotationHeader
-                };
-                quotationRepository.AddQuotation(quotationDetail);
-                return RedirectToAction("QuotationList", "Quotation");
+                quotationRepository.AddQuotation(quotationHeader);
+                return RedirectToAction("PreviewQuotation", "Quotation", quotationHeader.QuotationNo);
             }
-            return ViewComponent("");
+            catch (SqlException)
+            {
+                return StatusCode(500);
+            }
         }
         public JsonResult Search(string quotationNo, string customer, DataTableOptionModel option)
         {
@@ -72,11 +90,7 @@ namespace QuotationSystem.Controllers
         public IActionResult EditQuotation(QuotationViewModel quotationModel)
         {
             //quotationRepository.EditQuotation(quotationModel.QuotationHeader);
-            return RedirectToAction("ItemList");
-        }
-        public IActionResult QuotationPreview()
-        {
-            return View();
+            return RedirectToAction("QuotationList");
         }
     }
 }
