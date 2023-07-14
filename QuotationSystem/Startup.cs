@@ -12,6 +12,7 @@ using Zero.Core.Mvc.Binders;
 using Zero.Core.Mvc.Startup;
 using FluentValidation.AspNetCore;
 using QuotationSystem.Data.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace QuotationSystem
 {
@@ -36,6 +37,12 @@ namespace QuotationSystem
                  .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.ConfigureSession($"{nameof(WebApp)}.Session", 60000);
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.LoginPath = "/Account/Login/";
+            });
+
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IConfigurationContext, ConfigurationContext>();
             services.AddTransient<ISessionContext, SessionContext>();
@@ -44,6 +51,7 @@ namespace QuotationSystem
             services.AddScoped<IQuotationRepository, QuotationRepository>();
             services.AddScoped<IConfigRepository, ConfigRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IUnitRepository, UnitRepository>();
 
             var connectionString = Configuration.GetConnectionString("Default");
             services.AddSingleton(option => new DbContextOptionBuilder(connectionString));

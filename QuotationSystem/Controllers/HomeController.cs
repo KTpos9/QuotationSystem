@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using QuotationSystem.Data.Repositories;
+using QuotationSystem.Data.Sessions;
 using QuotationSystem.Models;
 using QuotationSystem.Models.Home;
 using System.Diagnostics;
@@ -13,22 +14,28 @@ namespace QuotationSystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IQuotationRepository quotationRepository;
+        private readonly ISessionContext sessionContext;
 
-        public HomeController(ILogger<HomeController> logger, IQuotationRepository quotationRepository)
+        public HomeController(ILogger<HomeController> logger, IQuotationRepository quotationRepository, ISessionContext sessionContext)
         {
             _logger = logger;
             this.quotationRepository = quotationRepository;
+            this.sessionContext = sessionContext;
         }
 
         public IActionResult Index()
         {
-            var model = new HomeViewModel
+            if (sessionContext.IsLoggedIn)
             {
-                QuotationHeader = quotationRepository.GetTodayQuotationHeader(),
-                WeeklyCount = quotationRepository.GetWeeklyCount(),
-                MonthlyCount = quotationRepository.GetMonthlyCount()
-            };
-            return View(model);
+                var model = new HomeViewModel
+                {
+                    QuotationHeader = quotationRepository.GetTodayQuotationHeader(),
+                    WeeklyCount = quotationRepository.GetWeeklyCount(),
+                    MonthlyCount = quotationRepository.GetMonthlyCount()
+                };
+                return View(model);
+            }
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Privacy()
