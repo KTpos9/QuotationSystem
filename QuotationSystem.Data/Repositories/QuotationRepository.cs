@@ -49,24 +49,10 @@ namespace QuotationSystem.Data.Repositories
                 //    .ToList();
             }
         }
-        public void AddQuotation(TQuotationDetail quotation)
+        public void AddQuotation(TQuotationHeader quotation)
         {
             using (var db = new QuotationContext(option))
             {
-                //db.CurrentUser = currentUser;
-
-                //quotation.MUserPermissions = db.MMenus.Select(m => new MUserPermission
-                //{
-                //    MenuId = m.MenuId
-                //}).ToList();
-                //if (quotation.ActiveStatus == "false")
-                //{
-                //    quotation.ActiveStatus = "N";
-                //}
-                //foreach (var permission in permissions)
-                //{
-                //    quotation.MUserPermissions.Where(x => x.MenuId == permission).FirstOrDefault().ActiveStatus = "Y";
-                //}
                 db.Add(quotation);
                 db.SaveChanges();
             }
