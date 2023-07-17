@@ -57,7 +57,7 @@ namespace QuotationSystem.Controllers
                     }).ToList()
                 };
                 quotationRepository.AddQuotation(quotationHeader);
-                return RedirectToAction("PreviewQuotation", "Quotation", quotationHeader.QuotationNo);
+                return Ok(new { isSuccess = true });
             }
             catch (SqlException)
             {
