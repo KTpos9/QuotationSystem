@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Quotation List";
 }
-<div class="container pt-5">
+<div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
         <form class="d-flex" style="gap:1rem;">
@@ -30,28 +30,30 @@
 
         <!--Add Button-->
         <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#quotationManagement"><i class="fa-solid fa-plus"></i>Add New</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i>Add New</button>
         </div>
         <!--Modal-->
         <vc:add-quotation-modal></vc:add-quotation-modal>
 
         <!--table-->
-        <table class="table" id="quotation-table"></table>
+        <div class="table-responsive ibox-content">
+            <table id="quotation-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+        </div>
     </div>
 </div>
 @section Scripts{
     <script>
         $(document).ready(() => {
             var colOptions = [
-                { title: "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
-                { title: "Date", data: "createDate" },
-                { title: "Quotation No.", data: "quotationNo" },
-                { title: "Customer", data: "customerName" },
+                { title: "No", className: "text-center", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+                { title: "Date", data: "createDate", className: "text-center" },
+                { title: "Quotation No.", data: "quotationNo", className: "text-center" },
+                { title: "Customer", data: "customerName", className: "text-center"},
                 { title: "Seller", data: "seller", className: "text-center" },
                 { title: "Total", data: "total", className: "text-center" },
                 { title: "Grand Total", data: "grandTotal", className: "text-center" },
                 { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
-                { title: "Action", data: "itemCode", render: renderActionButtons }
+                { title: "Action", data: "itemCode", className: "text-center", render: renderActionButtons }
             ];
             table = $('#quotation-table').DataTable({
                 "processing": true,
@@ -60,7 +62,7 @@
                 "bLengthChange": false,
                 "bFilter": true,
                 "searching": false,
-                "pageLength": 20,
+                "pageLength": 15,
                 "displayStart": 0,
                 "ajax": {
                     url: "@Url.Action("Search")",
@@ -186,7 +188,27 @@
                 },
                 success: (data, textStatus) => {
                     console.log(data);
-                    window.location.href = `@Url.Action("PreviewQuotation","Quotation")?quotationNo=${model.quotationNo}`;
+                    //window.location.href = `@Url.Action("PreviewQuotation","Quotation")?quotationNo=${model.quotationNo}`;
+                },
+                complete: (result) => {
+                    let data = result.responseJSON;
+                    console.log(data);
+                    if (data.isSuccess) {
+                        $("#addQuotationModal").modal("hide");
+                         swal.fire({
+                             title: 'Successfully added!',
+                             type: 'success'
+                         }).then(() => {
+                             location.href = '@Url.Action("QuotationList")';
+                         });
+                     }
+                     else {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong',
+                            icon: 'error'
+                        })
+                     }
                 }
             });
         }
