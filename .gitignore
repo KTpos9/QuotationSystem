@@ -361,3 +361,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/QuotationSystem/wwwroot/fonts/Kanit-Thin.woff2
+/QuotationSystem/wwwroot/fonts/Kanit-SemiBold.woff2
+/QuotationSystem/wwwroot/fonts/Kanit-Regular.woff2
+/QuotationSystem/wwwroot/fonts/Kanit-Light.woff2
+/QuotationSystem/wwwroot/fonts/Kanit-ExtraLight.woff2
+/QuotationSystem/wwwroot/fonts/Kanit-Bold.woff2
+/QuotationSystem/wwwroot/fonts/glyphicons-halflings-regular.woff2
+/QuotationSystem/wwwroot/fonts/glyphicons-halflings-regular.woff
+/QuotationSystem/wwwroot/fonts/glyphicons-halflings-regular.ttf
+/QuotationSystem/wwwroot/fonts/glyphicons-halflings-regular.svg
+/QuotationSystem/wwwroot/fonts/glyphicons-halflings-regular.eot
+/QuotationSystem/wwwroot/fonts/font-awesome
+/QuotationSystem/wwwroot/css/style1.css
