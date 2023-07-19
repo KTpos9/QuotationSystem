@@ -14,13 +14,22 @@ namespace QuotationSystem.Controllers
     public class QuotationController : Controller
     {
         private readonly IQuotationRepository quotationRepository;
-        public QuotationController(IQuotationRepository quotationRepository)
+        private readonly IConfigRepository configRepository;
+        public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository)
         {
             this.quotationRepository = quotationRepository;
+            this.configRepository = configRepository;
         }
         public IActionResult QuotationList()
         {
-            return View();
+            var vat = configRepository.GetConfigById("C002");
+            var model = new QuotationViewModel
+            {
+                QuotationNo = GenerateQuotationNo(),
+                Date = DateTime.Today,
+                Vat = double.Parse(vat)
+            };
+            return View(model);
         }
         public IActionResult PreviewQuotation(string quotationNo)
         {
@@ -93,6 +102,26 @@ namespace QuotationSystem.Controllers
         {
             //quotationRepository.EditQuotation(quotationModel.QuotationHeader);
             return RedirectToAction("QuotationList");
+        }
+        private string GenerateQuotationNo()
+        {
+            var currentYear = DateTime.Now.ToString("yy");
+            int currentMonth = DateTime.Now.Month;
+
+            //"QT230800094"
+            ReadOnlySpan<char> lastRecordId = quotationRepository.GetLastRecordId();
+            if (lastRecordId.IsEmpty)
+            {
+                return $"QT{currentYear}{currentMonth:00}{1:00000}";
+            }
+
+            ReadOnlySpan<char> monthFromNo = lastRecordId.Slice(4,2);
+            
+            int runningNumAsInt = int.Parse(lastRecordId.Slice(6, 5)) switch {
+                int when int.Parse(monthFromNo) == currentMonth => int.Parse(lastRecordId.Slice(6, 5)) + 1,
+                _ => 1
+            };
+            return $"QT{currentYear}{currentMonth:00}{runningNumAsInt:00000}";
         }
     }
 }
