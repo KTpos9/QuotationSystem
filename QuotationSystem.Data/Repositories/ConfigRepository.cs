@@ -22,5 +22,12 @@ namespace QuotationSystem.Data.Repositories
                 return config.ConfValue;
             }
         }
+        public string GetConfigById(string id)
+        {
+            using (var db = new QuotationContext(option))
+            {
+                return db.CConfigs.FirstOrDefault(c => c.ConfCode == id).ConfValue;
+            }
+        }
     }
 }
