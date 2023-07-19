@@ -120,6 +120,7 @@ namespace QuotationSystem.Data
                     .IsFixedLength(true);
 
                 entity.Property(e => e.CreateBy)
+                    .IsRequired()
                     .HasMaxLength(30)
                     .HasColumnName("create_by");
 
@@ -278,6 +279,7 @@ namespace QuotationSystem.Data
                     .IsFixedLength(true);
 
                 entity.Property(e => e.CreateBy)
+                    .IsRequired()
                     .HasMaxLength(30)
                     .HasColumnName("create_by");
 
@@ -476,7 +478,6 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.ItemCodeNavigation)
                     .WithMany(p => p.TQuotationDetails)
                     .HasForeignKey(d => d.ItemCode)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_t_quotation_detail_m_item");
 
                 entity.HasOne(d => d.QuotationNoNavigation)
@@ -497,7 +498,6 @@ namespace QuotationSystem.Data
                     .HasColumnName("quotation_no");
 
                 entity.Property(e => e.ActiveStatus)
-                    .IsRequired()
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .HasColumnName("active_status")
@@ -514,10 +514,16 @@ namespace QuotationSystem.Data
                     .HasColumnName("create_date");
 
                 entity.Property(e => e.CustomerAddress)
+                    .IsRequired()
                     .HasMaxLength(150)
                     .HasColumnName("customer_address");
 
+                entity.Property(e => e.CustomerContact)
+                    .HasMaxLength(150)
+                    .HasColumnName("customer_contact");
+
                 entity.Property(e => e.CustomerName)
+                    .IsRequired()
                     .HasMaxLength(150)
                     .HasColumnName("customer_name");
 
@@ -532,8 +538,13 @@ namespace QuotationSystem.Data
                     .HasColumnName("remark");
 
                 entity.Property(e => e.Seller)
+                    .IsRequired()
                     .HasMaxLength(30)
                     .HasColumnName("seller");
+
+                entity.Property(e => e.TaxId)
+                    .HasMaxLength(150)
+                    .HasColumnName("tax_id");
 
                 entity.Property(e => e.Total).HasColumnName("total");
 
