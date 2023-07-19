@@ -22,6 +22,7 @@ namespace QuotationSystem.Controllers
         }
         public IActionResult QuotationList()
         {
+            //data for AddQuotationPartial
             var vat = configRepository.GetConfigById("C002");
             var model = new QuotationViewModel
             {
