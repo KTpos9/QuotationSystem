@@ -4,12 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - QuotationSystem</title>
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link href="~/css/inspinia.min.css" rel="stylesheet" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" />
+    
+    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+    <link rel="stylesheet" href="~/lib/sweetalert/sweetalert2.min.css" />
     <link rel="stylesheet" href="~/css/InspiniaStyle.css" />
+    
+    @*<link href="~/css/plugin-bundle.min.css" rel="stylesheet" asp-append-version="true" />*@
 </head>
 <body>
     <div id="wrapper" class="">
@@ -25,10 +29,12 @@
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/inspinia.min.js" asp-append-version="true"></script>
-    <script src="~/js/plugin-bundle.min.js" asp-append-version="true"></script> @*loading bar*@
+    <script src="~/js/plugin-bundle.min.js" asp-append-version="true"></script> @*loading bar + other thing*@
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
     <script src="~/lib/dataTables/datatables.min.js"></script>
     <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+    <script src="~/lib/sweetalert/sweetalert2.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
