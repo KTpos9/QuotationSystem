@@ -1,6 +1,100 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+@import url(google/opensans.css);
+@import url(google/roboto.css);
+
+@font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 200;
+    src: local('Kanit ExtraLight'), local('Kanit-ExtraLight'), url(../fonts/Kanit-ExtraLight.woff2) format('woff2');
+    unicode-range: U+0E01-0E5B, U+200B-200D, U+25CC;
+}
+
+@font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Kanit Light'), local('Kanit-Light'), url(../fonts/Kanit-Light.woff2) format('woff2');
+    unicode-range: U+0E01-0E5B, U+200B-200D, U+25CC;
+}
+
+@font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Kanit'), local('Kanit-Regular'), url(../fonts/Kanit-Regular.woff2) format('woff2');
+    unicode-range: U+0E01-0E5B, U+200B-200D, U+25CC;
+}
+
+@font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Kanit SemiBold'), local('Kanit-SemiBold'), url(../fonts/Kanit-SemiBold.woff2) format('woff2');
+    unicode-range: U+0E01-0E5B, U+200B-200D, U+25CC;
+}
+
+@font-face {
+    font-family: 'Kanit';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Kanit Bold'), local('Kanit-Bold'), url(../fonts/Kanit-Bold.woff2) format('woff2');
+    unicode-range: U+0E01-0E5B, U+200B-200D, U+25CC;
+}
+
+html, body {
+    font-family: "Kanit", "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.label {
+    font-family: "Kanit", "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.nav-header {
+    padding: 33px 15px;
+    background: url(../images/header-profile.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.footer {
+    position: absolute !important;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+.select2-selection__rendered {
+    line-height: 34px !important;
+}
+
+.select2-selection {
+    height: 34px !important;
+}
+
+
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
