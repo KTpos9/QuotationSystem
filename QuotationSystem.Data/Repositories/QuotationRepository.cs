@@ -110,5 +110,17 @@ namespace QuotationSystem.Data.Repositories
                     .Count();
             }
         }
+        public ReadOnlySpan<char> GetLastRecordId()
+        {
+            using (var db = new QuotationContext(option))
+            {
+                var result = db.TQuotationHeaders.OrderByDescending(x => x.QuotationNo).FirstOrDefault();
+                if (result is null)
+                {
+                    return ReadOnlySpan<char>.Empty;
+                }
+                return result.QuotationNo;
+            }
+        }
     }
 }

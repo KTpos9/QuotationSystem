@@ -1,4 +1,5 @@
 ﻿using QuotationSystem.Data.Models;
+using System;
 using System.Collections.Generic;
 using Zero.Core.Mvc.Models.DataTables;
 
@@ -14,5 +15,6 @@ namespace QuotationSystem.Data.Repositories
         void DeleteQuotation(string quotationNo);
         int GetWeeklyCount();
         int GetMonthlyCount();
+        ReadOnlySpan<char> GetLastRecordId();
     }
 }
