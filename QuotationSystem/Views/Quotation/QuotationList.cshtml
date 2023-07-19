@@ -1,9 +1,7 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     ViewData["Title"] = "Quotation List";
 }
+@model QuotationSystem.Models.Quotation.QuotationViewModel
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
@@ -33,7 +31,7 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i>Add New</button>
         </div>
         <!--Modal-->
-        <vc:add-quotation-modal></vc:add-quotation-modal>
+        <partial name="_AddQuotationPartial" model="Model"/>
 
         <!--table-->
         <div class="table-responsive ibox-content">
@@ -197,7 +195,7 @@
                         $("#addQuotationModal").modal("hide");
                          swal.fire({
                              title: 'Successfully added!',
-                             type: 'success'
+                             icon: 'success'
                          }).then(() => {
                              location.href = '@Url.Action("QuotationList")';
                          });
