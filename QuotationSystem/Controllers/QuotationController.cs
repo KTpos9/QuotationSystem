@@ -39,6 +39,8 @@ namespace QuotationSystem.Controllers
                     QuotationDate = model.Date,
                     CustomerName = model.Customer,
                     CustomerAddress = model.CustomerAddress,
+                    CustomerContact = model.CustomerContact,
+                    TaxId = model.TaxId,
                     Seller = model.SalesName,
                     Vat = model.Vat,
                     ActiveStatus = model.ActiveStatus switch
