@@ -19,32 +19,32 @@
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center" style="white-space: nowrap; gap: 1rem">
                                             <label class="m-0">Quotation No.:</label>
-                                            <input class="form-control" type="text" id="textQuotationNo" />
+                                            <input class="form-control" type="text" id="textQuotationNo" value="@Model.QuotationNo" readonly />
                                         </div>
                                         <div class="d-flex align-items-center" style="gap: 1rem">
                                             <label class="m-0">Date:</label>
-                                            <input class="form-control" type="date" readonly />
+                                            <input class="form-control" type="text" readonly value="@Model.Date.ToShortDateString()" />
                                         </div>
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer:</label>
-                                        <input class="col form-control" id="textCusName" type="text" />
+                                        <input class="col form-control" id="textCusName" type="text" required />
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer Address:</label>
-                                        <textarea class="col form-control" id="textCusAddress"></textarea>
+                                        <textarea class="col form-control" id="textCusAddress" required></textarea>
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer Contact:</label>
-                                        <input class="col form-control" id="textCusContact" type="text" />
+                                        <input class="col form-control" id="textCusContact" type="text" required />
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Tax Id:</label>
-                                        <input class="col form-control" id="textTaxId" type="text" />
+                                        <input class="col form-control" id="textTaxId" type="text" required />
                                     </div>
                                 </div>
                             </div>
@@ -53,12 +53,12 @@
                                 <div class="d-flex flex-column" style="gap:1rem">
                                     <div class="row align-items-center text-nowrap">
                                         <label class="m-0 col-2">Sales Name:</label>
-                                        <input class="col form-control" id="textSellerName" type="text" />
+                                        <input class="col form-control" id="textSellerName" type="text" required />
                                     </div>
 
                                     <div>
                                         <label class="m-0">Vat:</label>
-                                        <input class="form-control" id="textVat" type="number" placeholder="7%" value="0.7" readonly  />
+                                        <input class="form-control" id="textVat" type="number" placeholder="7%" value="0.7" readonly />
                                     </div>
 
                                     <div>
@@ -89,14 +89,14 @@
                             <tbody>
                                 <tr class="item-row">
                                     <td>1</td>
-                                    <td><input class="form-control" type="text" id="textItemCode" required/></td>
-                                    <td><input class="form-control" type="text" id="textItemName"required/></td>
-                                    <td><input class="form-control" type="text" id="textDescription"/></td>
-                                    <td><input class="form-control" type="number" id="textQty" min="0" required/></td>
-                                    <td><input class="form-control" type="text" id="textUnit" required/></td>
-                                    <td><input class="form-control" type="number" id="textUnitPrice" required/></td>
-                                    <td><input class="form-control" type="number" id="textDiscount" min="0" required/></td>
-                                    <td><input class="form-control" type="number" id="textTotal" min="0" required/></td>
+                                    <td><input class="form-control" type="text" id="textItemCode" required /></td>
+                                    <td><input class="form-control" type="text" id="textItemName" required /></td>
+                                    <td><input class="form-control" type="text" id="textDescription" /></td>
+                                    <td><input class="form-control" type="number" id="textQty" min="0" required /></td>
+                                    <td><input class="form-control" type="text" id="textUnit" required /></td>
+                                    <td><input class="form-control" type="number" id="textUnitPrice" required /></td>
+                                    <td><input class="form-control" type="number" id="textDiscount" min="0" required /></td>
+                                    <td><input class="form-control" type="number" id="textTotal" min="0" required /></td>
                                 </tr>
                                 <tr><td class="text-center" rowspan="9"><button type="button" class="btn btn-primary" id="btnAddRow">add row</button></td></tr>
                             </tbody>
