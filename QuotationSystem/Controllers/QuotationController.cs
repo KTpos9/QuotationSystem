@@ -109,20 +109,19 @@ namespace QuotationSystem.Controllers
             var currentYear = DateTime.Now.ToString("yy");
             int currentMonth = DateTime.Now.Month;
 
-            //"QT230800094"
             ReadOnlySpan<char> lastRecordId = quotationRepository.GetLastRecordId();
+
             if (lastRecordId.IsEmpty)
             {
                 return $"QT{currentYear}{currentMonth:00}{1:00000}";
             }
 
-            ReadOnlySpan<char> monthFromNo = lastRecordId.Slice(4,2);
-            
-            int runningNumAsInt = int.Parse(lastRecordId.Slice(6, 5)) switch {
-                int when int.Parse(monthFromNo) == currentMonth => int.Parse(lastRecordId.Slice(6, 5)) + 1,
-                _ => 1
-            };
-            return $"QT{currentYear}{currentMonth:00}{runningNumAsInt:00000}";
+            ReadOnlySpan<char> monthFromId = lastRecordId.Slice(4, 2);
+
+            // If the last record is from the current month, increment the running number
+            int runningNum = currentMonth == int.Parse(monthFromId) ? int.Parse(lastRecordId.Slice(6, 5)) + 1 : 1;
+
+            return $"QT{currentYear}{currentMonth:00}{runningNum:00000}";
         }
     }
 }
