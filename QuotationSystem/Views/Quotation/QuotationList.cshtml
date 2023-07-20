@@ -82,7 +82,37 @@
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
-            $('#saveQuotationBtn').on('click', submitQuotationForm);
+            //$('#saveQuotationBtn').on('click', submitQuotationForm);
+            //console.log($("#item-table").find(".item-row"));
+
+            $("#quotationForm").validate({
+                rules: {
+                    textCusName: { required: true, minlength: 1, maxlength: 150 },
+                    textCusAddress: { required: true, minlength: 1, maxlength: 150 },
+                    textCusContact: { required: true, minlength: 1, maxlength: 150 },
+                    textTaxId: { required: true, minlength: 1, maxlength: 150 },
+                    textSellerName: { required: true, minlength: 1, maxlength: 30 },
+                    textItemCode: { required: true, minlength: 1, maxlength: 30 },
+                    textItemName: { required: true, minlength: 1, maxlength: 30 },
+                    textQty: { required: true, minlength: 1, maxlength: 30 },
+                    textUnit: { required: true, minlength: 1, maxlength: 30 },
+                    textUnitPrice: { required: true, minlength: 1, maxlength: 30 },
+                    textDiscount: { required: true, minlength: 1, maxlength: 30 },
+                    textTotal: { required: true, minlength: 1, maxlength: 30 },
+                    textCusAddress: { required: true, minlength: 1, maxlength: 30 },
+                },
+                messages: {
+                    textCusName: { required: "Please enter the customer name." },
+                }
+            });
+
+            $('#saveQuotationBtn').on('click', () => {
+                // Manually trigger the form validation
+                if ($("#quotationForm").valid()) {
+                    // If the form is valid, call the submitQuotationForm function
+                    submitQuotationForm();
+                }
+            });
         });
 
         function renderActionButtons(data, type, row) {
@@ -145,15 +175,16 @@
 
         function submitQuotationForm() {
             let itemList = new Array();
-            $("#item-table").find(".item-row").each(() => {
-                let itemCode = $(this).find("td:eq(1) input").val();
-                let itemName = $(this).find("td:eq(2) input").val();
-                let itemDesc = $(this).find("td:eq(3) input").val();
-                let Qty = $(this).find("td:eq(4) input").val();
-                let unitId = $(this).find("td:eq(5) input").val();
-                let unitPrice = $(this).find("td:eq(6) input").val();
-                let discount = $(this).find("td:eq(7) input").val();
-                let total = $(this).find("td:eq(8) input").val();
+            $("#item-table").find(".item-row").each((index, element) => { //don't remove index, it's magic!
+                let $element = $(element);  // Convert it into a jQuery object, **javascript magic, u can't understand it**
+                let itemCode = $element.find("td:eq(1) input").val();
+                let itemName = $element.find("td:eq(2) input").val();
+                let itemDesc = $element.find("td:eq(3) input").val();
+                let Qty = $element.find("td:eq(4) input").val();
+                let unitId = $element.find("td:eq(5) input").val();
+                let unitPrice = $element.find("td:eq(6) input").val();
+                let discount = $element.find("td:eq(7) input").val();
+                let total = $element.find("td:eq(8) input").val();
 
                 let QuotationItemViewModel = {
                     itemCode: itemCode,
@@ -214,20 +245,20 @@
     </script>
 
     <script>
-        let lineNo = 3;
+        let lineNo = 2;
         $(document).ready(() => {
             $("#btnAddRow").click(() => {
                 markup = `
                         <tr class="item-row">
                             <td>${lineNo}</td>
-                            <td><input class="form-control" type="text" id="textItemCode" /></td>
-                            <td><input class="form-control" type="text" id="textItemName" /></td>
-                            <td><input class="form-control" type="text" id="textDescription" /></td>
-                            <td><input class="form-control" type="number" id="textQty" /></td>
-                            <td><input class="form-control" type="text" id="textUnit" /></td>
-                            <td><input class="form-control" type="text" id="textUnitPrice" /></td>
-                            <td><input class="form-control" type="number" id="textDiscount" /></td>
-                            <td><input class="form-control" type="text" id="textTotal" /></td>
+                            <td><input class="form-control" type="text" name="textItemCode" /></td>
+                            <td><input class="form-control" type="text" name="textItemName" /></td>
+                            <td><input class="form-control" type="text" name="textDescription" /></td>
+                            <td><input class="form-control" type="number" name="textQty" /></td>
+                            <td><input class="form-control" type="text" name="textUnit" /></td>
+                            <td><input class="form-control" type="text" name="textUnitPrice" /></td>
+                            <td><input class="form-control" type="number" name="textDiscount" /></td>
+                            <td><input class="form-control" type="text" name="textTotal" /></td>
                         </tr>`;
                 console.log("button clicked");
                 tableBody = $("#item-table tr:nth-last-child(2)");
