@@ -29,22 +29,22 @@
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer:</label>
-                                        <input class="col form-control" id="textCusName" type="text" required />
+                                        <input class="col form-control" name="textCusName" id="textCusName" type="text" required />
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer Address:</label>
-                                        <textarea class="col form-control" id="textCusAddress" required></textarea>
+                                        <textarea class="col form-control" name="textCusAddress" id="textCusAddress" required></textarea>
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Customer Contact:</label>
-                                        <input class="col form-control" id="textCusContact" type="text" required />
+                                        <input class="col form-control" name="textCusContact" id="textCusContact" type="text" required />
                                     </div>
 
                                     <div class="row align-items-center">
                                         <label class="m-0 col-2">Tax Id:</label>
-                                        <input class="col form-control" id="textTaxId" type="text" required />
+                                        <input class="col form-control" name="textTaxId" id="textTaxId" type="text" required />
                                     </div>
                                 </div>
                             </div>
@@ -53,12 +53,12 @@
                                 <div class="d-flex flex-column" style="gap:1rem">
                                     <div class="row align-items-center text-nowrap">
                                         <label class="m-0 col-2">Sales Name:</label>
-                                        <input class="col form-control" id="textSellerName" type="text" required />
+                                        <input class="col form-control" name="textSellerName" id="textSellerName" type="text" required />
                                     </div>
 
                                     <div>
                                         <label class="m-0">Vat:</label>
-                                        <input class="form-control" id="textVat" type="number" placeholder="7%" value="0.7" readonly />
+                                        <input class="form-control" name="textVat" type="number" id="textVat" placeholder="7%" value="@Model.Vat" readonly />
                                     </div>
 
                                     <div>
@@ -89,14 +89,14 @@
                             <tbody>
                                 <tr class="item-row">
                                     <td>1</td>
-                                    <td><input class="form-control" type="text" id="textItemCode" required /></td>
-                                    <td><input class="form-control" type="text" id="textItemName" required /></td>
-                                    <td><input class="form-control" type="text" id="textDescription" /></td>
-                                    <td><input class="form-control" type="number" id="textQty" min="0" required /></td>
-                                    <td><input class="form-control" type="text" id="textUnit" required /></td>
-                                    <td><input class="form-control" type="number" id="textUnitPrice" required /></td>
-                                    <td><input class="form-control" type="number" id="textDiscount" min="0" required /></td>
-                                    <td><input class="form-control" type="number" id="textTotal" min="0" required /></td>
+                                    <td><input class="form-control" type="text" name="textItemCode" /></td>
+                                    <td><input class="form-control" type="text" name="textItemName" /></td>
+                                    <td><input class="form-control" type="text" name="textDescription" /></td>
+                                    <td><input class="form-control" type="number" name="textQty" min="0" /></td>
+                                    <td><input class="form-control" type="text" name="textUnit" /></td>
+                                    <td><input class="form-control" type="number" name="textUnitPrice" /></td>
+                                    <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
+                                    <td><input class="form-control" type="number" name="textTotal" min="0" /></td>
                                 </tr>
                                 <tr><td class="text-center" rowspan="9"><button type="button" class="btn btn-primary" id="btnAddRow">add row</button></td></tr>
                             </tbody>
