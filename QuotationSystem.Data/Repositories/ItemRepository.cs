@@ -72,7 +72,7 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                var item = db.MUsers.Find(itemCode);
+                var item = db.MItems.Find(itemCode);
                 db.Remove(item);
                 db.SaveChanges();
             }
@@ -86,9 +86,9 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
-                await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
-                await db.AddRangeAsync(items);
+                //await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
+                //await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
+                db.UpdateRange(items);
                 db.CurrentUser = currentUser;
                 db.SaveChanges();
             }

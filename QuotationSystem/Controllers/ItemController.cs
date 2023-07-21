@@ -15,6 +15,7 @@ using System.Text;
 using System.ComponentModel;
 using QuotationSystem.Data.Helpers;
 using QuotationSystem.Helpers;
+using System.Data.SqlClient;
 
 namespace QuotationSystem.Controllers
 {
@@ -91,6 +92,21 @@ namespace QuotationSystem.Controllers
                 throw;
                 //return BadRequest("Check file format and try again");
             }
+        }
+        [HttpDelete]
+        public IActionResult DeleteItem(string itemCode)
+        {
+            //var userFromSession = sessionContext.CurrentUser;
+            try
+            {
+                itemRepository.DeleteItem(itemCode);
+                return RedirectToAction("ItemList", "Item");
+            }
+            catch(SqlException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            
         }
     }
 }
