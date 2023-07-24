@@ -35,7 +35,7 @@
                             <div>Department:</div>
                         </div>
                         <div class="col">
-                            <select asp-for="Department" asp-items="ViewBag.DepartmentIds" class="form-control">
+                            <select asp-for="Department" asp-items="ViewBag.DepartmentList" class="form-control">
                                 <option value="">-Select-</option>
                             </select>
                             <span asp-validation-for="Department" class="text-danger"></span>
