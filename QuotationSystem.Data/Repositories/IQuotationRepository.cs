@@ -11,7 +11,7 @@ namespace QuotationSystem.Data.Repositories
         DataTableResultModel<TQuotationHeader> GetQuotationList(DataTableOptionModel dtOption, string customer = "", string qutoationNo = "");
         TQuotationHeader GetQuotationById(string quotationNo);
         void AddQuotation(TQuotationHeader quotation);
-        void EditQuotation(TQuotationDetail quotation);
+        void EditQuotation(TQuotationHeader quotation);
         void DeleteQuotation(string quotationNo);
         int GetWeeklyCount();
         int GetMonthlyCount();
