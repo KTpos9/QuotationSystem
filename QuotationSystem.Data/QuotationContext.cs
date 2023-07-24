@@ -28,7 +28,7 @@ namespace QuotationSystem.Data
         public virtual DbSet<TQuotationDetail> TQuotationDetails { get; set; }
         public virtual DbSet<TQuotationHeader> TQuotationHeaders { get; set; }
 
-        public string CurrentUser { get; set; } = "Admin";
+        public string CurrentUser { get; set; }
 
         public override int SaveChanges()
         {
@@ -42,7 +42,7 @@ namespace QuotationSystem.Data
                         case EntityState.Added:
                             entity.CreateDate = now;
                             entity.UpdateDate = now;
-                            entity.CreateBy = CurrentUser;//TODO: get username from session
+                            entity.CreateBy = CurrentUser;
                             entity.UpdateBy = CurrentUser;
                             break;
                         case EntityState.Modified:
@@ -63,7 +63,7 @@ namespace QuotationSystem.Data
 
             modelBuilder.Entity<CConfig>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.ConfCode);
 
                 entity.ToTable("c_config");
 
