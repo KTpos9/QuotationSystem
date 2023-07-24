@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Repositories;
+using QuotationSystem.Data.Sessions;
 using QuotationSystem.Models.Quotation;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,15 @@ namespace QuotationSystem.Controllers
     {
         private readonly IQuotationRepository quotationRepository;
         private readonly IConfigRepository configRepository;
-        public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository)
+        private readonly IItemRepository itemRepository;
+
+        private static string CurrentUser;
+        public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository, IItemRepository itemRepository, ISessionContext sessionContext)
         {
             this.quotationRepository = quotationRepository;
             this.configRepository = configRepository;
+            this.itemRepository = itemRepository;
+            CurrentUser = sessionContext.CurrentUser.Id;
         }
         public IActionResult QuotationList()
         {
@@ -30,6 +36,7 @@ namespace QuotationSystem.Controllers
                 Date = DateTime.Today,
                 Vat = double.Parse(vat)
             };
+            var test = quotationRepository.GetQuotationById("QT230700011");
             return View(model);
         }
         public IActionResult PreviewQuotation(string quotationNo)
@@ -43,6 +50,7 @@ namespace QuotationSystem.Controllers
         {
             try
             {
+                double sumOfItem = itemList.Sum(item => double.Parse(item.unitPrice) - (double.Parse(item.unitPrice) * item.discount));
                 var quotationHeader = new TQuotationHeader
                 {
                     QuotationNo = model.QuotationNo,
@@ -53,19 +61,19 @@ namespace QuotationSystem.Controllers
                     TaxId = model.TaxId,
                     Seller = model.SalesName,
                     Vat = model.Vat,
+                    CreateBy = CurrentUser,
                     ActiveStatus = model.ActiveStatus switch
                     {
                         "on" => "Y",
                         _ => "N"
-                    }
-                    ,
-                    Total = itemList.Sum(item => double.Parse(item.unitPrice)),
+                    },
+                    Total = sumOfItem,
+                    GrandTotal = sumOfItem + (sumOfItem * model.Vat),
                     TQuotationDetails = itemList.Select(item => new TQuotationDetail
                     {
                         ItemCode = item.itemCode,
                         ItemQty = item.Qty,
                         DiscountPercent = item.discount / 100,
-                        Remark = item.itemDesc
                     }).ToList()
                 };
                 quotationRepository.AddQuotation(quotationHeader);
@@ -73,7 +81,7 @@ namespace QuotationSystem.Controllers
             }
             catch (SqlException)
             {
-                return StatusCode(500);
+                return StatusCode(500, new { isSuccess = false });
             }
         }
         public JsonResult Search(string quotationNo, string customer, DataTableOptionModel option)
@@ -82,7 +90,7 @@ namespace QuotationSystem.Controllers
             var response = result.ToJsonResult(option);
             return response;
         }
-        public PartialViewResult GetEditQuotationModal(string itemCode)
+        public PartialViewResult GetEditQuotationModal(string itemCode, string currentUser)
         {
             var quotation = quotationRepository.GetQuotationById(itemCode);
             var model = new QuotationViewModel
@@ -123,5 +131,20 @@ namespace QuotationSystem.Controllers
 
             return $"QT{currentYear}{currentMonth:00}{runningNum:00000}";
         }
+        public IActionResult DeleteItem(string quotationNo)
+        {
+            //var userFromSession = sessionContext.CurrentUser;
+            try
+            {
+                quotationRepository.DeleteQuotation(quotationNo);
+                return RedirectToAction("QuotationList", "Quotation");
+            }
+            catch (SqlException)
+            {
+                return StatusCode(500);
+            }
+
+        }
+        public JsonResult GetItemDetailById(string itemCode) => Json(itemRepository.GetItemById(itemCode));
     }
 }
