@@ -16,19 +16,21 @@ using System.ComponentModel;
 using QuotationSystem.Data.Helpers;
 using QuotationSystem.Helpers;
 using System.Data.SqlClient;
+using QuotationSystem.Data.Sessions;
 
 namespace QuotationSystem.Controllers
 {
     public class ItemController : Controller
     {
-        private readonly IUserRepository userRepository;
         private readonly IItemRepository itemRepository;
         private readonly IUnitRepository unitRepository;
-        public ItemController(IUserRepository userRepository, IItemRepository itemRepository, IUnitRepository unitRepository)
+
+        private static string CurrentUser;
+        public ItemController(IItemRepository itemRepository, IUnitRepository unitRepository, ISessionContext sessionContext)
         {
-            this.userRepository = userRepository;
             this.itemRepository = itemRepository;
             this.unitRepository = unitRepository;
+            CurrentUser = sessionContext.CurrentUser.Id;
         }
         public IActionResult ItemList()
         {
@@ -61,7 +63,7 @@ namespace QuotationSystem.Controllers
         }
         public IActionResult EditItem(ItemViewModel itemModel)
         {
-            itemRepository.EditItem(itemModel.Item);
+            itemRepository.EditItem(itemModel.Item, CurrentUser);
             return RedirectToAction("ItemList");
         }
         [HttpPost]
@@ -96,7 +98,6 @@ namespace QuotationSystem.Controllers
         [HttpDelete]
         public IActionResult DeleteItem(string itemCode)
         {
-            //var userFromSession = sessionContext.CurrentUser;
             try
             {
                 itemRepository.DeleteItem(itemCode);

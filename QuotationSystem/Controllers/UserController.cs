@@ -15,22 +15,22 @@ namespace QuotationSystem.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
-        private readonly ISessionContext sessionContext;
         private readonly IConfigRepository configRepository;
         private readonly IDepartmentRepository departmentRepository;
         private static List<SelectListItem> departmentList;
+        private static string CurrentUser;
 
-        public UserController(IUserRepository userRepository, ISessionContext sessionContext = null, IDepartmentRepository departmentRepository = null, IConfigRepository configRepository = null)
+        public UserController(IUserRepository userRepository, ISessionContext sessionContext, IDepartmentRepository departmentRepository, IConfigRepository configRepository)
         {
             this.userRepository = userRepository;
-            this.sessionContext = sessionContext;
             this.departmentRepository = departmentRepository;
-            
+            CurrentUser = sessionContext.CurrentUser.Id;
             this.configRepository = configRepository;
         }
         public IActionResult UserList()
         {
-            departmentList = this.departmentRepository.GetAllDepartmentIds();
+            ViewBag.DepartmentList = departmentRepository.GetAllDepartmentIds();
+            departmentList = departmentRepository.GetAllDepartmentIds();
             return View();
         }
         [HttpPost]
@@ -46,7 +46,9 @@ namespace QuotationSystem.Controllers
                     UserName = userModel.Username,
                     Password = defaultPassword,
                     DepartmentId = userModel.Department,
-                    ActiveStatus = userModel.ActiveStatus
+                    ActiveStatus = userModel.ActiveStatus,
+                    CreateBy = CurrentUser,
+                    UpdateBy = CurrentUser
                 };
                 userRepository.AddUser(userToAdd, permissions);
                 return RedirectToAction("UserList");
@@ -79,16 +81,6 @@ namespace QuotationSystem.Controllers
                 DepartmentIds = departmentList
             };
             return PartialView("_EditUserPartial", model);
-            //var model = new UserModalViewModel
-            //{
-            //    UserId = user.UserId,
-            //    Username = user.UserName,
-            //    Department = user.DepartmentId,
-            //    ActiveStatus = user.ActiveStatus,
-            //    MUserPermissions = user.MUserPermissions,
-            //    DepartmentList = departmentList
-            //};
-            //return PartialView("_EditUserPartial", model);
         }
         public PartialViewResult GetDeleteUserModal(string userId)
         {
@@ -101,43 +93,19 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public IActionResult EditUser(UserViewModel userModel, string[] permissions)
         {
+            userModel.User.UpdateBy = CurrentUser;
             userRepository.EditUser(userModel.User, permissions);
             return RedirectToAction("UserList");
-            //if (ModelState.IsValid)
-            //{
-            //    MUser userToEdit = new MUser
-            //    {
-            //        UserId = userModel.UserId,
-            //        UserName = userModel.Username,
-            //        DepartmentId = userModel.Department,
-            //        ActiveStatus = userModel.ActiveStatus,
-            //    };
-            //    userRepository.EditUser(userToEdit, permissions);
-            //    return RedirectToAction("UserList");
-            //}
-            //var user = userRepository.GetUserByUserId(userModel.UserId);
-            //var model = new UserModalViewModel
-            //{
-            //    UserId = user.UserId,
-            //    Username = user.UserName,
-            //    Department = user.DepartmentId,
-            //    ActiveStatus = user.ActiveStatus,
-            //    MUserPermissions = user.MUserPermissions,
-            //    DepartmentList = departmentList
-            //};
-            //return PartialView("_EditUserPartial", model);
         }
         [HttpPost]
         public IActionResult ResetPassword(string userId)
         {
-            //var userFromSession = sessionContext.CurrentUser;
-            userRepository.ResetPassword(userId);
+            userRepository.ResetPassword(userId, CurrentUser);
             return RedirectToAction("UserList","User");
         }
         [HttpDelete]
         public IActionResult DeleteUser(string userId)
         {
-            //var userFromSession = sessionContext.CurrentUser;
             userRepository.DeleteUser(userId);
             return RedirectToAction("UserList", "User");
         }

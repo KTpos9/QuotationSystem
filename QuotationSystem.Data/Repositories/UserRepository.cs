@@ -34,14 +34,6 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public List<MUser> GetUsers()
-        {
-            using (var db = new QuotationContext(option))
-            {
-                return db.MUsers.Include(u => u.MUserPermissions).ToList();
-            }
-        }
-
         public MUser GetUserByUserId(string userId)
         {
             using (var db = new QuotationContext(option))
@@ -51,26 +43,25 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public void ChangePassword(string userId, string password, string currentUser = "Admin")
+        public void ChangePassword(string userId, string password, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
-                //var user = db.MUsers.FirstOrDefault(x => x.UserId == userId);
                 var user = db.MUsers.Find(userId);
 
                 var hashedPassword = PasswordEncryption.Hash(password, "");
                 user.Password = hashedPassword;
                 user.ChangePassword = "Y";
+
+                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
 
-        public void AddUser(MUser user, string[] permissions,  string currentUser = "Admin")
+        public void AddUser(MUser user, string[] permissions)
         {
             using (var db = new QuotationContext(option))
             {
-                db.CurrentUser = currentUser;
-
                 user.MUserPermissions = db.MMenus.Select(m => new MUserPermission
                 {
                     MenuId = m.MenuId
@@ -86,11 +77,13 @@ namespace QuotationSystem.Data.Repositories
                 {
                     user.MUserPermissions.Where(x => x.MenuId == permission).FirstOrDefault().ActiveStatus = "Y";
                 }
+
+                db.CurrentUser = user.CreateBy;
                 db.Add(user);
                 db.SaveChanges();
             }
         }
-        public void EditUser(MUser user, string[] permissions, string currentUser = "Admin")
+        public void EditUser(MUser user, string[] permissions)
         {
             using (var db = new QuotationContext(option))
             {
@@ -113,12 +106,12 @@ namespace QuotationSystem.Data.Repositories
                     };
                 }
 
-                db.CurrentUser = currentUser;
+                db.CurrentUser = user.UpdateBy;
                 db.SaveChanges();
             }
         }
 
-        public void ResetPassword(string userId, string currentUser = "Admin")
+        public void ResetPassword(string userId, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
@@ -126,12 +119,13 @@ namespace QuotationSystem.Data.Repositories
                 var defaultPassword = db.CConfigs.FirstOrDefault(c => c.ConfCode == "C001");
                 user.Password = PasswordEncryption.Hash(defaultPassword.ConfValue, "");
                 user.ChangePassword = "N";
+
                 db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
 
-        public void DeleteUser(string userId, string currentUser = "Admin")
+        public void DeleteUser(string userId)
         {
             using (var db = new QuotationContext(option))
             {

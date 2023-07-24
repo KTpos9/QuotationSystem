@@ -53,7 +53,7 @@ namespace QuotationSystem.Data.Repositories
                     .ToDataTableResult(dtOption);
             }
         }
-        public void EditItem(MItem item, string currentUser = "Admin")
+        public void EditItem(MItem item, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
@@ -63,12 +63,17 @@ namespace QuotationSystem.Data.Repositories
                 itemToUpdate.Unit = item.Unit;
                 itemToUpdate.Remark = item.Remark;
                 itemToUpdate.ItemDesc = item.ItemDesc;
+                itemToUpdate.ActiveStatus = item.ActiveStatus switch
+                {
+                    "false" => "N",
+                    _ => "Y"
+                };
 
                 db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
-        public void DeleteItem(string itemCode, string currentUser = "Admin")
+        public void DeleteItem(string itemCode)
         {
             using (var db = new QuotationContext(option))
             {

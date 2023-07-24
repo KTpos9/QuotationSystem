@@ -11,7 +11,7 @@ namespace QuotationSystem.Data.Repositories
         MItem GetItemById(string itemCode);
         DataTableResultModel<MItem> GetItemList(DataTableOptionModel dtOption, string itemCode = "", string itemName = "");
         void EditItem(MItem item, string currentUser = "Admin");
-        void DeleteItem(string itemCode, string currentUser = "Admin");
+        void DeleteItem(string itemCode);
         Task AddItemByExcel(List<MItem> items, string currentUser = "Admin");
     }
 }

@@ -66,7 +66,7 @@ namespace QuotationSystem.Controllers
 
             if (result.IsValid)
             {
-                userRepository.ChangePassword(model.UserId, model.NewPassword);
+                userRepository.ChangePassword(model.UserId, model.NewPassword, sessionContext.CurrentUser.Id);
             }
 
             var errorMessages = string.Join("<br/>", result.Errors.Select(x => x.ErrorMessage));
