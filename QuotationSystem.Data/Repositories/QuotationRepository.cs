@@ -42,22 +42,20 @@ namespace QuotationSystem.Data.Repositories
             {
                 return db.TQuotationHeaders
                     .Include(q => q.TQuotationDetails)
+                        .ThenInclude(qd => qd.ItemCodeNavigation) // Include MItem data for each TQuotationDetail
                     .FirstOrDefault(q => q.QuotationNo == quotationNo);
-                //return db.TQuotationDetails
-                //    .Include(q => q.ItemCodeNavigation)
-                //    .Include(q => q.QuotationNoNavigation)
-                //    .ToList();
             }
         }
         public void AddQuotation(TQuotationHeader quotation)
         {
             using (var db = new QuotationContext(option))
             {
+                db.CurrentUser = quotation.CreateBy;
                 db.Add(quotation);
                 db.SaveChanges();
             }
         }
-        public void EditQuotation(TQuotationDetail quotation)
+        public void EditQuotation(TQuotationHeader quotation)
         {
 
         }
