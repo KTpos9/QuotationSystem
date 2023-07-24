@@ -18,7 +18,7 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                var config = db.CConfigs.FirstOrDefault(c => c.ConfCode == "C001");
+                var config = db.CConfigs.Find("C001");
                 return config.ConfValue;
             }
         }
@@ -26,7 +26,7 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                return db.CConfigs.FirstOrDefault(c => c.ConfCode == id).ConfValue;
+                return db.CConfigs.Find(id).ConfValue;
             }
         }
     }
