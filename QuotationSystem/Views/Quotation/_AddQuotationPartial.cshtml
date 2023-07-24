@@ -84,19 +84,21 @@
                                     <th scope="col">Unit Price</th>
                                     <th scope="col">Discount</th>
                                     <th scope="col">Total</th>
+                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="item-row">
                                     <td>1</td>
                                     <td><input class="form-control" type="text" name="textItemCode" /></td>
-                                    <td><input class="form-control" type="text" name="textItemName" /></td>
-                                    <td><input class="form-control" type="text" name="textDescription" /></td>
+                                    <td><input class="form-control" type="text" name="textItemName" readonly/></td>
+                                    <td><input class="form-control" type="text" name="textDescription" readonly/></td>
                                     <td><input class="form-control" type="number" name="textQty" min="0" /></td>
-                                    <td><input class="form-control" type="text" name="textUnit" /></td>
-                                    <td><input class="form-control" type="number" name="textUnitPrice" /></td>
+                                    <td><input class="form-control" type="text" name="textUnit" readonly/></td>
+                                    <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
                                     <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
-                                    <td><input class="form-control" type="number" name="textTotal" min="0" /></td>
+                                    <td><input class="form-control" type="number" name="textTotal" min="0" readonly/></td>
+                                    <td></td>
                                 </tr>
                                 <tr><td class="text-center" rowspan="9"><button type="button" class="btn btn-primary" id="btnAddRow">add row</button></td></tr>
                             </tbody>

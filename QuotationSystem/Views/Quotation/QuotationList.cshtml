@@ -82,8 +82,6 @@
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
-            //$('#saveQuotationBtn').on('click', submitQuotationForm);
-            //console.log($("#item-table").find(".item-row"));
 
             $("#quotationForm").validate({
                 rules: {
@@ -92,13 +90,9 @@
                     textCusContact: { required: true, minlength: 1, maxlength: 150 },
                     textTaxId: { required: true, minlength: 1, maxlength: 150 },
                     textSellerName: { required: true, minlength: 1, maxlength: 30 },
-                    textItemCode: { required: true, minlength: 1, maxlength: 30 },
-                    textItemName: { required: true, minlength: 1, maxlength: 30 },
+                    textItemCode: { required: true, minlength: 9, maxlength: 9 },
                     textQty: { required: true, minlength: 1, maxlength: 30 },
-                    textUnit: { required: true, minlength: 1, maxlength: 30 },
-                    textUnitPrice: { required: true, minlength: 1, maxlength: 30 },
                     textDiscount: { required: true, minlength: 1, maxlength: 30 },
-                    textTotal: { required: true, minlength: 1, maxlength: 30 },
                     textCusAddress: { required: true, minlength: 1, maxlength: 30 },
                 },
                 messages: {
@@ -252,18 +246,57 @@
                         <tr class="item-row">
                             <td>${lineNo}</td>
                             <td><input class="form-control" type="text" name="textItemCode" /></td>
-                            <td><input class="form-control" type="text" name="textItemName" /></td>
-                            <td><input class="form-control" type="text" name="textDescription" /></td>
-                            <td><input class="form-control" type="number" name="textQty" /></td>
-                            <td><input class="form-control" type="text" name="textUnit" /></td>
-                            <td><input class="form-control" type="text" name="textUnitPrice" /></td>
-                            <td><input class="form-control" type="number" name="textDiscount" /></td>
-                            <td><input class="form-control" type="text" name="textTotal" /></td>
+                            <td><input class="form-control" type="text" name="textItemName" readonly/></td>
+                            <td><input class="form-control" type="text" name="textDescription" readonly/></td>
+                            <td><input class="form-control" type="number" name="textQty" min="0" /></td>
+                            <td><input class="form-control" type="text" name="textUnit" readonly/></td>
+                            <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
+                            <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
+                            <td><input class="form-control" type="number" name="textTotal" min="0" readonly/></td>
+                            <td><button type="button" class="deleteBtn btn btn-outline-danger"><i class="fa fa-xmark"></i></button></td>
                         </tr>`;
                 console.log("button clicked");
                 tableBody = $("#item-table tr:nth-last-child(2)");
                 tableBody.after(markup);
                 lineNo++;
+            });
+
+            $("#item-table").on('click', '.deleteBtn', (event) => {
+                console.log('delete button clicked');
+                $(event.target).closest("tr").remove();
+            });
+
+            function fetchItemDetails(itemCode, row) {
+                $.ajax({
+                    url: '@Url.Action("GetItemDetailById")',
+                    method: 'POST',
+                    data: { itemCode: itemCode },
+                    success: function (data) {
+                        console.log(data);
+                        row.find('input[name="textItemName"]').val(data.itemName);
+                        row.find('input[name="textDescription"]').val(data.itemDesc);
+                        row.find('input[name="textUnit"]').val(data.unitId);
+                        const formattedUnitPrice = data.unitPrice.toLocaleString();
+                        row.find('input[name="textUnitPrice"]').val(formattedUnitPrice);
+                    },
+                    error: function (error) {
+                        // Handle error if the API call fails
+                        console.error('Error fetching item details:', error);
+                    }
+                });
+            }
+            let timer;
+            $("#item-table").on('change', 'input[name="textItemCode"]', function () {
+                const itemCode = $(this).val();
+                const row = $(this).closest("tr");
+
+                // Clear the previous timer (if any) before setting a new one
+                clearTimeout(timer);
+
+                // Set a new timer to introduce a delay of 500ms before fetching the input value
+                timer = setTimeout(() => {
+                    fetchItemDetails(itemCode, row);
+                }, 500);
             });
         });
     </script>
