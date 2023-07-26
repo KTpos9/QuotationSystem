@@ -68,8 +68,9 @@ namespace QuotationSystem.Data.Repositories
                     "false" => "N",
                     _ => "Y"
                 };
+                item.UpdateDate = DateTime.UtcNow;
+                item.UpdateBy = currentUser;
 
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
@@ -87,14 +88,13 @@ namespace QuotationSystem.Data.Repositories
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public async Task AddItemByExcel(List<MItem> items, string currentUser = "Admin")
+        public async Task AddItemByExcel(List<MItem> items)
         {
             using (var db = new QuotationContext(option))
             {
                 //await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
                 //await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
                 db.UpdateRange(items);
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }

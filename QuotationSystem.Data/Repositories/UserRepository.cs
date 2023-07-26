@@ -8,6 +8,7 @@ using Zero.Core.Mvc.Models.DataTables;
 using Zero.Core.Mvc.Models.Select2;
 using Zero.Extension;
 using Zero.Security;
+using System;
 
 namespace QuotationSystem.Data.Repositories
 {
@@ -64,7 +65,9 @@ namespace QuotationSystem.Data.Repositories
             {
                 user.MUserPermissions = db.MMenus.Select(m => new MUserPermission
                 {
-                    MenuId = m.MenuId
+                    MenuId = m.MenuId,
+                    CreateBy = user.CreateBy,
+                    UpdateBy = user.UpdateBy
                 }).ToList();
 
                 user.ActiveStatus = user.ActiveStatus switch
@@ -90,6 +93,7 @@ namespace QuotationSystem.Data.Repositories
                 var userToUpdate = db.MUsers.Include(u => u.MUserPermissions).FirstOrDefault(x => x.UserId == user.UserId);
                 userToUpdate.UserName = user.UserName;
                 userToUpdate.DepartmentId = user.DepartmentId;
+                userToUpdate.UpdateDate = DateTime.UtcNow;
 
                 userToUpdate.ActiveStatus = user.ActiveStatus switch
                 {
@@ -106,7 +110,6 @@ namespace QuotationSystem.Data.Repositories
                     };
                 }
 
-                db.CurrentUser = user.UpdateBy;
                 db.SaveChanges();
             }
         }
@@ -119,6 +122,8 @@ namespace QuotationSystem.Data.Repositories
                 var defaultPassword = db.CConfigs.FirstOrDefault(c => c.ConfCode == "C001");
                 user.Password = PasswordEncryption.Hash(defaultPassword.ConfValue, "");
                 user.ChangePassword = "N";
+                user.UpdateBy = currentUser;
+                user.UpdateDate = DateTime.UtcNow;
 
                 db.CurrentUser = currentUser;
                 db.SaveChanges();
