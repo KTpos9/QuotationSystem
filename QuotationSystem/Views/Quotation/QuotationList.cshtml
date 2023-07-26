@@ -51,7 +51,7 @@
                 { title: "Total", data: "total", className: "text-center" },
                 { title: "Grand Total", data: "grandTotal", className: "text-center" },
                 { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
-                { title: "Action", data: "itemCode", className: "text-center", render: renderActionButtons }
+                { title: "Action", data: "quotationNo", className: "text-center", render: renderActionButtons }
             ];
             table = $('#quotation-table').DataTable({
                 "processing": true,
@@ -113,11 +113,13 @@
             if (row.activeStatus === 'Y') {
                 return `<div class="d-flex justify-content-center" style="gap:.5rem">
                             <button class="btn btn-primary" onclick="editQuotation('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                         </div>`;
             }
             return `<div class="d-flex justify-content-center" style="gap:.5rem">
                         <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
                         <button class="btn btn-danger" onclick="getDeleteQuotationModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
@@ -158,6 +160,10 @@
                     $('#user-table').DataTable().ajax.reload();
                 }
             });
+        }
+
+        function previewQuotation(id) {
+            location.href = `/Quotation/PreviewQuotation?quotationNo=${id}`;
         }
 
         function handlerDataTableError(xhr, error, code) {
@@ -222,7 +228,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
-                             location.href = '@Url.Action("QuotationList")';
+                             location.href = `/Quotation/PreviewQuotation?quotationNo=${id}`;
                          });
                      }
                      else {
