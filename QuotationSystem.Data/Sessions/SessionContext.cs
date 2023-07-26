@@ -8,7 +8,7 @@ using QuotationSystem.ApplicationCore.Models.Users;
 
 namespace QuotationSystem.Data.Sessions
 {
-    public class SessionContext : ISessionContext
+    public class SessionContext : ISessionContext, IRolePolicyContext
     {
         private readonly ISession session;
 
@@ -24,6 +24,8 @@ namespace QuotationSystem.Data.Sessions
         }
 
         public bool IsLoggedIn => CurrentUser != null;
+
+        public List<int> Roles => CurrentUser?.RoleIds;
 
         public void Logout()
         {

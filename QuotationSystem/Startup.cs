@@ -13,6 +13,11 @@ using Zero.Core.Mvc.Startup;
 using FluentValidation.AspNetCore;
 using QuotationSystem.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Zero.Core.Mvc.Authorizations.Requirements;
+using QuotationSystem.ApplicationCore.Constants;
+using Zero.Core.Mvc.Authorizations;
+using Zero.Core.Mvc.Authorizations.Contexts;
 
 namespace QuotationSystem
 {
@@ -28,6 +33,9 @@ namespace QuotationSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            services.ConfigureSession($"{nameof(QuotationSystem)}.Session", 60000);
+
             services.AddControllersWithViews(option => {
                 option.ModelBinderProviders.Insert(0, new DefaultBinderProvider());
             })   
@@ -35,14 +43,31 @@ namespace QuotationSystem
                  .AddSessionStateTempDataProvider()
                  .AddFluentValidation(configuration => { configuration.RegisterValidatorsFromAssemblyContaining<Startup>(); })
                  .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-            services.ConfigureSession($"{nameof(WebApp)}.Session", 60000);
+            
+            services.ConfigureAntiforgery(nameof(QuotationSystem));
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 options.LoginPath = "/Account/Login/";
             });
 
+            services.AddAuthorization(option =>
+            {
+                option.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .AddRequirements(new LoginRequirement(Policy.Login))
+                    .Build();
+
+                option.AddPolicy(Policy.UserManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.UserManagement)));
+                option.AddPolicy(Policy.ItemManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.ItemManagement)));
+                option.AddPolicy(Policy.QuotationManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.QuotationManagement)));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, LoginPolicyHandler>();
+            services.AddSingleton<IAuthorizationHandler, RolePolicyHandler>();
+            services.AddTransient<ILoginPolicyContext, SessionContext>();
+            services.AddTransient<IRolePolicyContext, SessionContext>();
+
+            services.AddHttpContextAccessor();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IConfigurationContext, ConfigurationContext>();
             services.AddTransient<ISessionContext, SessionContext>();
