@@ -9,13 +9,18 @@ using Zero.Core.Mvc.Extensions;
 using QuotationSystem.Data.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using QuotationSystem.ApplicationCore.Constants;
 
 namespace QuotationSystem.Controllers
 {
+    //[Authorize(Policy = Policy.UserManagement)]
+    [AllowAnonymous]
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
         private readonly IConfigRepository configRepository;
+        private readonly ISessionContext sessionContext;
         private readonly IDepartmentRepository departmentRepository;
         private static List<SelectListItem> departmentList;
         private static string CurrentUser;
@@ -24,11 +29,13 @@ namespace QuotationSystem.Controllers
         {
             this.userRepository = userRepository;
             this.departmentRepository = departmentRepository;
+            this.sessionContext = sessionContext;
             CurrentUser = sessionContext.CurrentUser.Id;
             this.configRepository = configRepository;
         }
         public IActionResult UserList()
         {
+            //var model = sessionContext.GetCriteria(nameof(UserController), () => new UserViewModel { });
             ViewBag.DepartmentList = departmentRepository.GetAllDepartmentIds();
             departmentList = departmentRepository.GetAllDepartmentIds();
             return View();

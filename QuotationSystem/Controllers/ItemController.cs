@@ -17,9 +17,13 @@ using QuotationSystem.Data.Helpers;
 using QuotationSystem.Helpers;
 using System.Data.SqlClient;
 using QuotationSystem.Data.Sessions;
+using QuotationSystem.ApplicationCore.Constants;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuotationSystem.Controllers
 {
+    //[Authorize(Policy = Policy.ItemManagement)]
+    [AllowAnonymous]
     public class ItemController : Controller
     {
         private readonly IItemRepository itemRepository;
@@ -76,7 +80,7 @@ namespace QuotationSystem.Controllers
                 using (ExcelPackage package = new ExcelPackage(memoryStream))
                 {
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.First();
-                    var excelHelper = new ExcelItemValidation(worksheet, new StringBuilder());
+                    var excelHelper = new ExcelItemValidation(worksheet, new StringBuilder(), CurrentUser);
                     var result = excelHelper.ExcelToItemList();
 
                     if (!excelHelper.IsValidFormat)

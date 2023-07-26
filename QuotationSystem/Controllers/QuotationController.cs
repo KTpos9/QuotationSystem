@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using QuotationSystem.ApplicationCore.Constants;
 using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Repositories;
 using QuotationSystem.Data.Sessions;
@@ -12,6 +14,8 @@ using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
+    //[Authorize(Policy = Policy.UserManagement)]
+    [AllowAnonymous]
     public class QuotationController : Controller
     {
         private readonly IQuotationRepository quotationRepository;
@@ -41,7 +45,14 @@ namespace QuotationSystem.Controllers
         }
         public IActionResult PreviewQuotation(string quotationNo)
         {
-            var model = quotationRepository.GetQuotationById(quotationNo);
+            var model = new PreviewQuotationViewModel
+            {
+                Quotation = quotationRepository.GetQuotationById(quotationNo),
+                CompanyAddress = configRepository.GetConfigById("C004"),
+                CompanyContact = configRepository.GetConfigById("C005"),
+                CompanyLogo = configRepository.GetConfigById("C008"),
+                CompanyTaxId = configRepository.GetConfigById("C006")
+            };
 
             return View(model);
         }
@@ -62,6 +73,7 @@ namespace QuotationSystem.Controllers
                     Seller = model.SalesName,
                     Vat = model.Vat,
                     CreateBy = CurrentUser,
+                    UpdateBy = CurrentUser,
                     ActiveStatus = model.ActiveStatus switch
                     {
                         "on" => "Y",
@@ -74,6 +86,8 @@ namespace QuotationSystem.Controllers
                         ItemCode = item.itemCode,
                         ItemQty = item.Qty,
                         DiscountPercent = item.discount / 100,
+                        CreateBy = CurrentUser,
+                        UpdateBy = CurrentUser
                     }).ToList()
                 };
                 quotationRepository.AddQuotation(quotationHeader);
@@ -133,7 +147,6 @@ namespace QuotationSystem.Controllers
         }
         public IActionResult DeleteItem(string quotationNo)
         {
-            //var userFromSession = sessionContext.CurrentUser;
             try
             {
                 quotationRepository.DeleteQuotation(quotationNo);

@@ -7,6 +7,8 @@ using QuotationSystem.Models.Account;
 using System.Linq;
 using QuotationSystem.Validators.Account;
 using QuotationSystem.Data.Repositories;
+using System.Collections.Generic;
+using QuotationSystem.ApplicationCore.Constants;
 
 namespace QuotationSystem.Controllers
 {
@@ -26,9 +28,20 @@ namespace QuotationSystem.Controllers
             this.configuration = configuration;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
-            return View();
+            var user = sessionContext.CurrentUser;
+
+            if (user != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var model = new LoginViewModel
+            {
+                ReturnUrl = returnUrl,
+            };
+            return View(model);
         }
         public IActionResult ChangePassword()
         {
@@ -42,7 +55,16 @@ namespace QuotationSystem.Controllers
                 var user = userRepository.GetUserByUserId(model.UserId);
                 sessionContext.CurrentUser = new UserSessionModel
                 {
-                    Id = user.UserId
+                    Id = user.UserId,
+                    RoleIds = user.MUserPermissions
+                                 .Where(permission => permission.ActiveStatus == "Y")
+                                 .Select(permission => permission.MenuId switch
+                                 {
+                                     "USS010" => (int)RoleId.UserManagement,
+                                     "ITS010" => (int)RoleId.ItemManagement,
+                                     "QTS020" => (int)RoleId.QuotationManagement,
+                                     _ => throw new System.NotImplementedException()
+                                 }).ToList()
                 };
 
                 if (Url.IsLocalUrl(model.ReturnUrl))

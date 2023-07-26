@@ -30,32 +30,32 @@ namespace QuotationSystem.Data
 
         public string CurrentUser { get; set; }
 
-        public override int SaveChanges()
-        {
-            DateTime now = DateTime.UtcNow;
-            foreach (var changedEntity in ChangeTracker.Entries())
-            {
-                if (changedEntity.Entity is IUpdateable entity)
-                {
-                    switch (changedEntity.State)
-                    {
-                        case EntityState.Added:
-                            entity.CreateDate = now;
-                            entity.UpdateDate = now;
-                            entity.CreateBy = CurrentUser;
-                            entity.UpdateBy = CurrentUser;
-                            break;
-                        case EntityState.Modified:
-                            Entry(entity).Property(x => x.CreateBy).IsModified = false;
-                            Entry(entity).Property(x => x.CreateDate).IsModified = false;
-                            entity.UpdateDate = now;
-                            entity.UpdateBy = CurrentUser;
-                            break;
-                    }
-                }
-            }
-            return base.SaveChanges();
-        }
+        //public override int SaveChanges()
+        //{
+        //    DateTime now = DateTime.UtcNow;
+        //    foreach (var changedEntity in ChangeTracker.Entries())
+        //    {
+        //        if (changedEntity.Entity is IUpdateable entity)
+        //        {
+        //            switch (changedEntity.State)
+        //            {
+        //                case EntityState.Added:
+        //                    entity.CreateDate = now;
+        //                    entity.UpdateDate = now;
+        //                    entity.CreateBy = CurrentUser;
+        //                    entity.UpdateBy = CurrentUser;
+        //                    break;
+        //                case EntityState.Modified:
+        //                    Entry(entity).Property(x => x.CreateBy).IsModified = false;
+        //                    Entry(entity).Property(x => x.CreateDate).IsModified = false;
+        //                    entity.UpdateDate = now;
+        //                    entity.UpdateBy = CurrentUser;
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    return base.SaveChanges();
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,7 +90,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UpdateBy)
                     .HasMaxLength(30)
@@ -98,7 +99,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<MDepartment>(entity =>
@@ -176,7 +178,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ItemDesc)
                     .HasMaxLength(30)
@@ -204,7 +207,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Unit)
                     .WithMany(p => p.MItems)
@@ -238,7 +242,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.MenuName)
                     .HasMaxLength(150)
@@ -258,7 +263,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<MUnit>(entity =>
@@ -285,7 +291,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(150)
@@ -306,7 +313,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<MUser>(entity =>
@@ -342,7 +350,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DepartmentId)
                     .HasMaxLength(30)
@@ -360,7 +369,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.UserName)
                     .HasMaxLength(100)
@@ -401,7 +411,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Remark)
                     .HasMaxLength(150)
@@ -413,7 +424,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Menu)
                     .WithMany(p => p.MUserPermissions)
@@ -457,7 +469,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DiscountPercent).HasColumnName("discount_percent");
 
@@ -473,7 +486,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.ItemCodeNavigation)
                     .WithMany(p => p.TQuotationDetails)
@@ -511,7 +525,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.CreateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("create_date");
+                    .HasColumnName("create_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CustomerAddress)
                     .IsRequired()
@@ -554,7 +569,8 @@ namespace QuotationSystem.Data
 
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("update_date");
+                    .HasColumnName("update_date")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Vat).HasColumnName("vat");
             });
