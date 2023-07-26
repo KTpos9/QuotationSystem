@@ -10,14 +10,16 @@ namespace QuotationSystem.Helpers
     public class ExcelItemValidation
     {
         private ExcelWorksheet _worksheet;
+        private string currentUser;
 
         public StringBuilder ErrorLog { get; private set; }
         public bool IsValidFormat { get; private set; }
 
-        public ExcelItemValidation(ExcelWorksheet worksheet, StringBuilder errorLog)
+        public ExcelItemValidation(ExcelWorksheet worksheet, StringBuilder errorLog, string currentUser)
         {
             _worksheet = worksheet;
             ErrorLog = errorLog;
+            this.currentUser = currentUser;
         }
         public IEnumerable<MItem> ExcelToItemList()
         {
@@ -36,6 +38,8 @@ namespace QuotationSystem.Helpers
                         UnitId = (string)_worksheet.Cells[row, 5].Value,
                         Remark = _worksheet.Cells[row, 6].Value is null ? "" : (string)_worksheet.Cells[row, 6].Value,
                         ActiveStatus = (string)_worksheet.Cells[row, 7].Value,
+                        CreateBy = currentUser,
+                        UpdateBy = currentUser
                     };
 
                     list.Add(item);
