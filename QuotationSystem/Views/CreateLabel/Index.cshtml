@@ -1,0 +1,149 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<h1>Create Label</h1>
+
+<div class="">
+    <div class="ibox-content">
+        <div id="country-form">
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4 text-right">
+                    <h4>Item Code</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                    <input id="item-code-input" type="text" class="form-control" placeholder="">
+                </div>
+            </div>
+
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4 text-right">
+                    <h4>Item Name</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                    <input id="item-name-input" type="text" class="form-control" placeholder="" readonly>
+                </div>
+            </div>
+
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4 text-right">
+                    <h4>Lot No</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                    <input id="lot-no-input" type="text" class="form-control" placeholder="">
+                </div>
+            </div>
+
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4 text-right">
+                    <h4>Qty</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                    <input id="qty-input" type="text" class="form-control" placeholder="">
+                </div>
+                <span>
+                    pcs.
+                </span>
+            </div>
+
+            <div class="row mt-4 align-items-center">
+                <div class="col-md-4 text-right">
+                    <h4>Label Qty</h4>
+                </div>
+                <div class="col-md-4 text-center">
+                    <input id="label-qty-input" type="text" class="form-control" placeholder="">
+                </div>
+            </div>
+            <div class="pt-4"></div>
+            <div class="center d-flex justify-content-center">
+                <div class="mr-2">
+                    <button id="cancelBtn" type="submit" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+
+                <div>
+                    <button id="generateBtn" type="submit" class="btn btn-primary">
+                        Generate
+                    </button>
+                </div>
+            </div>
+            <div class="pt-2"></div>
+        </div>
+    </div>
+    <br />
+
+</div>
+
+
+@section Scripts{
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Event listener for item code input
+            $("#item-code-input").on("input", function () {
+                var itemCode = $(this).val(); // Get the entered item code
+
+                // Make an AJAX request to fetch the item name based on the item code
+                $.ajax({
+                    url: '@Url.Action("GetItemDetailById", "Quotation")',  // Replace with your server route to fetch item name
+                    type: "POST",
+                    data: { itemCode: itemCode },
+                    success: function (response) {
+                        // Update the item name input field with the fetched item name
+                        $("#item-name-input").val(response.itemName);
+                    },
+                    error: function () {
+                        // Handle errors if necessary
+                        console.log("Error fetching item name");
+                    },
+                });
+            });
+
+            // Event listener for Generate HTML button
+            $("#generateBtn").on("click", function () {
+                var labelID = "12";
+                var itemCode = $("#item-code-input").val();
+                var itemName = $("#item-name-input").val();
+                var lotNo = $("#lot-no-input").val();
+                var qty = $("#qty-input").val();
+
+                var username = "John Doe"; // Replace this with the actual username
+                var createDate = new Date().toLocaleDateString(); // Get the current date
+
+                // Create the QR code data string
+                var qrcodeData = labelID + "," + itemCode + "," + lotNo + "," + qty;
+
+                // Generate the QR code
+                var qrcode = new QRCode(document.getElementById("qrcode"), {
+                    text: qrcodeData,
+                    width: 128,
+                    height: 128,
+                });
+
+                // Generate the HTML for the label tag
+                var labelHtml = `<h2>Label ID: ${labelID}</h2>
+                                     <p>Item Code: ${itemCode}</p>
+                                     <p>Item Name: ${itemName}</p>
+                                     <p>Lot No: ${lotNo}</p>
+                                     <p>Qty: ${qty}</p>
+                                     <p>Create By: ${username}</p>
+                                     <p>Create Date: ${createDate}</p>
+                                     <div id="qrcode"></div>`;
+
+                // Display the generated HTML in a new window for printing
+                var printWindow = window.open("", "_blank");
+                printWindow.document.write(labelHtml);
+                printWindow.document.close();
+            });
+        });
+
+    </script>
+
+ }
