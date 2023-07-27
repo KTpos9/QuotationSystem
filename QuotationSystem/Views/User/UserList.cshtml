@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model QuotationSystem.Models.User.UserViewModel
+﻿@model QuotationSystem.Models.User.UserViewModel
 @{
     ViewData["Title"] = "User List";
 }
@@ -37,7 +34,7 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa-solid fa-plus"></i>Add New</button>
         </div>
         <!--Modal-->
-        <partial name="_AddUserPartial"/>
+        <partial name="_AddUserPartial" model="Model.UserModal"/>
         @*<vc:add-user-modal></vc:add-user-modal>*@
 
         <!--table-->

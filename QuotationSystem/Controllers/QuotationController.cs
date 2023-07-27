@@ -22,13 +22,13 @@ namespace QuotationSystem.Controllers
         private readonly IConfigRepository configRepository;
         private readonly IItemRepository itemRepository;
 
-        private static string CurrentUser;
-        public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository, IItemRepository itemRepository, ISessionContext sessionContext)
+        private string CurrentUser;
+        public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository, ISessionContext sessionContext, IItemRepository itemRepository)
         {
             this.quotationRepository = quotationRepository;
             this.configRepository = configRepository;
-            this.itemRepository = itemRepository;
             CurrentUser = sessionContext.CurrentUser.Id;
+            this.itemRepository = itemRepository;
         }
         public IActionResult QuotationList()
         {
@@ -40,7 +40,6 @@ namespace QuotationSystem.Controllers
                 Date = DateTime.Today,
                 Vat = double.Parse(vat)
             };
-            var test = quotationRepository.GetQuotationById("QT230700011");
             return View(model);
         }
         public IActionResult PreviewQuotation(string quotationNo)
@@ -61,7 +60,6 @@ namespace QuotationSystem.Controllers
         {
             try
             {
-                double sumOfItem = itemList.Sum(item => double.Parse(item.unitPrice) - (double.Parse(item.unitPrice) * item.discount));
                 var quotationHeader = new TQuotationHeader
                 {
                     QuotationNo = model.QuotationNo,
@@ -78,14 +76,15 @@ namespace QuotationSystem.Controllers
                     {
                         "on" => "Y",
                         _ => "N"
-                    },
-                    Total = sumOfItem,
-                    GrandTotal = sumOfItem + (sumOfItem * model.Vat),
+                    }
+                    ,
+                    Total = itemList.Sum(item => double.Parse(item.unitPrice)),
                     TQuotationDetails = itemList.Select(item => new TQuotationDetail
                     {
                         ItemCode = item.itemCode,
                         ItemQty = item.Qty,
                         DiscountPercent = item.discount / 100,
+                        Remark = item.itemDesc,
                         CreateBy = CurrentUser,
                         UpdateBy = CurrentUser
                     }).ToList()
@@ -95,7 +94,7 @@ namespace QuotationSystem.Controllers
             }
             catch (SqlException)
             {
-                return StatusCode(500, new { isSuccess = false });
+                return StatusCode(500);
             }
         }
         public JsonResult Search(string quotationNo, string customer, DataTableOptionModel option)
@@ -104,7 +103,7 @@ namespace QuotationSystem.Controllers
             var response = result.ToJsonResult(option);
             return response;
         }
-        public PartialViewResult GetEditQuotationModal(string itemCode, string currentUser)
+        public PartialViewResult GetEditQuotationModal(string itemCode)
         {
             var quotation = quotationRepository.GetQuotationById(itemCode);
             var model = new QuotationViewModel

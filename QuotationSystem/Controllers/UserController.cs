@@ -35,10 +35,10 @@ namespace QuotationSystem.Controllers
         }
         public IActionResult UserList()
         {
-            //var model = sessionContext.GetCriteria(nameof(UserController), () => new UserViewModel { });
+            UserViewModel model = sessionContext.GetCriteria(nameof(UserController), () => new UserViewModel { });
             ViewBag.DepartmentList = departmentRepository.GetAllDepartmentIds();
             departmentList = departmentRepository.GetAllDepartmentIds();
-            return View();
+            return View(model);
         }
         [HttpPost]
         public IActionResult AddUser(UserModalViewModel userModel, string[] permissions)

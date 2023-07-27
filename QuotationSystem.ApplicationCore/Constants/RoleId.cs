@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace QuotationSystem.ApplicationCore.Constants
 {
-    public enum RoleId
+    public class RoleId
     {
-        UserManagement,
-        ItemManagement,
-        QuotationManagement
+        public const int UserManagement = 0;
+        public const int ItemManagement = 1;
+        public const int QuotationManagement = 2;
     }
 }
