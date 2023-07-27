@@ -16,6 +16,6 @@ namespace QuotationSystem.Models.Quotation
         public string SalesName { get; set; }
         public double Vat { get; set; }
         public string ActiveStatus { get; set; }
-        //public List<MItem> ItemList { get; set; }
+        public List<MItem> ItemList { get; set; }
     }
 }
