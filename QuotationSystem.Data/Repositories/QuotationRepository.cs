@@ -50,7 +50,6 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                db.CurrentUser = quotation.CreateBy;
                 db.Add(quotation);
                 db.SaveChanges();
             }
