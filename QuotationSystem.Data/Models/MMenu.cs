@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MMenu : IUpdateable
+    public partial class MMenu
     {
         public MMenu()
         {
