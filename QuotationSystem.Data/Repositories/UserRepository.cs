@@ -54,7 +54,6 @@ namespace QuotationSystem.Data.Repositories
                 user.Password = hashedPassword;
                 user.ChangePassword = "Y";
 
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
@@ -81,7 +80,6 @@ namespace QuotationSystem.Data.Repositories
                     user.MUserPermissions.Where(x => x.MenuId == permission).FirstOrDefault().ActiveStatus = "Y";
                 }
 
-                db.CurrentUser = user.CreateBy;
                 db.Add(user);
                 db.SaveChanges();
             }
@@ -125,7 +123,6 @@ namespace QuotationSystem.Data.Repositories
                 user.UpdateBy = currentUser;
                 user.UpdateDate = DateTime.UtcNow;
 
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
