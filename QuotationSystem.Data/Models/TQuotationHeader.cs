@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class TQuotationHeader : IUpdateable
+    public partial class TQuotationHeader
     {
         public TQuotationHeader()
         {

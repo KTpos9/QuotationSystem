@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MDepartment : IUpdateable
+    public partial class MDepartment
     {
         public MDepartment()
         {
