@@ -1,4 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuotationSystem.Data.Models;
+using QuotationSystem.Data.Repositories;
+using QuotationSystem.Models.CreateLabel;
+using QuotationSystem.Models.User;
+using Zero.Security;
 
 namespace QuotationSystem.Controllers
 {
@@ -8,5 +13,13 @@ namespace QuotationSystem.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult GenerateLabel(CreateLabelModel model)
+        {
+
+            return View(model);
+        }
+
+
     }
 }
