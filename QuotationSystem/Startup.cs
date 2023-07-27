@@ -18,6 +18,9 @@ using Zero.Core.Mvc.Authorizations.Requirements;
 using QuotationSystem.ApplicationCore.Constants;
 using Zero.Core.Mvc.Authorizations;
 using Zero.Core.Mvc.Authorizations.Contexts;
+using Zero.Core.Mvc.View;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Zero.Core.Mvc.ViewLocators;
 
 namespace QuotationSystem
 {
@@ -43,8 +46,15 @@ namespace QuotationSystem
                  .AddSessionStateTempDataProvider()
                  .AddFluentValidation(configuration => { configuration.RegisterValidatorsFromAssemblyContaining<Startup>(); })
                  .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            
+
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
+                options.ViewLocationExpanders.Add(new NamespaceViewLocationExpander());
+            });
+
             services.ConfigureAntiforgery(nameof(QuotationSystem));
+            services.ConfigureFormOptions();
+            services.ConfigureResponseCompression();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
@@ -57,9 +67,9 @@ namespace QuotationSystem
                     .AddRequirements(new LoginRequirement(Policy.Login))
                     .Build();
 
-                option.AddPolicy(Policy.UserManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.UserManagement)));
-                option.AddPolicy(Policy.ItemManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.ItemManagement)));
-                option.AddPolicy(Policy.QuotationManagement, policy => policy.Requirements.Add(new RoleRequirement((int)RoleId.QuotationManagement)));
+                option.AddPolicy(Policy.UserManagement, policy => policy.Requirements.Add(new RoleRequirement(RoleId.UserManagement)));
+                option.AddPolicy(Policy.ItemManagement, policy => policy.Requirements.Add(new RoleRequirement(RoleId.ItemManagement)));
+                option.AddPolicy(Policy.QuotationManagement, policy => policy.Requirements.Add(new RoleRequirement(RoleId.QuotationManagement)));
             });
 
             services.AddSingleton<IAuthorizationHandler, LoginPolicyHandler>();
@@ -71,6 +81,8 @@ namespace QuotationSystem
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IConfigurationContext, ConfigurationContext>();
             services.AddTransient<ISessionContext, SessionContext>();
+            services.AddScoped<IViewRenderService, ViewRenderService>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IQuotationRepository, QuotationRepository>();
@@ -95,13 +107,13 @@ namespace QuotationSystem
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseSession();
+
+            app.UseStaticFilesWithCache();
 
             app.UseRouting();
 
             app.UseAuthorization();
-            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
