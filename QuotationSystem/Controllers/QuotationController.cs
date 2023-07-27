@@ -14,19 +14,21 @@ using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
-    //[Authorize(Policy = Policy.UserManagement)]
-    [AllowAnonymous]
+    [Authorize(Policy = Policy.QuotationManagement)]
+    //[AllowAnonymous]
     public class QuotationController : Controller
     {
         private readonly IQuotationRepository quotationRepository;
         private readonly IConfigRepository configRepository;
         private readonly IItemRepository itemRepository;
+        private readonly ISessionContext sessionContext;
 
         private string CurrentUser;
         public QuotationController(IQuotationRepository quotationRepository, IConfigRepository configRepository, ISessionContext sessionContext, IItemRepository itemRepository)
         {
             this.quotationRepository = quotationRepository;
             this.configRepository = configRepository;
+            this.sessionContext = sessionContext;
             CurrentUser = sessionContext.CurrentUser.Id;
             this.itemRepository = itemRepository;
         }
