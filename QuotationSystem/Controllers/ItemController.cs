@@ -22,23 +22,26 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace QuotationSystem.Controllers
 {
-    //[Authorize(Policy = Policy.ItemManagement)]
-    [AllowAnonymous]
+    [Authorize(Policy = Policy.ItemManagement)]
+    //[AllowAnonymous]
     public class ItemController : Controller
     {
         private readonly IItemRepository itemRepository;
         private readonly IUnitRepository unitRepository;
+        private readonly ISessionContext sessionContext;
 
         private static string CurrentUser;
         public ItemController(IItemRepository itemRepository, IUnitRepository unitRepository, ISessionContext sessionContext)
         {
             this.itemRepository = itemRepository;
             this.unitRepository = unitRepository;
+            this.sessionContext = sessionContext;
             CurrentUser = sessionContext.CurrentUser.Id;
         }
         public IActionResult ItemList()
         {
-            return View();
+            var model = sessionContext.GetCriteria(nameof(ItemController), () => new ItemViewModel { });
+            return View(model);
         }
         [HttpPost]
         public JsonResult Search(string itemCode, string itemName, DataTableOptionModel option)
