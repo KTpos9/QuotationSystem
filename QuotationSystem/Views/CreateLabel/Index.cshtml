@@ -6,77 +6,82 @@
 @model QuotationSystem.Models.CreateLabel.CreateLabelModel
 
 <h1>Create Label</h1>
-<form class="" asp-controller="CreateLabel" asp-action="GenerateLabel" method="post">
-<div class="">
-    <div class="ibox-content">
-        <div id="country-form">
-            <div class="row mt-4 align-items-center">
-                <div class="col-md-4 text-right">
-                    <h4>Item Code</h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <input id="item-code-input" type="text" class="form-control" placeholder="" asp-for="ItemCode">
-                </div>
-            </div>
-
-            <div class="row mt-4 align-items-center">
-                <div class="col-md-4 text-right">
-                    <h4>Item Name</h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <input id="item-name-input" type="text" class="form-control" placeholder="" asp-for="ItemName" readonly>
-                </div>
-            </div>
-
-            <div class="row mt-4 align-items-center">
-                <div class="col-md-4 text-right">
-                    <h4>Lot No</h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <input id="lot-no-input" type="text" class="form-control" placeholder="" asp-for="LotNo">
-                </div>
-            </div>
-
-            <div class="row mt-4 align-items-center">
-                <div class="col-md-4 text-right">
-                    <h4>Qty</h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <input id="qty-input" type="text" class="form-control" placeholder="" asp-for="Qty">
-                </div>
-                <span>
-                    pcs.
-                </span>
-            </div>
-
-            <div class="row mt-4 align-items-center">
-                <div class="col-md-4 text-right">
-                    <h4>Label Qty</h4>
-                </div>
-                <div class="col-md-4 text-center">
-                    <input id="label-qty-input" type="text" class="form-control" placeholder="" asp-for="LabelQty">
-                </div>
-            </div>
-            <div class="pt-4"></div>
-            <div class="center d-flex justify-content-center">
-                <div class="mr-2">
-                    <button id="cancelBtn" type="reset" class="btn btn-secondary">
-                        Cancel
-                    </button>
+<form class="" asp-controller="CreateLabel" asp-action="GenerateLabel" method="post" id="createLabelForm">
+    <div class="">
+        <div class="ibox-content">
+            <div id="">
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Item Code</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="itemCodeInput" data-name="itemCodeInput" type="text" class="form-control itemCodeInput" placeholder="" asp-for="ItemCode" required minlength="1" maxlength="30" >
+                        <span asp-validation-for="ItemCode" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div>
-                    <button id="generateBtn" type="submit" class="btn btn-primary">
-                        Generate
-                    </button>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Item Name</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="itemNameInput" data-name="itemNameInput" type="text" class="form-control itemNameInput" placeholder="" asp-for="ItemName" readonly required minlength="1" maxlength="30">
+                    <span asp-validation-for="ItemName" class="text-danger"></span>
+                    </div>
                 </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Lot No</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="lotNoInput" data-name="lotNoInput" type="number" class="form-control lotNoInput" placeholder="" asp-for="LotNo" maxlength="30" required minlength="1" maxlength="30">
+                        <span asp-validation-for="LotNo" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Qty</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="qtyInput" data-name="qtyInput" type="number" class="form-control qtyInput" placeholder="" asp-for="Qty" required minlength="1" maxlength="30">
+                        <span asp-validation-for="Qty" class="text-danger"></span>
+                    </div>
+                    <span>
+                        pcs.
+                    </span>
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Label Qty</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="labelQtyInput" data-name="labelQtyInput" type="number" class="form-control labelQtyInput" placeholder="" asp-for="LabelQty" required minlength="1" maxlength="30">
+                        <span asp-validation-for="LabelQty" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="pt-4"></div>
+                <div class="center d-flex justify-content-center">
+                    <div class="mr-2">
+                        <button id="cancelBtn" type="reset" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button id="generateBtn" type="submit" class="btn btn-primary">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+                <div class="pt-2"></div>
             </div>
-            <div class="pt-2"></div>
         </div>
-    </div>
-    <br />
+        <br />
 
-</div>
+    </div>
 </form>
 
 
@@ -85,8 +90,15 @@
     <script>
         $(document).ready(function () {
             // Event listener for item code input
-            $("#item-code-input").on("input", function () {
+            $("#itemCodeInput").on("input", function () {
                 var itemCode = $(this).val(); // Get the entered item code
+
+                if (itemCode.length !== 9) {
+                    // Display an error message or take appropriate action for invalid input length
+                    console.log("Item code must be 9 characters long.");
+                    $("#itemNameInput").val("");
+                    return;
+                }
 
                 // Make an AJAX request to fetch the item name based on the item code
                 $.ajax({
@@ -95,16 +107,17 @@
                     data: { itemCode: itemCode },
                     success: function (response) {
                         // Update the item name input field with the fetched item name
-                        $("#item-name-input").val(response.itemName);
+                        $("#itemNameInput").val(response.itemName);
                     },
                     error: function () {
                         // Handle errors if necessary
+                        $("#itemNameInput").val("");
                         console.log("Error fetching item name");
                     },
                 });
             });
 
-            
+
         });
 
     </script>
