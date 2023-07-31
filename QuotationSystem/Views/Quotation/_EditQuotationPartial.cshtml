@@ -1,0 +1,249 @@
+﻿@model QuotationSystem.Models.Quotation.QuotationViewModel
+@{
+}
+<div class="modal fade" id="editQuotationModal" tabindex="-1" role="dialog" aria-labelledby="quotationModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <form class="modal-content" id="editQuotationForm" method="post">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Quotation Management</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column">
+                    <div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="d-flex flex-column" style="gap:1rem">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 1rem">
+                                            <label class="m-0">Quotation No.:</label>
+                                            <input class="form-control" type="text" id="textEditQuotationNo" value="@Model.QuotationHeader.QuotationNo" readonly />
+                                        </div>
+                                        <div class="d-flex align-items-center" style="gap: 1rem">
+                                            <label class="m-0">Date:</label>
+                                            <input class="form-control" type="text" value="@Model.QuotationHeader.CreateDate" readonly />
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer:</label>
+                                        <input class="col form-control" name="textCusName" id="textEditCusName" type="text" value="@Model.QuotationHeader.CustomerName" required />
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer Address:</label>
+                                        <textarea class="col form-control" name="textCusAddress" id="textEditCusAddress" required>@Model.QuotationHeader.CustomerAddress</textarea>
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer Contact:</label>
+                                        <input class="col form-control" name="textCusContact" id="textEditCusContact" type="text" value="@Model.QuotationHeader.CustomerContact" required />
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Tax Id:</label>
+                                        <input class="col form-control" name="textTaxId" id="textEditTaxId" type="text"  value="@Model.QuotationHeader.TaxId" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="d-flex flex-column" style="gap:1rem">
+                                    <div class="row align-items-center text-nowrap">
+                                        <label class="m-0 col-2">Sales Name:</label>
+                                        <input class="col form-control" name="textSellerName" id="textEditSellerName" type="text" value="@Model.QuotationHeader.Seller" required />
+                                    </div>
+
+                                    <div>
+                                        <label class="m-0">Vat:</label>
+                                        <input class="form-control" name="textVat" type="number" id="textEditVat" placeholder="7%" value="@Model.QuotationHeader.Vat" readonly />
+                                    </div>
+
+                                    @{
+                                        var isActive = Model.QuotationHeader.ActiveStatus == "Y" ? true : false;
+                                        Model.QuotationHeader.ActiveStatus = null;//set null to avoid error from asp-for expecting boolean but User.ActiveStatus is string
+                                    }
+
+                                    <div>
+                                        <label class="m-0" for="ActiveCheckboxEdit">Active:</label>
+                                        <input class="form-check" type="checkbox" checked="@isActive" id="activeCheckboxEdit" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column">
+                        <h5>Item List</h5>
+                        <table class="table" id="item-table-edit">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Item Code</th>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Unit Price</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int index = 1;
+                                    foreach (var item in Model.QuotationHeader.TQuotationDetails)
+                                    {
+                                        <tr class="item-row-edit">
+                                            <td>@index</td>
+                                            <td><input class="form-control" type="text" name="textItemCode" value="@item.ItemCode" /></td>
+                                            <td><input class="form-control" type="text" name="textItemName" value="@item.ItemCodeNavigation.ItemName" readonly /></td>
+                                            <td><input class="form-control" type="text" name="textDescription" value="@item.ItemCodeNavigation.ItemDesc" readonly /></td>
+                                            <td><input class="form-control" type="number" name="textQty" value="@item.ItemQty" min="0" /></td>
+                                            <td><input class="form-control" type="text" name="textUnit" value="@item.ItemCodeNavigation.UnitId" readonly /></td>
+                                            <td><input class="form-control" type="text" name="textUnitPrice" value="@item.ItemCodeNavigation.UnitPrice" readonly /></td>
+                                            <td><input class="form-control" type="number" name="textDiscount" value="@item.DiscountPercent" min="0" /></td>
+                                            <td><input class="form-control" type="number" name="textTotal" min="0" value="@Model.QuotationHeader.Total" readonly /></td>
+                                            <td></td>
+                                        </tr>
+                                    }
+                                }
+                                <tr><td class="text-center" rowspan="9"><button type="button" class="btn btn-primary" id="btnAddRowEdit">add row</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="editQuotationBtn" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(() => {
+        $("#editQuotationForm").validate({
+            rules: {
+                textCusName: { required: true, minlength: 1, maxlength: 30 },
+                textCusAddress: { required: true, minlength: 1, maxlength: 150 },
+                textCusContact: { required: true, minlength: 1, maxlength: 30 },
+                textTaxId: { required: true, minlength: 1, maxlength: 30 },
+                textSellerName: { required: true, minlength: 1, maxlength: 30 },
+                textItemCode: { required: true, minlength: 9, maxlength: 9 },
+                textQty: { required: true, minlength: 1, maxlength: 30 },
+                textDiscount: { required: true, minlength: 1, maxlength: 30 },
+                textCusAddress: { required: true, minlength: 1, maxlength: 30 },
+            },
+            messages: {
+                textCusName: { required: "Please enter the customer name." },
+            }
+        });
+
+        let lineNo = 2;
+        $("#btnAddRowEdit").click(() => {
+            markup = `
+                        <tr class="item-row-edit">
+                            <td>${lineNo}</td>
+                            <td><input class="form-control" type="text" name="textItemCode" /></td>
+                            <td><input class="form-control" type="text" name="textItemName" readonly/></td>
+                            <td><input class="form-control" type="text" name="textDescription" readonly/></td>
+                            <td><input class="form-control" type="number" name="textQty" min="0" /></td>
+                            <td><input class="form-control" type="text" name="textUnit" readonly/></td>
+                            <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
+                            <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
+                            <td><input class="form-control" type="number" name="textTotal" min="0" readonly/></td>
+                            <td><button type="button" class="deleteBtn btn btn-outline-danger"><i class="fa fa-xmark"></i></button></td>
+                        </tr>`;
+            console.log("button clicked");
+            tableBody = $("#item-table-edit tr:nth-last-child(2)");
+            tableBody.after(markup);
+            lineNo++;
+        });
+
+        $('#editQuotationBtn').on('click', () => {
+            // Manually trigger the form validation
+            if ($("#editQuotationForm").valid()) {
+                // If the form is valid, call the submitQuotationForm function
+                submitEditedQuotation();
+            }
+        });
+        $("#item-table-edit").on('click', '.deleteBtn', (event) => {
+            console.log('delete button clicked');
+            $(event.target).closest("tr").remove();
+            lineNo = 2;
+        });
+    });
+
+    function submitEditedQuotation() {
+            let itemList = new Array();
+            $("#item-table-edit").find(".item-row-edit").each((index, element) => { //don't remove index, it's magic!
+                let $element = $(element);  // Convert it into a jQuery object, **javascript magic, u can't understand it**
+                let itemCode = $element.find("td:eq(1) input").val();
+                let itemName = $element.find("td:eq(2) input").val();
+                let itemDesc = $element.find("td:eq(3) input").val();
+                let Qty = $element.find("td:eq(4) input").val();
+                let unitId = $element.find("td:eq(5) input").val();
+                let unitPrice = $element.find("td:eq(6) input").val();
+                let discount = $element.find("td:eq(7) input").val();
+                let total = $element.find("td:eq(8) input").val();
+
+                let QuotationItemViewModel = {
+                    itemCode: itemCode,
+                    itemName: itemName,
+                    itemDesc: itemDesc,
+                    Qty: Qty,
+                    unitId: unitId,
+                    unitPrice: unitPrice,
+                    discount: discount,
+                    total: total
+                };
+                itemList.push(QuotationItemViewModel);
+            });
+            let model = {
+                quotationNo: $('#textEditQuotationNo').val(),
+                customer: $('#textEditCusName').val(),
+                customerAddress: $('#textEditCusAddress').val(),
+                customerContact: $('#textEditCusContact').val(),
+                taxId: $('#textEditTaxId').val(),
+                salesName: $('#textEditSellerName').val(),
+                vat: $('#textEditVat').val(),
+                activeStatus: $('#activeCheckboxEdit').prop('checked') ? 'Y' : 'N',
+            }
+            $.ajax({
+                url: '@Url.Action("EditQuotation")',
+                type: 'POST',
+                data: {
+                    quotationModel: model,
+                    itemList: itemList
+                },
+                success: (data, textStatus) => {
+                    console.log(data);
+                },
+                complete: (result) => {
+                    let data = result.responseJSON;
+                    console.log(data);
+                    if (data.isSuccess) {
+                        $("#editQuotationModal").modal("hide");
+                         swal.fire({
+                             title: 'Successfully edited!',
+                             icon: 'success'
+                         }).then(() => {
+                             location.reload();
+                         });
+                     }
+                     else {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong',
+                            icon: 'error'
+                        })
+                     }
+                }
+            });
+        }
+</script>

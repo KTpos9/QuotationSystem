@@ -14,8 +14,8 @@ using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
-    [Authorize(Policy = Policy.QuotationManagement)]
-    //[AllowAnonymous]
+    //[Authorize(Policy = Policy.QuotationManagement)]
+    [AllowAnonymous]
     public class QuotationController : Controller
     {
         private readonly IQuotationRepository quotationRepository;
@@ -65,7 +65,7 @@ namespace QuotationSystem.Controllers
                 var quotationHeader = new TQuotationHeader
                 {
                     QuotationNo = model.QuotationNo,
-                    QuotationDate = model.Date,
+                    QuotationDate = DateTime.UtcNow,
                     CustomerName = model.Customer,
                     CustomerAddress = model.CustomerAddress,
                     CustomerContact = model.CustomerContact,
@@ -74,12 +74,7 @@ namespace QuotationSystem.Controllers
                     Vat = model.Vat,
                     CreateBy = CurrentUser,
                     UpdateBy = CurrentUser,
-                    ActiveStatus = model.ActiveStatus switch
-                    {
-                        "on" => "Y",
-                        _ => "N"
-                    }
-                    ,
+                    ActiveStatus = model.ActiveStatus,
                     Total = itemList.Sum(item => double.Parse(item.unitPrice)),
                     TQuotationDetails = itemList.Select(item => new TQuotationDetail
                     {
@@ -122,10 +117,43 @@ namespace QuotationSystem.Controllers
             };
             return PartialView("_DeleteQuotationPartial", model);
         }
-        public IActionResult EditQuotation(QuotationViewModel quotationModel)
+        [HttpPost]
+        public IActionResult EditQuotation(QuotationViewModel quotationModel, List<QuotationItemViewModel> itemList)
         {
-            //quotationRepository.EditQuotation(quotationModel.QuotationHeader);
-            return RedirectToAction("QuotationList");
+            try
+            {
+                var quotationHeader = new TQuotationHeader
+                {
+                    QuotationNo = quotationModel.QuotationNo,
+                    QuotationDate = DateTime.UtcNow,
+                    CustomerName = quotationModel.Customer,
+                    CustomerAddress = quotationModel.CustomerAddress,
+                    CustomerContact = quotationModel.CustomerContact,
+                    TaxId = quotationModel.TaxId,
+                    Seller = quotationModel.SalesName,
+                    Vat = quotationModel.Vat,
+                    CreateBy = CurrentUser,
+                    UpdateDate = DateTime.UtcNow,
+                    UpdateBy = CurrentUser,
+                    ActiveStatus = quotationModel.ActiveStatus,
+                    Total = itemList.Sum(item => double.Parse(item.unitPrice)),
+                    TQuotationDetails = itemList.Select(item => new TQuotationDetail
+                    {
+                        ItemCode = item.itemCode,
+                        ItemQty = item.Qty,
+                        DiscountPercent = item.discount / 100,
+                        CreateBy = CurrentUser,
+                        UpdateDate = DateTime.UtcNow,
+                        UpdateBy = CurrentUser
+                    }).ToList()
+                };
+                quotationRepository.EditQuotation(quotationHeader);
+                return Ok(new { isSuccess = true });
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, new { isSuccess = false, exception = e });
+            }
         }
         private string GenerateQuotationNo()
         {
@@ -146,7 +174,7 @@ namespace QuotationSystem.Controllers
 
             return $"QT{currentYear}{currentMonth:00}{runningNum:00000}";
         }
-        public IActionResult DeleteItem(string quotationNo)
+        public IActionResult DeleteQuotation(string quotationNo)
         {
             try
             {
