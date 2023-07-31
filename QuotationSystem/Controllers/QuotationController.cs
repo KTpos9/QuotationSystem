@@ -14,8 +14,8 @@ using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
-    [Authorize(Policy = Policy.QuotationManagement)]
-    //[AllowAnonymous]
+    //[Authorize(Policy = Policy.QuotationManagement)]
+    [AllowAnonymous]
     public class QuotationController : Controller
     {
         private readonly IQuotationRepository quotationRepository;

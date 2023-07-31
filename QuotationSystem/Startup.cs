@@ -21,6 +21,7 @@ using Zero.Core.Mvc.Authorizations.Contexts;
 using Zero.Core.Mvc.View;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Zero.Core.Mvc.ViewLocators;
+using QuotationSystem.Data.Repositories.Interfaces;
 
 namespace QuotationSystem
 {
@@ -89,6 +90,7 @@ namespace QuotationSystem
             services.AddScoped<IConfigRepository, ConfigRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<IRunningNoRepository, RunningNoRepository>();
 
             var connectionString = Configuration.GetConnectionString("Default");
             services.AddSingleton(option => new DbContextOptionBuilder(connectionString));
