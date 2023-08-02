@@ -236,7 +236,6 @@
                 },
                 success: (data, textStatus) => {
                     console.log(data);
-                    //window.location.href = `@Url.Action("PreviewQuotation","Quotation")?quotationNo=${model.quotationNo}`;
                 },
                 complete: (result) => {
                     let data = result.responseJSON;
@@ -247,7 +246,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
-                             location.href = `/Quotation/PreviewQuotation?quotationNo=${id}`;
+                             location.href = `/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`;
                          });
                      }
                      else {
@@ -277,13 +276,40 @@
                             <td><input class="form-control" type="text" name="textUnit" readonly/></td>
                             <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
                             <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
-                            <td><input class="form-control" type="number" name="textTotal" min="0" readonly/></td>
+                            <td><input class="form-control" type="text" name="textTotal" min="0" readonly/></td>
                             <td><button type="button" class="deleteBtn btn btn-outline-danger"><i class="fa fa-xmark"></i></button></td>
                         </tr>`;
                 console.log("button clicked");
                 tableBody = $("#item-table tr:nth-last-child(2)");
                 tableBody.after(markup);
                 lineNo++;
+            });
+
+            function calculateTotal(row) {
+                const quantity = parseFloat(row.find('input[name="textQty"]').val()) || 0;
+                let unitPriceString = $('input[name="textUnitPrice"]').val().replace(/,/g, '');
+                let unitPrice = parseFloat(unitPriceString) || 0;
+                const discount = parseFloat(row.find('input[name="textDiscount"]').val()) || 0;
+
+                const total = (quantity * unitPrice) * (1 - (discount / 100));
+
+                let formattedTotal = total.toLocaleString();
+                console.log(formattedTotal)
+
+                // Set the formatted total as the value of the textTotal field
+                row.find('input[name="textTotal"]').val(formattedTotal);
+            }
+
+            // Add event listeners to relevant input fields
+            $("#item-table").on('change', 'input[name="textQty"], input[name="textDiscount"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
+            });
+
+            // Trigger total calculation when item code is filled via AJAX
+            $("#item-table").on('change', 'input[name="textItemCode"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
             });
 
             $("#item-table").on('click', '.deleteBtn', (event) => {
@@ -322,6 +348,7 @@
                 // Set a new timer to introduce a delay of 500ms before fetching the input value
                 timer = setTimeout(() => {
                     fetchItemDetails(itemCode, row);
+                    calculateTotal(row);
                 }, 500);
             });
         });
