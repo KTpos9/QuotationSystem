@@ -102,7 +102,7 @@
 
                 // Make an AJAX request to fetch the item name based on the item code
                 $.ajax({
-                    url: '@Url.Action("GetItemDetailById", "Quotation")',  // Replace with your server route to fetch item name
+                    url: '@Url.Action("GetItemDetailById")',  // Replace with your server route to fetch item name
                     type: "POST",
                     data: { itemCode: itemCode },
                     success: function (response) {

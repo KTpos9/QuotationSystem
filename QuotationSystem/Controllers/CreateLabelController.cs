@@ -20,11 +20,14 @@ namespace QuotationSystem.Controllers
         private static GeneratedLabelModel generatedLabelModel;
         private readonly IRunningNoRepository runningNoRepository;
         private readonly ISessionContext sessionContext;
+        private readonly IItemRepository itemRepository;
 
-        public CreateLabelController(IRunningNoRepository runningNoRepository, ISessionContext sessionContext)
+
+        public CreateLabelController(IRunningNoRepository runningNoRepository, ISessionContext sessionContext, IItemRepository itemRepository)
         {
             this.runningNoRepository = runningNoRepository;
             this.sessionContext = sessionContext;
+            this.itemRepository = itemRepository;
         }
 
         public IActionResult Index()
@@ -96,5 +99,8 @@ namespace QuotationSystem.Controllers
             accumulator.Add(accumulator.Last() + incrementBy);
             return generateListIncrement(accumulator, incrementBy, repeatCount - 1);
         }
+
+        public JsonResult GetItemDetailById(string itemCode) => Json(itemRepository.GetItemById(itemCode));
+
     }
 }
