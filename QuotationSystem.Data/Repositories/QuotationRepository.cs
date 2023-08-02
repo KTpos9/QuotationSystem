@@ -56,7 +56,46 @@ namespace QuotationSystem.Data.Repositories
         }
         public void EditQuotation(TQuotationHeader quotation)
         {
+            using (var db = new QuotationContext(option))
+            {
+                // Attach the main entity and mark it as modified
+                var entry = db.Entry(quotation);
+                db.TQuotationHeaders.Attach(quotation);
+                entry.State = EntityState.Modified;
 
+                // Load the related TQuotationDetails from the database
+                db.Entry(quotation).Collection(q => q.TQuotationDetails).Load();
+
+                // Update scalar properties of the existing entity
+                db.Entry(quotation).CurrentValues.SetValues(quotation);
+
+                // Exclude CreateDate from the update
+                db.Entry(quotation).Property(x => x.CreateDate).IsModified = false;
+
+                // Mark each related TQuotationDetail as modified & exclude some property
+                foreach (var detail in quotation.TQuotationDetails)
+                {
+                    db.Entry(detail).State = EntityState.Modified;
+                    db.Entry(detail).Property(x => x.CreateDate).IsModified = false;
+                    db.Entry(detail).Property(x => x.ActiveStatus).IsModified = false;
+                }
+
+                db.SaveChanges();
+
+                //var existingQuotation = db.TQuotationHeaders.Find(quotation.QuotationNo);
+
+                //if (existingQuotation is not null)
+                //{
+                //    // Update the properties of the existing entity, excluding CreateDate
+                //    db.Entry(existingQuotation).CurrentValues.SetValues(quotation);
+
+                //    // Manually reset the CreateDate property to its original value
+                //    db.Entry(existingQuotation).Property(x => x.CreateDate).IsModified = false;
+                //    db.Entry(existingQuotation).State = EntityState.Modified;
+
+                //    db.SaveChanges();
+                //}
+            }
         }
         public void DeleteQuotation(string quotationNo)
         {

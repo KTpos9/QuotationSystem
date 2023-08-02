@@ -83,37 +83,19 @@
                     int index = 1;
                     foreach (var item in Model.Quotation.TQuotationDetails)
                     {
+                        double amount = (item.ItemCodeNavigation.UnitPrice * item.ItemQty) - (item.ItemCodeNavigation.UnitPrice * item.DiscountPercent / 100) ?? 0.0D;
                         <tr>
                             <td>@index</td>
                             <td>@item.ItemCodeNavigation.ItemDesc</td>
                             <td>@item.ItemQty</td>
                             <td>@item.ItemCodeNavigation.UnitId</td>
-                            <td>@item.ItemCodeNavigation.UnitPrice</td>
-                            <td>@item.DiscountPercent</td>
-                            <td>1000000</td>
+                            <td>@item.ItemCodeNavigation.UnitPrice.ToString("#,#") ฿</td>
+                            <td>@item.DiscountPercent %</td>
+                            <td>@amount.ToString("#,#") ฿</td>
                         </tr>
                         index++;
                     }
                   }
-                <tr>
-                    <td>1</td>
-                    <td>CASE-751933-00 M23-00166CASE</td>
-                    <td>10</td>
-                    <td>pcs</td>
-                    <td>1,500,000</td>
-                    <td>15%</td>
-                    <td>1,275,000</td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>PLATE, BAC-17D706-01 M23-00167PLATE, BLACK</td>
-                    <td>1</td>
-                    <td>pcs</td>
-                    <td>1,600,000</td>
-                    <td>0</td>
-                    <td>1,600,000</td>
-                </tr>
             </tbody>
         </table>
     </div>

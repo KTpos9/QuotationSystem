@@ -31,7 +31,9 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i>Add New</button>
         </div>
         <!--Modal-->
-        <partial name="_AddQuotationPartial" model="Model"/>
+        <partial name="_AddQuotationPartial" model="Model" />
+        <div id="edit-quotation">
+        </div>
 
         <!--table-->
         <div class="table-responsive ibox-content">
@@ -85,10 +87,10 @@
 
             $("#quotationForm").validate({
                 rules: {
-                    textCusName: { required: true, minlength: 1, maxlength: 150 },
+                    textCusName: { required: true, minlength: 1, maxlength: 30 },
                     textCusAddress: { required: true, minlength: 1, maxlength: 150 },
-                    textCusContact: { required: true, minlength: 1, maxlength: 150 },
-                    textTaxId: { required: true, minlength: 1, maxlength: 150 },
+                    textCusContact: { required: true, minlength: 1, maxlength: 30 },
+                    textTaxId: { required: true, minlength: 1, maxlength: 30 },
                     textSellerName: { required: true, minlength: 1, maxlength: 30 },
                     textItemCode: { required: true, minlength: 9, maxlength: 9 },
                     textQty: { required: true, minlength: 1, maxlength: 30 },
@@ -112,27 +114,27 @@
         function renderActionButtons(data, type, row) {
             if (row.activeStatus === 'Y') {
                 return `<div class="d-flex justify-content-center" style="gap:.5rem">
-                            <button class="btn btn-primary" onclick="editQuotation('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn btn-primary" onclick="getEditQuotationModal('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
                             <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                         </div>`;
             }
             return `<div class="d-flex justify-content-center" style="gap:.5rem">
-                        <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
-                        <button class="btn btn-danger" onclick="getDeleteQuotationModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-primary" onclick="getEditQuotationModal('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-danger" onclick="deleteQuotation('${data}')"><i class="fa-solid fa-trash-can"></i></button>
                         <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
             return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
         }
-        function editQuotation(itemCode) {
+        function getEditQuotationModal(itemCode) {
             $.ajax({
                 url: '@Url.Action("GetEditQuotationModal")',
                 type: 'POST',
                 data: { itemCode: itemCode },
                 success: (result) => {
-                    $("#edit-item").html(result);
-                    $("#editItemModalCenter").modal("show");
+                    $("#edit-quotation").html(result);
+                    $("#editQuotationModal").modal("show");
                 },
                 error: (data) => {
                     console.log(data);
@@ -150,14 +152,31 @@
                 }
             });
         }
-        function deleteQuotation(itemCode) {
-            $.ajax({
-                url: '@Url.Action("DeleteQuotation")',
-                type: 'DELETE',
-                data: { itemCode: itemCode },
-                success: () => {
-                    $("#deleteUserModal").modal("toggle");
-                    $('#user-table').DataTable().ajax.reload();
+        function deleteQuotation(quotationNo) {
+            Swal.fire({
+                title: 'Do you want to delete this quotation?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteQuotation")',
+                        type: 'POST',
+                        data: { quotationNo: quotationNo },
+                        success: (result) => {
+                            console.log(result);
+                            Swal.fire('Deleted!', '', 'success')
+                                .then(() => {
+                                    location.reload();
+                                });
+                        },
+                        error: (data) => {
+                            console.log(data);
+                            Swal.fire('Error','Something went wrong, Please try again','error')
+                        }
+                    });
                 }
             });
         }
@@ -206,7 +225,7 @@
                 taxId: $('#textTaxId').val(),
                 salesName: $('#textSellerName').val(),
                 vat: $('#textVat').val(),
-                activeStatus: $('#activeCheckbox').val(),
+                activeStatus: $('#activeCheckbox').prop('checked') ? 'Y' : 'N',
             }
             $.ajax({
                 url: '@Url.Action("AddQuotation")',
@@ -217,7 +236,6 @@
                 },
                 success: (data, textStatus) => {
                     console.log(data);
-                    //window.location.href = `@Url.Action("PreviewQuotation","Quotation")?quotationNo=${model.quotationNo}`;
                 },
                 complete: (result) => {
                     let data = result.responseJSON;
@@ -228,7 +246,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
-                             location.href = `/Quotation/PreviewQuotation?quotationNo=${id}`;
+                             location.href = `/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`;
                          });
                      }
                      else {
@@ -258,7 +276,7 @@
                             <td><input class="form-control" type="text" name="textUnit" readonly/></td>
                             <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
                             <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
-                            <td><input class="form-control" type="number" name="textTotal" min="0" readonly/></td>
+                            <td><input class="form-control" type="text" name="textTotal" min="0" readonly/></td>
                             <td><button type="button" class="deleteBtn btn btn-outline-danger"><i class="fa fa-xmark"></i></button></td>
                         </tr>`;
                 console.log("button clicked");
@@ -267,9 +285,37 @@
                 lineNo++;
             });
 
+            function calculateTotal(row) {
+                const quantity = parseFloat(row.find('input[name="textQty"]').val()) || 0;
+                let unitPriceString = $('input[name="textUnitPrice"]').val().replace(/,/g, '');
+                let unitPrice = parseFloat(unitPriceString) || 0;
+                const discount = parseFloat(row.find('input[name="textDiscount"]').val()) || 0;
+
+                const total = (quantity * unitPrice) * (1 - (discount / 100));
+
+                let formattedTotal = total.toLocaleString();
+                console.log(formattedTotal)
+
+                // Set the formatted total as the value of the textTotal field
+                row.find('input[name="textTotal"]').val(formattedTotal);
+            }
+
+            // Add event listeners to relevant input fields
+            $("#item-table").on('change', 'input[name="textQty"], input[name="textDiscount"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
+            });
+
+            // Trigger total calculation when item code is filled via AJAX
+            $("#item-table").on('change', 'input[name="textItemCode"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
+            });
+
             $("#item-table").on('click', '.deleteBtn', (event) => {
                 console.log('delete button clicked');
                 $(event.target).closest("tr").remove();
+                lineNo = 2;
             });
 
             function fetchItemDetails(itemCode, row) {
@@ -302,6 +348,7 @@
                 // Set a new timer to introduce a delay of 500ms before fetching the input value
                 timer = setTimeout(() => {
                     fetchItemDetails(itemCode, row);
+                    calculateTotal(row);
                 }, 500);
             });
         });

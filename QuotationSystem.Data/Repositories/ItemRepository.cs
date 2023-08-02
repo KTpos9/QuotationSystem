@@ -68,8 +68,8 @@ namespace QuotationSystem.Data.Repositories
                     "false" => "N",
                     _ => "Y"
                 };
-                item.UpdateDate = DateTime.UtcNow;
-                item.UpdateBy = currentUser;
+                itemToUpdate.UpdateDate = DateTime.UtcNow;
+                itemToUpdate.UpdateBy = currentUser;
 
                 db.SaveChanges();
             }
@@ -78,9 +78,18 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                var item = db.MItems.Find(itemCode);
-                db.Remove(item);
-                db.SaveChanges();
+                try
+                {
+                    var item = new MItem() { ItemCode = itemCode };
+                    var itemToDelete = db.MItems.Attach(item);
+                    itemToDelete.State = EntityState.Deleted;
+
+                    db.SaveChanges();
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    return;
+                }
             }
         }
         /// <summary>
