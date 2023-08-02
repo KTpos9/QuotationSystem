@@ -8,22 +8,22 @@
         <form class="d-flex" style="gap:1rem;">
             <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
                 <div>Quotaition No.:</div>
-                <input class="form-control" type="text" />
+                <input class="form-control" type="text" id="textQuotation"/>
             </div>
 
             <div class="d-flex align-items-center" style="gap:.5rem;">
                 <div>Date:</div>
-                <input class="form-control" type="date" />
+                <input class="form-control" type="date" id="startDate"/>
                 <div>to</div>
-                <input class="form-control" type="date" />
+                <input class="form-control" type="date" id="endDate"/>
             </div>
 
             <div class="d-flex align-items-center" style="gap:.5rem;">
                 <div>Customer:</div>
-                <input class="form-control" type="text" />
+                <input class="form-control" type="text" id="textCustomer"/>
             </div>
 
-            <button class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="button" class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
 
         <!--Add Button-->
@@ -46,12 +46,12 @@
         $(document).ready(() => {
             var colOptions = [
                 { title: "No", className: "text-center", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
-                { title: "Date", data: "createDate", className: "text-center" },
+                { title: "Date", data: "quotationDate", className: "text-center", render: formatDate },
                 { title: "Quotation No.", data: "quotationNo", className: "text-center" },
                 { title: "Customer", data: "customerName", className: "text-center"},
                 { title: "Seller", data: "seller", className: "text-center" },
-                { title: "Total", data: "total", className: "text-center" },
-                { title: "Grand Total", data: "grandTotal", className: "text-center" },
+                { title: "Total", data: "total", className: "text-center", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+                { title: "Grand Total", data: "grandTotal", className: "text-center", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
                 { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
                 { title: "Action", data: "quotationNo", className: "text-center", render: renderActionButtons }
             ];
@@ -69,10 +69,14 @@
                     type: "POST",
                     data: (opt) => {
                         console.log($('#search-criteria').serializeToJSON());
+                        console.log(`${$('#startDate').val()}`);
+                        console.log(`${$('#endDate').val()}`);
                         //console.table(opt);
                         return {
-                            itemCode: `${$('#textId').val()}`,
-                            itemName: `${$('#textName').val()}`,
+                            quotationNo: `${$('#textQuotation').val()}`,
+                            customer: `${$('#textCustomer').val()}`,
+                            startDate: `${$('#startDate').val()}`,
+                            endDate: `${$('#endDate').val()}`,
                             option: opt
                         };
                     },
@@ -110,7 +114,15 @@
                 }
             });
         });
-
+        function formatDate(data) {
+            const dateToFormat = data.slice(0, 10);
+            const year = dateToFormat.split('-')[0];
+            const month = dateToFormat.split('-')[1];
+            const date = dateToFormat.split('-')[2];
+            let result = `${date}/${month}/${year}`
+            console.log(result);
+            return result;
+        }
         function renderActionButtons(data, type, row) {
             if (row.activeStatus === 'Y') {
                 return `<div class="d-flex justify-content-center" style="gap:.5rem">
