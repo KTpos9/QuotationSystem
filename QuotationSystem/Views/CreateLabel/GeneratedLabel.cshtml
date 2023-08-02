@@ -88,7 +88,7 @@
     qrCodeContainers.forEach(function (container) {
         var qrCodeElement = container.querySelector(".qr-code");
 
-        var qrData = qrCodeElement.getAttribute("data-labelid") + ", " + qrCodeElement.getAttribute("data-itemcode") + ", " + qrCodeElement.getAttribute("data-lotno") + ", " + qrCodeElement.getAttribute("data-qty")
+        var qrData = qrCodeElement.getAttribute("data-labelid") + "," + qrCodeElement.getAttribute("data-itemcode") + "," + qrCodeElement.getAttribute("data-lotno") + "," + qrCodeElement.getAttribute("data-qty")
 
         var qrcode = new QRCode(qrCodeElement, {
             text: qrData,

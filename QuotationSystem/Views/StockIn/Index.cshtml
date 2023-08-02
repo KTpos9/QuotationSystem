@@ -1,0 +1,159 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model QuotationSystem.Models.StockIn.StockInModel
+
+<h1>Stock In</h1>
+<form class="" asp-controller="StockIn" asp-action="StockInSubmit" method="post" id="stockinForm">
+    <div class="">
+        <div class="ibox-content">
+            <div id="">
+                
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Label ID</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="labelIdInput" data-name="labelIdInput" type="text" class="form-control labelIdInput" placeholder="" asp-for="LabelId" required minlength="1">
+                        <span asp-validation-for="LabelId" class="text-danger"></span>
+                    </div>
+                </div>
+               
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Item Code</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span id="itemCodeStr"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Item Name</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span id="itemNameStr"> </span>
+                    </div>
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Lot No</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span id="lotNoStr"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Qty</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span id="qtyStr"></span>
+                    </div>
+                    
+                </div>
+                
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>WH ID</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        @Html.DropDownListFor(m => m.WhId, new SelectList(Model.WhIds), new { @class = "form-control" })
+                    </div>
+                    
+                </div>
+
+                <div class="row mt-4 align-items-center">
+                    <div class="col-md-4 text-right">
+                        <h4>Location ID</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <input id="locationIdInput" data-name="locationIdInput" type="text" class="form-control locationIdInput" placeholder="" asp-for="LocationId" required minlength="1">
+                        <span asp-validation-for="LocationId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="pt-4"></div>
+                <div class="center d-flex justify-content-center">
+                    <div class="mr-2">
+                        <button id="cancelBtn" type="reset" class="btn btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+
+                    <div>
+                        <button id="saveBtn" type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+                </div>
+                <div class="pt-2"></div>
+            </div>
+        </div>
+        <br />
+
+    </div>
+</form>
+
+
+@section Scripts{
+
+    <script>
+        $(document).ready(function () {
+            // Event listener for item code input
+
+            $("#labelIdInput").on("input", function () {
+                var labelIdInputValue = $(this).val();
+                var labelIdParts = labelIdInputValue.split(',');
+
+                // Check if the input value contains enough parts
+                if (labelIdParts.length === 4) {
+                    var labelId = labelIdParts[0].trim();
+                    var itemCode = labelIdParts[1].trim();
+                    var lotNo = labelIdParts[2].trim();
+                    var qty = labelIdParts[3].trim();
+
+                    // Update the corresponding fields with the extracted values
+                    // labelIdInput
+                    $("#labelIdInput").val(labelId);
+                    $("#itemCodeStr").text(itemCode);
+                    $("#lotNoStr").text(lotNo);
+                    $("#qtyStr").text(qty);
+                    
+                    $.ajax({
+                        url: '@Url.Action("GetItemDetailById")',  // Replace with your server route to fetch item name
+                        type: "POST",
+                        data: { itemCode: itemCode },
+                        success: function (response) {
+                            // Update the item name input field with the fetched item name
+                            $("#itemNameStr").text(response.itemName);
+                            console.log(response);
+                        },
+                        error: function () {
+                            // Handle errors if necessary
+                            $("#itemNameStr").text("");
+                            console.log("Error fetching item name");
+                        },
+                    });
+                } else {
+                    // Clear the fields if the input format is incorrect
+                    $("#itemCodeStr").text("");
+                    $("#lotNoStr").text("");    
+                    $("#qtyStr").text("");
+                }
+
+                
+
+            });
+
+
+        });
+
+    </script>
+
+ }
