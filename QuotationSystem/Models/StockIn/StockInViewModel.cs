@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuotationSystem.Models.StockIn
 {
-    public class StockInModel
+    public class StockInViewModel
     {
         // check reg-ex in format "labelid,itemcode,lotno,qty"
         [Required(ErrorMessage = "Item Code is required.")]

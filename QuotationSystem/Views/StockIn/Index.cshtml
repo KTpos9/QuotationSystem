@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model QuotationSystem.Models.StockIn.StockInModel
+@model QuotationSystem.Models.StockIn.StockInViewModel
 
 <h1>Stock In</h1>
 <form class="" asp-controller="StockIn" asp-action="StockInSubmit" method="post" id="stockinForm">
@@ -26,6 +26,7 @@
                         <h4>Item Code</h4>
                     </div>
                     <div class="col-md-4 text-center">
+                        <input id="itemCodeInput" data-name="itemCodeInput" type="hidden" asp-for="ItemCode" required>
                         <span id="itemCodeStr"></span>
                     </div>
                 </div>
@@ -35,6 +36,7 @@
                         <h4>Item Name</h4>
                     </div>
                     <div class="col-md-4 text-center">
+                        <input id="itemNameInput" data-name="itemNameInput" type="hidden" asp-for="ItemName" required>
                         <span id="itemNameStr"> </span>
                     </div>
                 </div>
@@ -44,6 +46,7 @@
                         <h4>Lot No</h4>
                     </div>
                     <div class="col-md-4 text-center">
+                        <input id="lotNoInput" data-name="lotNoInput" type="hidden" asp-for="LotNo" required>
                         <span id="lotNoStr"></span>
                     </div>
                 </div>
@@ -53,6 +56,7 @@
                         <h4>Qty</h4>
                     </div>
                     <div class="col-md-4 text-center">
+                        <input id="qtyInput" data-name="qtyInput" type="hidden" asp-for="Qty" required>
                         <span id="qtyStr"></span>
                     </div>
                     
@@ -107,6 +111,50 @@
         $(document).ready(function () {
             // Event listener for item code input
 
+            // Add form submission handler
+            $("#stockinForm").submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                
+                // Send the form data to the server
+                $.ajax({
+                    url: '@Url.Action("StockInSubmit")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            // Show SweetAlert success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Optional: Redirect to another page after successful save
+                                window.location.href = '@Url.Action("Index")';
+                            });
+                        } else {
+                            // Show SweetAlert error message if the save was not successful
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to save stock in data.',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Show SweetAlert error message if there was an error with the AJAX request
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while saving stock in data.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+
             $("#labelIdInput").on("input", function () {
                 var labelIdInputValue = $(this).val();
                 var labelIdParts = labelIdInputValue.split(',');
@@ -122,8 +170,11 @@
                     // labelIdInput
                     $("#labelIdInput").val(labelId);
                     $("#itemCodeStr").text(itemCode);
+                    $("#itemCodeInput").val(itemCode);
                     $("#lotNoStr").text(lotNo);
+                    $("#lotNoInput").val(lotNo);
                     $("#qtyStr").text(qty);
+                    $("#qtyInput").val(qty);
                     
                     $.ajax({
                         url: '@Url.Action("GetItemDetailById")',  // Replace with your server route to fetch item name
@@ -131,8 +182,10 @@
                         data: { itemCode: itemCode },
                         success: function (response) {
                             // Update the item name input field with the fetched item name
+                            
                             $("#itemNameStr").text(response.itemName);
-                            console.log(response);
+                            $("#itemNameInput").val(response.itemName);
+                            
                         },
                         error: function () {
                             // Handle errors if necessary

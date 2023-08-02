@@ -4,6 +4,7 @@ using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Repositories;
 using QuotationSystem.Data.Repositories.Interfaces;
 using QuotationSystem.Models.StockIn;
+using System;
 using System.Collections.Generic;
 
 namespace QuotationSystem.Controllers
@@ -24,7 +25,7 @@ namespace QuotationSystem.Controllers
         public IActionResult Index()
         {
             List<string> whId = wHRepository.GetAllWHIds();
-            var model = new StockInModel
+            var model = new StockInViewModel
             {
                 WhIds = whId
             };
@@ -32,5 +33,17 @@ namespace QuotationSystem.Controllers
         }
 
         public JsonResult GetItemDetailById(string itemCode) => Json(itemRepository.GetItemById(itemCode));
+
+        [HttpPost]
+        public IActionResult StockInSubmit(StockInViewModel model)
+        {
+            // Save the stock in data to the database implement this logic here
+            
+
+            // After saving, create a success message to return
+            var response = new { success = true, message = "Stock in data has been saved successfully!" };
+            return Json(response);
+        }
+
     }
 }
