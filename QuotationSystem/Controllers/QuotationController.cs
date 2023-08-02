@@ -96,9 +96,13 @@ namespace QuotationSystem.Controllers
                 return StatusCode(500);
             }
         }
-        public JsonResult Search(string quotationNo, string customer, DataTableOptionModel option)
+        public JsonResult Search(string quotationNo, string customer, string startDate, string endDate, DataTableOptionModel option)
         {
-            var result = quotationRepository.GetQuotationList(option, qutoationNo: quotationNo, customer: customer);
+            var result = quotationRepository.GetQuotationList(option, 
+                                                              qutoationNo: quotationNo, 
+                                                              customer: customer, startDate: 
+                                                              startDate, 
+                                                              endDate: endDate);
             var response = result.ToJsonResult(option);
             return response;
         }
