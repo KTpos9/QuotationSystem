@@ -122,6 +122,7 @@ namespace QuotationSystem.Controllers
         {
             try
             {
+                double sumOfItemPrice = itemList.Sum(item => double.Parse(item.total));
                 var quotationHeader = new TQuotationHeader
                 {
                     QuotationNo = quotationModel.QuotationNo,
@@ -136,7 +137,8 @@ namespace QuotationSystem.Controllers
                     UpdateDate = DateTime.UtcNow,
                     UpdateBy = CurrentUser,
                     ActiveStatus = quotationModel.ActiveStatus,
-                    Total = itemList.Sum(item => double.Parse(item.unitPrice)),
+                    Total = sumOfItemPrice,
+                    GrandTotal = sumOfItemPrice * (1 + (quotationModel.Vat / 100)),
                     TQuotationDetails = itemList.Select(item => new TQuotationDetail
                     {
                         ItemCode = item.itemCode,
