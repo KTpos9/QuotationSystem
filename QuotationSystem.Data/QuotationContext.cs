@@ -562,7 +562,7 @@ namespace QuotationSystem.Data
                 entity.HasOne(d => d.QuotationNoNavigation)
                     .WithMany(p => p.TQuotationDetails)
                     .HasForeignKey(d => d.QuotationNo)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_t_quotation_detail_t_quotation_header");
             });
 

@@ -17,16 +17,19 @@ namespace QuotationSystem.Data.Repositories
         {
             this.option = option;
         }
-        public DataTableResultModel<TQuotationHeader> GetQuotationList(DataTableOptionModel dtOption, string customer = "", string qutoationNo = "")
+        public DataTableResultModel<TQuotationHeader> GetQuotationList(DataTableOptionModel dtOption, string customer = "", string qutoationNo = "", string startDate = "", string endDate ="")
         {
             using (var db = new QuotationContext(option))
             {
                 return db.TQuotationHeaders
                     .WhereIf(string.IsNullOrEmpty(qutoationNo) == false, x => x.QuotationNo.Contains(qutoationNo))
                     .WhereIf(string.IsNullOrEmpty(customer) == false, x => x.CustomerName.Contains(customer))
+                    .WhereIf(string.IsNullOrEmpty(startDate) == false, x => x.QuotationDate >= DateTime.Parse(startDate))
+                    .WhereIf(string.IsNullOrEmpty(endDate) == false, x => x.QuotationDate <= DateTime.Parse(endDate))
                     .Select(q => new TQuotationHeader
                     {
                         QuotationNo = q.QuotationNo,
+                        QuotationDate = q.QuotationDate,
                         CustomerName = q.CustomerName,
                         Seller = q.Seller,
                         ActiveStatus = q.ActiveStatus,
