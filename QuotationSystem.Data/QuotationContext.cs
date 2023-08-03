@@ -734,6 +734,12 @@ namespace QuotationSystem.Data
                     .IsRequired()
                     .HasMaxLength(30)
                     .HasColumnName("wh_id");
+
+                entity.HasOne(d => d.ItemCodeNavigation)
+                    .WithMany(p => p.TStocks)
+                    .HasForeignKey(d => d.ItemCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_t_stock_m_item");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -10,6 +10,7 @@ namespace QuotationSystem.Data.Models
         public MItem()
         {
             TQuotationDetails = new HashSet<TQuotationDetail>();
+            TStocks = new HashSet<TStock>();
         }
 
         public string ItemCode { get; set; }
@@ -26,5 +27,6 @@ namespace QuotationSystem.Data.Models
 
         public virtual MUnit Unit { get; set; }
         public virtual ICollection<TQuotationDetail> TQuotationDetails { get; set; }
+        public virtual ICollection<TStock> TStocks { get; set; }
     }
 }
