@@ -92,6 +92,7 @@ namespace QuotationSystem
             services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IRunningNoRepository, RunningNoRepository>();
             services.AddScoped<IWHRepository, WHRepository>();
+            services.AddScoped<IStockRepository, StockRepository>();
 
 
             var connectionString = Configuration.GetConnectionString("Default");

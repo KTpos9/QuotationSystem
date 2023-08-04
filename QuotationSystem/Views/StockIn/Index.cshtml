@@ -115,7 +115,16 @@
             $("#stockinForm").submit(function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize();
-                
+                if ($("#labelIdInput").val() == ""||
+                    $("#itemCodeStr").text() == "" ||
+                    $("#itemCodeInput").val() == "" ||
+                    $("#lotNoStr").text() == "" ||
+                    $("#lotNoInput").val() == "" ||
+                    $("#qtyStr").text() == "" ||
+                    $("#qtyInput").val() == ""){
+                        console.log("it's work")
+                        return;
+                    }
                 // Send the form data to the server
                 $.ajax({
                     url: '@Url.Action("StockInSubmit")',
@@ -138,7 +147,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
-                                text: 'Failed to save stock in data.',
+                                text: response.message,
                                 confirmButtonText: 'OK'
                             });
                         }
@@ -170,10 +179,13 @@
                     // labelIdInput
                     $("#labelIdInput").val(labelId);
                     $("#itemCodeStr").text(itemCode);
+                    $("#itemCodeStr").attr("style", "color: black;");
                     $("#itemCodeInput").val(itemCode);
                     $("#lotNoStr").text(lotNo);
+                    $("#lotNoStr").attr("style", "color: black;");
                     $("#lotNoInput").val(lotNo);
                     $("#qtyStr").text(qty);
+                    $("#qtyStr").attr("style", "color: black;");
                     $("#qtyInput").val(qty);
                     
                     $.ajax({
@@ -184,20 +196,29 @@
                             // Update the item name input field with the fetched item name
                             
                             $("#itemNameStr").text(response.itemName);
+                            $("#itemNameStr").attr("style", "color: black;");
+
                             $("#itemNameInput").val(response.itemName);
                             
                         },
                         error: function () {
                             // Handle errors if necessary
-                            $("#itemNameStr").text("");
+                            $("#itemNameStr").text("Item Name not found");
+                            $("#itemNameStr").attr("style", "color: red;");
                             console.log("Error fetching item name");
                         },
                     });
                 } else {
                     // Clear the fields if the input format is incorrect
-                    $("#itemCodeStr").text("");
-                    $("#lotNoStr").text("");    
-                    $("#qtyStr").text("");
+                    $("#itemNameStr").text("Item Name not found");
+                    $("#itemNameStr").attr("style", "color: red;");
+
+                    $("#itemCodeStr").text("Item Code not found");
+                    $("#itemCodeStr").attr("style", "color: red;");
+                    $("#lotNoStr").text("Lot No not found");
+$("#lotNoStr").attr("style", "color: red;");
+                    $("#qtyStr").text("Qty not found");
+$("#qtyStr").attr("style", "color: red;");
                 }
 
                 
