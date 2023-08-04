@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MWh
+    public partial class MWH
     {
         public string WhId { get; set; }
         public string WhName { get; set; }
