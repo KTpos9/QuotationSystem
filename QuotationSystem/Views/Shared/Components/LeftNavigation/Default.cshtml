@@ -45,7 +45,21 @@
                         <span class="nav-label">Quotation</span>
                     </a>
                 </li>
-            }
+            }            
+
+            <li class="@Html.IsSelected(controllers: "CreateLabel")">
+                <a href="@Url.Action("index", "CreateLabel")">
+                    <i class="fa fa-users"></i>
+                    <span class="nav-label">Create Label</span>
+                </a>
+            </li>
+
+            <li class="@Html.IsSelected(controllers: "StockIn")">
+                <a href="@Url.Action("index", "StockIn")">
+                    <i class="fa fa-users"></i>
+                    <span class="nav-label">Stock In</span>
+                </a>
+            </li>
             <li class="">
                 <a href="#">
                     <i class="fa fa-send-o"></i><text> </text>

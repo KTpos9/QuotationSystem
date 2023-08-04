@@ -1,0 +1,102 @@
+﻿@{
+    Layout = null;
+}
+@model QuotationSystem.Models.CreateLabel.GeneratedLabelModel
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<style>
+    .label-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 9cm;
+        height: 6cm;
+        border: 2px solid #000;
+        padding: 5px;
+        margin: 10px;
+    }
+
+    .label-content {
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        flex-grow: 1;
+        font-size: 11px;
+    }
+
+    .qr-code-container {
+        display: flex;
+        align-self: flex-start;
+    }
+
+    .qr-code {
+        width: 80px;
+        height: 80px;
+    }
+
+    .label-text {
+        font-weight: bold;
+        font-size: 11px;
+    }
+</style>
+
+<div>
+    @foreach (var label in Model.Labels)
+    {
+        <div class="label-container">
+            <table class="label-content">
+                <tr>
+                    <td class="label-text">Label ID:</td>
+                    <td>@label</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Item Code:</td>
+                    <td>@Model.Model.ItemCode</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Item Name:</td>
+                    <td>@Model.Model.ItemName</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Lot No:</td>
+                    <td>@Model.Model.LotNo</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Qty:</td>
+                    <td>@Model.Model.Qty</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Create By:</td>
+                    <td>@Model.CurrentUser</td>
+                </tr>
+                <tr>
+                    <td class="label-text">Create Date:</td>
+                    <td>@DateTime.Now.ToShortDateString()</td>
+                </tr>
+            </table>
+            <div class="qr-code-container">
+                <div class="qr-code" data-labelid="@label" data-itemcode="@Model.Model.ItemCode" data-lotno="@Model.Model.LotNo" data-qty="@Model.Model.Qty"></div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<script src="~/js/qrcode.js"></script>
+<script>
+    var qrCodeContainers = document.querySelectorAll(".qr-code-container");
+
+    qrCodeContainers.forEach(function (container) {
+        var qrCodeElement = container.querySelector(".qr-code");
+
+        var qrData = qrCodeElement.getAttribute("data-labelid") + "," + qrCodeElement.getAttribute("data-itemcode") + "," + qrCodeElement.getAttribute("data-lotno") + "," + qrCodeElement.getAttribute("data-qty")
+
+        var qrcode = new QRCode(qrCodeElement, {
+            text: qrData,
+            width: 80,
+            height: 80,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    });
+</script>

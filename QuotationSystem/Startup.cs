@@ -21,6 +21,7 @@ using Zero.Core.Mvc.Authorizations.Contexts;
 using Zero.Core.Mvc.View;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Zero.Core.Mvc.ViewLocators;
+using QuotationSystem.Data.Repositories.Interfaces;
 
 namespace QuotationSystem
 {
@@ -89,9 +90,13 @@ namespace QuotationSystem
             services.AddScoped<IConfigRepository, ConfigRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<IRunningNoRepository, RunningNoRepository>();
+            services.AddScoped<IWHRepository, WHRepository>();
+            services.AddScoped<IStockRepository, StockRepository>();
+
 
             var connectionString = Configuration.GetConnectionString("Default");
-            services.AddSingleton(option => new DbContextOptionBuilder(connectionString));
+            services.AddScoped(option => new DbContextOptionBuilder(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
