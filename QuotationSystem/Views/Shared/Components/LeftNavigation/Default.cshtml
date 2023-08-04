@@ -1,4 +1,4 @@
-﻿@*@model WebApp.ViewModels.ViewComponents.LeftNavigationViewModel*@
+﻿@model QuotationSystem.Models.ViewComponents.LeftNavigationViewModel
 
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -19,25 +19,33 @@
                     <span class="nav-label">Home</span>
                 </a>
             </li>
-            <li class="@Html.IsSelected(controllers: "User")">
-                <a href="@Url.Action("UserList", "User")">
-                    <i class="fa fa-user"></i>
-                    <span class="nav-label">User</span>
-                </a>
-            </li>
-            <li class="@Html.IsSelected(controllers: "Item")">
-                <a href="@Url.Action("ItemList", "Item")">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Item</span>
-                </a>
-            </li>
-            <li class="@Html.IsSelected(controllers: "Quotation")">
-                <a href="@Url.Action("QuotationList", "Quotation")">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Quotation</span>
-                </a>
-            </li>
-
+            @if (Model.Permissions.Any(p => p == 0))
+            {
+                <li class="@Html.IsSelected(controllers: "User")">
+                    <a href="@Url.Action("UserList", "User")">
+                        <i class="fa fa-user"></i>
+                        <span class="nav-label">User</span>
+                    </a>
+                </li>
+            }
+            @if (Model.Permissions.Any(p => p == 1))
+            {
+                <li class="@Html.IsSelected(controllers: "Item")">
+                    <a href="@Url.Action("ItemList", "Item")">
+                        <i class="fa fa-users"></i>
+                        <span class="nav-label">Item</span>
+                    </a>
+                </li>
+            }
+            @if (Model.Permissions.Any(p => p == 2))
+            {
+                <li class="@Html.IsSelected(controllers: "Quotation")">
+                    <a href="@Url.Action("QuotationList", "Quotation")">
+                        <i class="fa fa-users"></i>
+                        <span class="nav-label">Quotation</span>
+                    </a>
+                </li>
+            }
             <li class="">
                 <a href="#">
                     <i class="fa fa-send-o"></i><text> </text>
