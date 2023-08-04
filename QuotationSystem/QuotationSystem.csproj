@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\ViewComponents\" />
-    <Folder Include="Validators\User\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\fonts\glyphicons-halflings-regular.svg" />
     <None Include="wwwroot\fonts\glyphicons-halflings-regular.woff2" />
   </ItemGroup>
