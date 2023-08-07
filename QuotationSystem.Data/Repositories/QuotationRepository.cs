@@ -116,7 +116,7 @@ namespace QuotationSystem.Data.Repositories
         {
             using (var db = new QuotationContext(option))
             {
-                return db.TQuotationHeaders.Where(x => x.UpdateDate == DateTime.Today).ToList();
+                return db.TQuotationHeaders.Where(x => x.UpdateDate.Value.Date == DateTime.Today.Date).ToList();
             }
         }
         public int GetWeeklyCount()
