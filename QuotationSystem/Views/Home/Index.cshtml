@@ -46,19 +46,19 @@
             </tr>
         </thead>
         <tbody>
-            @{ 
+            @{
                 int index = 1;
             }
-            @foreach(var quotationHeader in Model.QuotationHeader)
-            { 
+            @foreach (var quotationHeader in Model.QuotationHeader)
+            {
                 <tr>
                     <th scope="row">@index</th>
                     <td>@quotationHeader.UpdateDate</td>
                     <td>@quotationHeader.QuotationNo</td>
                     <td>@quotationHeader.CustomerName</td>
                     <td>@quotationHeader.Seller</td>
-                    <td>@quotationHeader.Total</td>
-                    <td>@quotationHeader.GrandTotal</td>
+                    <td>@quotationHeader.Total.ToString("#,0.00")฿</td>
+                    <td>@quotationHeader.GrandTotal?.ToString("#,0.00")฿</td>
                     <td>
                         @if (quotationHeader.ActiveStatus == "Y")
                         {
@@ -72,36 +72,6 @@
                 </tr>
                 index++;
             }
-            <tr>
-                <th scope="row">1</th>
-                <td>4/5/2023</td>
-                <td>QT230400999</td>
-                <td>Good Morning</td>
-                <td>david</td>
-                <td>300,000.00</td>
-                <td>321,000.00</td>
-                <td>Active</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>4/5/2023</td>
-                <td>QT230400131</td>
-                <td>September One</td>
-                <td>david</td>
-                <td>2,540,000.00</td>
-                <td>2,717,000.00</td>
-                <td>Active</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>4/5/2023</td>
-                <td>QT230400132</td>
-                <td>Solar Ring</td>
-                <td>david</td>
-                <td>87,540.00</td>
-                <td>93,667.00</td>
-                <td>Active</td>
-            </tr>
         </tbody>
     </table>
 </div>
