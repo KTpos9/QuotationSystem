@@ -22,5 +22,7 @@ namespace QuotationSystem.Data.Models
         public DateTime? UpdateDate { get; set; }
 
         public virtual MItem ItemCodeNavigation { get; set; }
+        public virtual MLocation Location { get; set; }
+        public virtual MWh Wh { get; set; }
     }
 }
