@@ -110,18 +110,25 @@
     <script>
         $(document).ready(function () {
             // Event listener for item code input
+            function isValidLocationIDInput(input) {
+                const regex = /^\d{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])\d{5}$/;
+                return regex.test(input);
+            }
 
             // Add form submission handler
             $("#stockinForm").submit(function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize();
-                if ($("#labelIdInput").val() == ""||
-                    $("#itemCodeStr").text() == "" ||
-                    $("#itemCodeInput").val() == "" ||
-                    $("#lotNoStr").text() == "" ||
-                    $("#lotNoInput").val() == "" ||
-                    $("#qtyStr").text() == "" ||
-                    $("#qtyInput").val() == ""){
+                if (($("#labelIdInput").val() === ""||
+                    $("#itemCodeStr").text() === "" ||
+                    $("#itemCodeInput").val() === "" ||
+                    $("#lotNoStr").text() === "" ||
+                    $("#lotNoInput").val() === "" ||
+                    $("#qtyStr").text() === "" ||
+                    $("#qtyInput").val() === "" ||
+                    $("#locationIdInput").val() === "") ||
+                    !isValidLocationIDInput($("#labelIdInput").val())
+                    ){
                         console.log("it's work")
                         return;
                     }
@@ -162,6 +169,10 @@
                         });
                     }
                 });
+            });
+
+            $("#cancelBtn").click(function () {
+                window.location.href = '@Url.Action("Index")';
             });
 
             $("#labelIdInput").on("input", function () {
@@ -212,13 +223,16 @@
                     // Clear the fields if the input format is incorrect
                     $("#itemNameStr").text("Item Name not found");
                     $("#itemNameStr").attr("style", "color: red;");
-
+                    $("#itemNameInput").val("");
                     $("#itemCodeStr").text("Item Code not found");
                     $("#itemCodeStr").attr("style", "color: red;");
+                    $("#itemCodeInput").val("");
                     $("#lotNoStr").text("Lot No not found");
-$("#lotNoStr").attr("style", "color: red;");
+                    $("#lotNoStr").attr("style", "color: red;");
+                    $("#lotNoInput").val("");
                     $("#qtyStr").text("Qty not found");
-$("#qtyStr").attr("style", "color: red;");
+                    $("#qtyStr").attr("style", "color: red;");
+                    $("#qtyInput").val("");
                 }
 
                 
