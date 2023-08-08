@@ -7,7 +7,6 @@ namespace QuotationSystem.Data.Repositories.Interfaces
     public interface IStockRepository
     {
         bool addStockIn(TStock inStock);
-        IQueryable<TStock> GetStockList(DataTableOptionModel dtOption, string itemCode = "", string whId = "");
-
+        DataTableResultModel<TStock> GetStockList(DataTableOptionModel dtOption, string itemCode = "", string whId = "");
     }
 }

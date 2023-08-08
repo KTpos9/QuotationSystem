@@ -38,22 +38,8 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public JsonResult Search(string itemCode, string whId, DataTableOptionModel option)
         {
-            if (itemCode == null)
-            {
-                itemCode = string.Empty;
-            }
-
-            if (whId == null)
-            {
-                whId = string.Empty;
-            }
-
             var result = stockRepository.GetStockList(option, itemCode: itemCode, whId: whId);
-            var response = result.ToList().AsQueryable().ToDataTableResult(option).ToJsonResult(option);
-            return response;
+            return result.ToJsonResult(option);
         }
-
-
-
     }
 }
