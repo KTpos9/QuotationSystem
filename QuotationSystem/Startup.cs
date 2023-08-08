@@ -95,7 +95,7 @@ namespace QuotationSystem
             services.AddScoped<IStockRepository, StockRepository>();
 
 
-            var connectionString = Configuration.GetConnectionString("Default");
+            var connectionString = Configuration.GetConnectionString("RemoteServer");
             services.AddScoped(option => new DbContextOptionBuilder(connectionString));
         }
 
