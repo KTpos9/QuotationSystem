@@ -1,0 +1,106 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model QuotationSystem.Models.StockAsOn.StockAsOnViewModel
+@{
+    ViewData["Title"] = "Stock As On";
+}
+<div class="p-3 pt-5">
+    <div class="d-flex flex-column" style="gap:1rem">
+        <!--Search form-->
+        <form class="d-flex" style="gap:1rem;">
+            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
+                <div>Item Code:</div>
+                <input class="form-control" type="text" id="itemCodeInput" />
+            </div>
+
+            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
+                <div>Warehouse:</div>
+                @Html.DropDownListFor(m => m.WhId, new SelectList(Model.WhIds), new { @class = "form-control", id ="whIdInput"})
+            </div>
+
+            <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+
+        <!--Add Button-->
+        <div class="d-flex w-100 justify-content-end">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">Export</button>
+        </div>
+
+        <!--table-->
+        <div class="table-responsive ibox-content">
+            <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            var colOptions = [
+                { title: "Item Code", data: "itemCode", className: "text-center" },
+                { title: "Item Name", data: "itemCodeNavigation.itemName", className: "text-center" },
+                { title: "WH ID", data: "whId", className: "text-center" },
+                { title: "Stock Qty", data: "qty", className: "text-center" },
+            ];
+            table = $('#item-table').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "bLengthChange": false,
+                "responsive": true,
+                "bFilter": true,
+                "searching": false,
+                "pageLength": 20,
+                "displayStart": 0,
+                "ajax": {
+                    url: "@Url.Action("Search")",
+                    type: "POST",
+                    data: (opt) => {
+                        console.log($('#search-criteria').serializeToJSON());
+                        console.table(opt);
+                        return {
+                            itemCode: `${$('#itemCodeInput').val()}`,
+                            whId: `${$('#whIdInput').val()}`,
+                            option: opt
+                        };
+                    },
+                    error: handlerDataTableError
+                },
+                "columns": colOptions,
+            });
+
+            $('#item-table tbody').on('dblclick', 'tr', (event) => {
+                // Get the row data
+                var rowData = table.row(event.target).data();
+
+                // Send the row data to the controller
+                $.ajax({
+                    url: '@Url.Action("ViewStockAsOnDetail", "StockAsOn")',
+                    type: 'POST',
+                    data: {
+                        itemCode: rowData.itemCode,
+                        whId: rowData.whId,
+                    },
+                    success: (data) => {
+                        // Redirect to the view stock as on detail page
+                        window.location.href = '@Url.Action("ViewStockAsOnDetail", "StockAsOn")';
+                    },
+                    error: handlerDataTableError
+                });
+            });
+
+            $("#search-button").click(() => {
+                table.ajax.reload();
+            });
+
+            function handlerDataTableError(xhr, error, code) {
+                var isUnauthorized = code === "Unauthorized";
+                if (isUnauthorized) {
+                    alert("Session Timeout");
+                }
+            }
+        });
+
+    </script>
+}
