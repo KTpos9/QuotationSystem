@@ -24,7 +24,7 @@
 
         <!--Add Button-->
         <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">Export</button>
+            <button class="btn btn-primary" id="export-button">Export</button>
         </div>
 
         <!--table-->
@@ -76,7 +76,7 @@
 
                 // Send the row data to the controller
                 $.ajax({
-                    url: '@Url.Action("ViewStockAsOnDetail", "StockAsOn")',
+                    url: '@Url.Action("StockAsOnDetail", "StockAsOn")',
                     type: 'POST',
                     data: {
                         itemCode: rowData.itemCode,
@@ -84,7 +84,7 @@
                     },
                     success: (data) => {
                         // Redirect to the view stock as on detail page
-                        window.location.href = '@Url.Action("ViewStockAsOnDetail", "StockAsOn")';
+                        window.location.href = '@Url.Action("StockAsOnDetail", "StockAsOn")';
                     },
                     error: handlerDataTableError
                 });
@@ -93,6 +93,31 @@
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
+
+            $("#export-button").click(() => {
+                $.ajax({
+                    url: '@Url.Action("ExportToExcel")', // Replace with your actual controller and method names
+                    method: 'POST',
+                    data: {
+                        itemCode: $('#itemCodeInput').val(),
+                        whId: $('#whIdInput').val()
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success: function (data) {
+                        var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'StockData.xlsx'; // You can customize the filename
+                        link.click();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
 
             function handlerDataTableError(xhr, error, code) {
                 var isUnauthorized = code === "Unauthorized";

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QuotationSystem.ApplicationCore.Models.StockAsOnDetail;
 using QuotationSystem.Data.Helpers;
 using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Repositories.Interfaces;
@@ -22,24 +23,35 @@ namespace QuotationSystem.Data.Repositories
             this.option = option;
         }
 
-        public bool addStockIn(TStock inStock)
+        public (bool isValid, string exMessage) addStockIn(TStock inStock)
         {
             using (var db = new QuotationContext(option))
             {
                 try {
                     db.Add(inStock);
                     db.SaveChanges();
-                    return true;
+                    return (isValid:true, exMessage:"");
                 }
                 catch(Exception ex) {
                 Console.WriteLine(ex.Message);
-                    return false;
+                    if(ex.InnerException != null)
+                    {
+                        if (ex.InnerException.Message.Contains("Cannot insert duplicate key"))
+                        {
+                            return (isValid: false, exMessage: "Cannot insert duplicate Label ID");
+                        };
+                        if (ex.InnerException.Message.Contains("The INSERT statement conflicted with the FOREIGN KEY constraint"))
+                        {
+                            return (isValid: false, exMessage: "Not Found Location ID ");
+                        };
+                    }
+                    return (isValid: false, exMessage: ex.InnerException.Message);
                 }
                 
             }
         }
 
-        public IQueryable<TStock> GetStockList(DataTableOptionModel dtOption, string itemCode = "", string whId = "")
+        public IQueryable<TStock> GetStockList(string itemCode = "", string whId = "")
         {
             var db = new QuotationContext(option);
             var itemNames = db.MItems
@@ -65,9 +77,28 @@ namespace QuotationSystem.Data.Repositories
 
 
 
+        public IQueryable<StockAsOnDetailModel> GetLabelList(string itemCode, string whId)
+        {
+            var db = new QuotationContext(option);
+            var labelList = db.TStocks
+                            .WhereIf(!string.IsNullOrEmpty(whId), x => x.WhId == whId)
+                            .WhereIf(!string.IsNullOrEmpty(itemCode), x => x.ItemCode.Contains(itemCode))
+                            .Join(db.MLocations, stock => stock.LocationId, location => location.LocationId,
+                                (stock, location) => new StockAsOnDetailModel
+                                {
+                                    LabelId = stock.LabelId,
+                                    ItemCode = stock.ItemCode,
+                                    LotNo = stock.LotNo,
+                                    LocationName = location.LocationName,
+                                    Qty = stock.Qty,
+                                    StockInDate = stock.StockInDate.ToString("dd/MM/yyyy") // Format the date as needed
+                                });
 
-        //public DataTableResultModel<ItemWithStockQtyModel> GetLabelList
+            return labelList;
+        }
+    
 
 
-    }
+
+}
 }
