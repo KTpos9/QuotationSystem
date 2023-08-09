@@ -91,7 +91,7 @@ namespace QuotationSystem.Data.Repositories
                                     LotNo = stock.LotNo,
                                     LocationName = location.LocationName,
                                     Qty = stock.Qty,
-                                    StockInDate = stock.StockInDate.ToString("dd/MM/yyyy") // Format the date as needed
+                                    StockInDate = stock.StockInDate.ToString("dd/MM/yyyy")
                                 });
 
             return labelList;

@@ -80,7 +80,7 @@ namespace QuotationSystem.Controllers
                 worksheet.Column(3).AutoFit();
                 worksheet.Column(4).AutoFit();
                 var stream = new MemoryStream(package.GetAsByteArray());
-                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StockData.xlsx");
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StockAsOnData.xlsx");
 
             }
         }
@@ -98,7 +98,6 @@ namespace QuotationSystem.Controllers
         public JsonResult GetStockAsOnDetail(string itemCode, string whId, DataTableOptionModel option)
         {
             var result = stockRepository.GetLabelList(itemCode: itemCode, whId: whId);
-            var x = result.ToList();
             var response = result.ToDataTableResult(option).ToJsonResult(option);
             return response;
         }
