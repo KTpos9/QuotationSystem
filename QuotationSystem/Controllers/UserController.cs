@@ -14,8 +14,8 @@ using QuotationSystem.ApplicationCore.Constants;
 
 namespace QuotationSystem.Controllers
 {
-    [Authorize(Policy = Policy.UserManagement)]
-    //[AllowAnonymous]
+    //[Authorize(Policy = Policy.UserManagement)]
+    [AllowAnonymous]
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
