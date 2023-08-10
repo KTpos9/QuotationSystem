@@ -14,8 +14,7 @@ using QuotationSystem.ApplicationCore.Constants;
 
 namespace QuotationSystem.Controllers
 {
-    //[Authorize(Policy = Policy.UserManagement)]
-    [AllowAnonymous]
+    [Authorize(Policy = Policy.UserManagement)]
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
@@ -33,6 +32,7 @@ namespace QuotationSystem.Controllers
             CurrentUser = sessionContext.CurrentUser.Id;
             this.configRepository = configRepository;
         }
+
         public IActionResult UserList()
         {
             UserViewModel model = sessionContext.GetCriteria(nameof(UserController), () => new UserViewModel { });
