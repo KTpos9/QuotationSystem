@@ -41,7 +41,7 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public JsonResult Search(string itemCode, string whId, DataTableOptionModel option)
         {
-            var result = stockRepository.GetStockList(option, itemCode: itemCode, whId: whId);
+            var result = stockRepository.GetStockList(itemCode: itemCode, whId: whId).ToDataTableResult(option);
             return result.ToJsonResult(option);
         }
         
@@ -83,6 +83,13 @@ namespace QuotationSystem.Controllers
 
             }
         }
+
+        [HttpPost]
+        public IActionResult StockAsOnDetailRedirect(string itemCode, string whId)
+        {
+            return RedirectToAction("StockAsOnDetail", new { itemCode, whId });
+        }
+
         public IActionResult StockAsOnDetail(string itemCode, string whId)
         {
             var model = new StockAsOnDetailViewModel

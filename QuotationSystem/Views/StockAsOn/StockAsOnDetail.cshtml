@@ -28,7 +28,8 @@
                 { title: "Qty", data: "qty", className: "text-center" },
                 { title: "Stock In Date", data: "stockInDate", className: "text-center" },
             ];
-
+            console.log("@Model.ItemCode");
+            console.log("@Model.ItemName");
             table = $('#item-table').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -44,7 +45,7 @@
                     data: (opt) => {
                         return {
                             itemCode: "@Model.ItemCode",
-                            whId: "@Model.ItemName",
+                            whId: "@Model.WhId",
                             option: opt
                         };
                     }
