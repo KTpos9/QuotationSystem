@@ -22,8 +22,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace QuotationSystem.Controllers
 {
-    //[Authorize(Policy = Policy.ItemManagement)]
-    [AllowAnonymous]
+    [Authorize(Policy = Policy.ItemManagement)]
     public class ItemController : Controller
     {
         private readonly IItemRepository itemRepository;

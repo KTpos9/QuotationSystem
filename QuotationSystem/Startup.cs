@@ -38,7 +38,7 @@ namespace QuotationSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.ConfigureSession($"{nameof(QuotationSystem)}.Session", 60000);
+            services.ConfigureSession($"{nameof(QuotationSystem)}.Session", 600);
 
             services.AddControllersWithViews(option => {
                 option.ModelBinderProviders.Insert(0, new DefaultBinderProvider());
@@ -118,6 +118,7 @@ namespace QuotationSystem
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
