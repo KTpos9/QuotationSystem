@@ -10,6 +10,5 @@ namespace QuotationSystem.Data.Repositories.Interfaces
         (bool isValid, string exMessage) addStockIn(TStock inStock);
         IQueryable<TStock> GetStockList(string itemCode = "", string whId = "");
         IQueryable<StockAsOnDetailModel> GetLabelList(string itemCode, string whId);
-
     }
 }

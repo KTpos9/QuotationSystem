@@ -5,8 +5,13 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MWH
+    public partial class MWh
     {
+        public MWh()
+        {
+            TStocks = new HashSet<TStock>();
+        }
+
         public string WhId { get; set; }
         public string WhName { get; set; }
         public string Remark { get; set; }
@@ -15,5 +20,7 @@ namespace QuotationSystem.Data.Models
         public DateTime CreateDate { get; set; }
         public string UpdateBy { get; set; }
         public DateTime? UpdateDate { get; set; }
+
+        public virtual ICollection<TStock> TStocks { get; set; }
     }
 }

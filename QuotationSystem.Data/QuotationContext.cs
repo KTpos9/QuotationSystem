@@ -26,7 +26,7 @@ namespace QuotationSystem.Data
         public virtual DbSet<MUnit> MUnits { get; set; }
         public virtual DbSet<MUser> MUsers { get; set; }
         public virtual DbSet<MUserPermission> MUserPermissions { get; set; }
-        public virtual DbSet<MWH> MWhs { get; set; }
+        public virtual DbSet<MWh> MWhs { get; set; }
         public virtual DbSet<TQuotationDetail> TQuotationDetails { get; set; }
         public virtual DbSet<TQuotationHeader> TQuotationHeaders { get; set; }
         public virtual DbSet<TRunningNo> TRunningNos { get; set; }
@@ -458,7 +458,7 @@ namespace QuotationSystem.Data
                     .HasConstraintName("FK_m_user_permission_m_user");
             });
 
-            modelBuilder.Entity<MWH>(entity =>
+            modelBuilder.Entity<MWh>(entity =>
             {
                 entity.HasKey(e => e.WhId);
 
@@ -740,6 +740,18 @@ namespace QuotationSystem.Data
                     .HasForeignKey(d => d.ItemCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_t_stock_m_item");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.TStocks)
+                    .HasForeignKey(d => d.LocationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_t_stock_m_location");
+
+                entity.HasOne(d => d.Wh)
+                    .WithMany(p => p.TStocks)
+                    .HasForeignKey(d => d.WhId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_t_stock_m_wh");
             });
 
             OnModelCreatingPartial(modelBuilder);

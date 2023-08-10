@@ -41,9 +41,8 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public JsonResult Search(string itemCode, string whId, DataTableOptionModel option)
         {
-            var result = stockRepository.GetStockList(itemCode: itemCode, whId: whId);
-            var response = result.ToList().AsQueryable().ToDataTableResult(option).ToJsonResult(option);
-            return response;
+            var result = stockRepository.GetStockList(option, itemCode: itemCode, whId: whId);
+            return result.ToJsonResult(option);
         }
         
         public IActionResult ExportToExcel(string itemCode, string whId)

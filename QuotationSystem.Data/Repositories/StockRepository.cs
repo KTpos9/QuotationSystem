@@ -51,31 +51,25 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public IQueryable<TStock> GetStockList(string itemCode = "", string whId = "")
+
+        public DataTableResultModel<TStock> GetStockList(DataTableOptionModel dtOption, string itemCode = "", string whId = "")
         {
-            var db = new QuotationContext(option);
-            var itemNames = db.MItems
-                            .WhereIf(!string.IsNullOrEmpty(itemCode), x => x.ItemCode.Contains(itemCode))
-                            .Select(x => new { x.ItemCode, x.ItemName });
-            var stock = db.TStocks
-                        .Include(s => s.ItemCodeNavigation)
-                        .WhereIf(!string.IsNullOrEmpty(whId), x => x.WhId == whId)
-                        .WhereIf(!string.IsNullOrEmpty(itemCode), x => x.ItemCode.Contains(itemCode))
-                        .GroupBy(x => new { x.WhId, x.ItemCode })
-                        .Select(x => new TStock
-                        {
-                            WhId = x.Key.WhId,
-                            ItemCode = x.Key.ItemCode,
-                            Qty = x.Sum(y => y.Qty),
-                            ItemCodeNavigation = itemNames.Where(y => y.ItemCode == x.Key.ItemCode).Select(y => new MItem
-                            {
-                                ItemName = y.ItemName
-                            }).FirstOrDefault()
-                        });
-            return stock;
+            using(var db = new QuotationContext(option))
+            {
+                var stock = db.TStocks.Include(t => t.ItemCodeNavigation)
+                    .WhereIf(!string.IsNullOrEmpty(itemCode), x => x.ItemCode.Contains(itemCode))
+                    .WhereIf(!string.IsNullOrEmpty(whId), x => x.ItemCode.Contains(whId))
+                    .Select(s => new TStock
+                    {
+                        ItemCode = s.ItemCode,
+                        WhId = s.WhId,
+                        Qty = s.Qty,
+                        ItemCodeNavigation = s.ItemCodeNavigation
+                    })
+                    .ToDataTableResult(dtOption);
+                return stock;
+            }   
         }
-
-
 
         public IQueryable<StockAsOnDetailModel> GetLabelList(string itemCode, string whId)
         {
@@ -101,4 +95,5 @@ namespace QuotationSystem.Data.Repositories
 
 
 }
+
 }
