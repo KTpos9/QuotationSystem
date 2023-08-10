@@ -73,21 +73,7 @@
             $('#item-table tbody').on('dblclick', 'tr', (event) => {
                 // Get the row data
                 var rowData = table.row(event.target).data();
-
-                // Send the row data to the controller
-                $.ajax({
-                    url: '@Url.Action("StockAsOnDetail", "StockAsOn")',
-                    type: 'POST',
-                    data: {
-                        itemCode: rowData.itemCode,
-                        whId: rowData.whId,
-                    },
-                    success: (data) => {
-                        // Redirect to the view stock as on detail page
-                        window.location.href = '@Url.Action("StockAsOnDetail", "StockAsOn")';
-                    },
-                    error: handlerDataTableError
-                });
+                window.location.href = `/StockAsOn/StockAsOnDetail?itemCode=${rowData.itemCode}&whId=${rowData.whId}`;
             });
 
             $("#search-button").click(() => {
