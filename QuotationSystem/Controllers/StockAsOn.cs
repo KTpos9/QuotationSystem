@@ -11,6 +11,9 @@ using Zero.Core.Mvc.Extensions;
 using Zero.Core.Mvc.Models.DataTables;
 using Microsoft.EntityFrameworkCore;
 using Zero.Extension;
+using Microsoft.AspNetCore.Identity;
+using OfficeOpenXml;
+using System.IO;
 
 namespace QuotationSystem.Controllers
 {
@@ -41,5 +44,62 @@ namespace QuotationSystem.Controllers
             var result = stockRepository.GetStockList(option, itemCode: itemCode, whId: whId);
             return result.ToJsonResult(option);
         }
+        
+        public IActionResult ExportToExcel(string itemCode, string whId)
+        {
+            var result = stockRepository.GetStockList( itemCode: itemCode, whId: whId).ToList();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+                // Add headers
+                worksheet.Cells[1, 1].Value = "Item Code";
+                worksheet.Cells[1, 2].Value = "Item Name";
+                worksheet.Cells[1, 3].Value = "WH ID";
+                worksheet.Cells[1, 4].Value = "Stock Qty";
+
+                using (var headerRange = worksheet.Cells[1, 1, 1, 4])
+                {
+                    headerRange.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                }
+
+                int row = 2;
+                foreach (var stocklist in result)
+                {
+                    worksheet.Cells[row, 1].Value = stocklist.ItemCode;
+                    worksheet.Cells[row, 2].Value = stocklist.ItemCodeNavigation.ItemName;
+                    worksheet.Cells[row, 3].Value = stocklist.WhId;
+                    worksheet.Cells[row, 4].Value = stocklist.Qty;
+
+                    row++;
+                }
+                worksheet.Column(1).AutoFit();
+                worksheet.Column(2).AutoFit();
+                worksheet.Column(3).AutoFit();
+                worksheet.Column(4).AutoFit();
+                var stream = new MemoryStream(package.GetAsByteArray());
+                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StockAsOnData.xlsx");
+
+            }
+        }
+        public IActionResult StockAsOnDetail(string itemCode, string whId)
+        {
+            var model = new StockAsOnDetailViewModel
+            {
+                ItemCode = itemCode,
+                WhId = whId
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetStockAsOnDetail(string itemCode, string whId, DataTableOptionModel option)
+        {
+            var result = stockRepository.GetLabelList(itemCode: itemCode, whId: whId);
+            var response = result.ToDataTableResult(option).ToJsonResult(option);
+            return response;
+        }
+
     }
 }

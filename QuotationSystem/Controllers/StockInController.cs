@@ -57,18 +57,19 @@ namespace QuotationSystem.Controllers
                     CreateBy = sessionContext.CurrentUser.Id,
                     StockInDate = DateTime.Now,
                 };
-                if (stockRepository.addStockIn(stockIn))
+                var stockInResult = stockRepository.addStockIn(stockIn);
+                if (stockInResult.isValid)
                 {
                     return Json(new { success = true, message = "Stock in data has been saved successfully!" });
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Stock in data has already been saved" });
+                    return Json(new { success = false, message = stockInResult.exMessage });
                 }
 
             }
 
-            return Json(new { success = false, message = "Stock in data has been saved successfully!" });
+            return Json(new { success = false, message = "Invalid input" });
         }
 
     }
