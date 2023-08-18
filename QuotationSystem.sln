@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zero.Integration", "module-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zero.SqlServer", "module-zero\.NET Standard\Zero.SqlServer\Zero.SqlServer.csproj", "{C8A71C07-B38E-46FE-998C-EA9FD01A802A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuotationSystem.ApplicationCore", "QuotationSystem.ApplicationCore\QuotationSystem.ApplicationCore.csproj", "{66550641-BE53-4A74-A12A-C6F0D57BF1BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuotationSystem.ApplicationCore", "QuotationSystem.ApplicationCore\QuotationSystem.ApplicationCore.csproj", "{66550641-BE53-4A74-A12A-C6F0D57BF1BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuotationSystem.Test", "QuotationSystem.Test\QuotationSystem.Test.csproj", "{04761332-FB78-44BC-934E-32EDAFB4BA0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{66550641-BE53-4A74-A12A-C6F0D57BF1BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66550641-BE53-4A74-A12A-C6F0D57BF1BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66550641-BE53-4A74-A12A-C6F0D57BF1BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04761332-FB78-44BC-934E-32EDAFB4BA0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04761332-FB78-44BC-934E-32EDAFB4BA0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04761332-FB78-44BC-934E-32EDAFB4BA0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04761332-FB78-44BC-934E-32EDAFB4BA0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
