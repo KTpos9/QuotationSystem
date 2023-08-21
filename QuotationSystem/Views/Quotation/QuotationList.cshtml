@@ -194,7 +194,7 @@
         }
 
         function previewQuotation(id) {
-            location.href = `/Quotation/PreviewQuotation?quotationNo=${id}`;
+            window.open(`/Quotation/PreviewQuotation?quotationNo=${id}`, "_blank");
         }
 
         function handlerDataTableError(xhr, error, code) {
@@ -258,7 +258,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
-                             location.href = `/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`;
+                             window.open(`/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`, "_blank");
                          });
                      }
                      else {
