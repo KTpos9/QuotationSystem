@@ -1,14 +1,15 @@
 ﻿using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using QuotationSystem.Test.Pages;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace QuotationSystem.Test.Tests
 {
-    [Parallelizable(ParallelScope.Self)]
-    [FixtureLifeCycle(LifeCycle.InstancePerTestCase)]
-    [TestFixture]
-    public class UserManagementTest : PageTest
+    public class ItemManagementTest : PageTest
     {
         private readonly string webUrl = "http://localhost:5000";
         [SetUp]
@@ -19,11 +20,18 @@ namespace QuotationSystem.Test.Tests
             await loginPage.Login("EMP001", "234567");
         }
         [Test]
-        public async Task SearchForId()
+        public async Task SearchItemCode()
         {
             await Page.GotoAsync($"{webUrl}/User/UserList");
             var userManagement = new UserManagementPage(Page);
             await userManagement.Search(userID: "EMP001");
+            await Expect(Page.Locator("#user-table>tbody>tr:nth-child(1)>td:nth-child(2)")).ToHaveTextAsync("EMP001");
+        }
+        public async Task SearchItemName()
+        {
+            await Page.GotoAsync($"{webUrl}/Ttem/ItemList");
+            var userManagement = new ItemManagementPage(Page);
+            await userManagement.Search(itemCode: "");
             await Expect(Page.Locator("#user-table>tbody>tr:nth-child(1)>td:nth-child(2)")).ToHaveTextAsync("EMP001");
         }
         [TearDown]
