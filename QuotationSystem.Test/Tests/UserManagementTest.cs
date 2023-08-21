@@ -19,7 +19,7 @@ namespace QuotationSystem.Test.Tests
             await loginPage.Login("EMP001", "234567");
         }
         [Test]
-        public async Task UserManagement_SearchForId()
+        public async Task SearchForId()
         {
             await Page.GotoAsync($"{webUrl}/User/UserList");
             var userManagement = new UserManagementPage(Page);
