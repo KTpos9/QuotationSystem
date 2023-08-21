@@ -12,6 +12,9 @@
         <!--table-->
         <div class="table-responsive ibox-content">
             <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            <a href="/StockAsOn">
+                <button class="btn btn-success" type="button" id="backBtn"><i class="fa fa-long-arrow-left"></i> Back</button>
+            </a>
         </div>
     </div>
 </div>
@@ -21,12 +24,12 @@
     <script>
         $(document).ready(() => {
             var colOptions = [
-                { title: "Label ID", data: "labelId", className: "text-center" },
-                { title: "Item Code", data: "itemCode", className: "text-center" },
-                { title: "Lot No", data: "lotNo", className: "text-center" },
-                { title: "Location", data: "locationName", className: "text-center" },
-                { title: "Qty", data: "qty", className: "text-center" },
-                { title: "Stock In Date", data: "stockInDate", className: "text-center" },
+                { title: '<div class="text-center">Label ID</div>', data: "labelId", className: "text-left" },
+                { title: '<div class="text-center">Item Code</div>', data: "itemCode", className: "text-left" },
+                { title: '<div class="text-center">Lot No</div>', data: "lotNo", className: "text-left" },
+                { title: '<div class="text-center">Location</div>', data: "locationName", className: "text-left" },
+                { title: '<div class="text-center">Qty</div>', data: "qty", className: "text-right" },
+                { title: '<div class="text-center">Stock In Date</div>', data: "stockInDate", className: "text-center" },
             ];
             console.log("@Model.ItemCode");
             console.log("@Model.ItemName");

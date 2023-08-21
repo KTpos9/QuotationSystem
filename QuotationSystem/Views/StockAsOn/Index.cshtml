@@ -5,6 +5,12 @@
 @{
     ViewData["Title"] = "Stock As On";
 }
+<style>
+    .table thead th {
+        text-align: center;
+    }
+</style>
+
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
@@ -39,10 +45,12 @@
     <script>
         $(document).ready(() => {
             var colOptions = [
-                { title: "Item Code", data: "itemCode", className: "text-center" },
-                { title: "Item Name", data: "itemCodeNavigation.itemName", className: "text-center" },
-                { title: "WH ID", data: "whId", className: "text-center" },
-                { title: "Stock Qty", data: "qty", className: "text-center" },
+                {
+                    title: '<div class="text-center">Item Code</div>', data: "itemCode", className: "text-left"
+                },
+                { title: '<div class="text-center">Item Name</div>', data: "itemCodeNavigation.itemName", className: "text-left" },
+                { title: '<div class="text-center">WH ID</div>', data: "whId", className: "text-left" },
+                { title: '<div class="text-center">Stock Qty</div>', data: "qty", className: "text-right" },
             ];
             table = $('#item-table').DataTable({
                 "processing": true,
