@@ -97,5 +97,34 @@
                   }
             </tbody>
         </table>
+        <div class="d-flex justify-content-end">
+            <div class="d-flex flex-column" style="gap:1rem;">
+                <div class="row align-items-center justify-content-center" style="column-gap:1rem;">
+                    <div class="col-4 p-0">
+                        <h6 class="text-right m-0">Total</h6>
+                    </div>
+                    <div class="col">
+                        <div>@Model.Quotation.Total.ToString("#,#") THB</div>
+                    </div>
+                </div>
+                <div class="row align-items-center justify-content-center" style="column-gap:1rem;">
+                    <div class="col-4 p-0">
+                        <h6 class="text-right m-0">VAT 7%</h6>
+                    </div>
+                    <div class="col">
+                        @{double vat = Model.Quotation.Total * (double)Model.Quotation.Vat;}
+                        <div>@vat.ToString("#,#") THB</div>
+                    </div>
+                </div>
+                <div class="row align-items-center justify-content-center" style="column-gap:1rem;">
+                    <div class="col-4 p-0">
+                        <h6 class="text-right m-0 text-nowrap">Grand Total</h6>
+                    </div>
+                    <div class="col">
+                        <div>@Convert.ToDouble(Model.Quotation.GrandTotal).ToString("#,#") THB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
