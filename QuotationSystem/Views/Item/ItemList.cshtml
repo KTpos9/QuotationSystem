@@ -1,14 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model QuotationSystem.Models.Item.ItemViewModel
+﻿@model QuotationSystem.Models.Item.ItemViewModel
 @{
     ViewData["Title"] = "Item List";
 }
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="d-flex" style="gap:1rem;">
+        <form class="d-flex ibox-content" style="gap:1rem;">
             <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
                 <div>Item Code:</div>
                 <input class="form-control" type="text" id="textId" />
@@ -21,14 +18,12 @@
 
             <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
-
-        <!--Add Button-->
-        <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-plus"></i>Upload Item</button>
-        </div>
-
+        
         <!--table-->
         <div class="table-responsive ibox-content">
+            <div class="d-flex w-100 justify-content-end mb-2">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-upload"></i> Upload Item</button>
+            </div>
             <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
         </div>
     </div>
@@ -92,7 +87,7 @@
             }
             return `<div class="d-flex justify-content-center" style="gap:.5rem">
                         <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
-                        <button class="btn btn-danger" onclick="getDeleteItemModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-danger" onclick="deleteItemSwal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
@@ -123,14 +118,32 @@
                 }
             });
         }
+        function deleteItemSwal(itemCode){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#3085d6',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteItem(itemCode);
+                }
+            });
+        }
         function deleteItem(itemCode) {
             $.ajax({
                 url: '@Url.Action("DeleteItem")',
                 type: 'DELETE',
                 data: { itemCode: itemCode },
                 success: () => {
-                    $("#deleteItemModal").modal("toggle");
                     $('#item-table').DataTable().ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                    });
                 }
             });
         }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +21,7 @@ using Zero.Core.Mvc.View;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Zero.Core.Mvc.ViewLocators;
 using QuotationSystem.Data.Repositories.Interfaces;
+using FluentValidation;
 
 namespace QuotationSystem
 {
@@ -40,13 +40,16 @@ namespace QuotationSystem
             services.AddMemoryCache();
             services.ConfigureSession($"{nameof(QuotationSystem)}.Session", 600);
 
-            services.AddControllersWithViews(option => {
+            services.AddControllersWithViews(option =>
+            {
                 option.ModelBinderProviders.Insert(0, new DefaultBinderProvider());
-            })   
+            })
                 .AddRazorRuntimeCompilation()
-                 .AddSessionStateTempDataProvider()
-                 .AddFluentValidation(configuration => { configuration.RegisterValidatorsFromAssemblyContaining<Startup>(); })
-                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                .AddSessionStateTempDataProvider();
+                 //.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssemblyContaining<Startup>();
 
             services.Configure<RazorViewEngineOptions>(options =>
             {

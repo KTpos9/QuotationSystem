@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.ConditionalFormatting;
 using QuotationSystem.Data.Helpers;
 using QuotationSystem.Data.Models;
 using System;
@@ -112,13 +113,71 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public List<TQuotationHeader> GetTodayQuotationHeader()
+        public DataTableResultModel<TQuotationHeader> GetTodayQuotationHeader(DataTableOptionModel dtOption)
         {
             using (var db = new QuotationContext(option))
             {
-                return db.TQuotationHeaders.Where(x => x.UpdateDate.Value.Date == DateTime.Today.Date).ToList();
+                return db.TQuotationHeaders
+                    .Where(x => x.UpdateDate.Value.Date == DateTime.Today)
+                    .Select(q => new TQuotationHeader
+                    {
+                        QuotationDate = q.QuotationDate,
+                        QuotationNo = q.QuotationNo,
+                        CustomerName = q.CustomerName,
+                        Seller = q.Seller,
+                        Total = q.Total,
+                        GrandTotal = q.GrandTotal,
+                        ActiveStatus = q.ActiveStatus
+                    })
+                    .ToDataTableResult(dtOption);
             }
         }
+        public (int todayCount, int weeklyCount, int monthlyCount) GetQuotationCounts()
+        {
+            using (var db = new QuotationContext(option))
+            {
+                DateTime today = DateTime.Today;
+
+                // Calculate start and end dates for the week
+                int daysUntilMonday = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+                DateTime startOfWeek = today.AddDays(-daysUntilMonday).Date;
+                DateTime endOfWeek = startOfWeek.AddDays(6).Date;
+
+                // Calculate start and end dates for the month
+                DateTime startOfMonth = new DateTime(today.Year, today.Month, 1);
+                DateTime endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+                // Adjust end of month to include all days
+                int daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+                endOfMonth = endOfMonth.AddDays(daysInMonth - 1);
+
+                // Query to get counts for today, this week, and this month in a single database call
+                var counts = db.TQuotationHeaders
+                    .Where(x => x.UpdateDate.Value.Date == today ||
+                                (x.UpdateDate.Value >= startOfWeek && x.UpdateDate.Value <= endOfWeek) ||
+                                (x.UpdateDate.Value >= startOfMonth && x.UpdateDate.Value <= endOfMonth))
+                    .GroupBy(x => new
+                    {
+                        IsToday = x.UpdateDate.Value.Date == today,
+                        IsWeekly = x.UpdateDate >= startOfWeek && x.UpdateDate <= endOfWeek,
+                        IsMonthly = x.UpdateDate >= startOfMonth && x.UpdateDate <= endOfMonth
+                    })
+                    .Select(g => new
+                    {
+                        Period = g.Key,
+                        Count = g.Count()
+                    })
+                    .ToList();
+
+                // Extract counts for today, this week, and this month
+                int todayCount = counts.FirstOrDefault(c => c.Period.IsToday)?.Count ?? 0;
+                int weeklyCount = counts.FirstOrDefault(c => c.Period.IsWeekly)?.Count ?? 0;
+                int monthlyCount = counts.FirstOrDefault(c => c.Period.IsMonthly)?.Count ?? 0;
+
+                return (todayCount, weeklyCount, monthlyCount);
+            }
+        }
+
         public int GetWeeklyCount()
         {
             using (var db = new QuotationContext(option))

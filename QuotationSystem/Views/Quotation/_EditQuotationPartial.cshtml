@@ -180,70 +180,70 @@
     });
 
     function submitEditedQuotation() {
-            let itemList = new Array();
-            $("#item-table-edit").find(".item-row-edit").each((index, element) => { //don't remove index, it's magic!
-                let $element = $(element);  // Convert it into a jQuery object, **javascript magic, u can't understand it**
-                let itemCode = $element.find("td:eq(1) input").val();
-                let itemName = $element.find("td:eq(2) input").val();
-                let itemDesc = $element.find("td:eq(3) input").val();
-                let Qty = $element.find("td:eq(4) input").val();
-                let unitId = $element.find("td:eq(5) input").val();
-                let unitPrice = $element.find("td:eq(6) input").val();
-                let discount = $element.find("td:eq(7) input").val();
-                let total = $element.find("td:eq(8) input").val();
+        let itemList = new Array();
+        $("#item-table-edit").find(".item-row-edit").each((index, element) => { //don't remove index, it's magic!
+            let $element = $(element);  // Convert it into a jQuery object, **javascript magic, u can't understand it**
+            let itemCode = $element.find("td:eq(1) input").val();
+            let itemName = $element.find("td:eq(2) input").val();
+            let itemDesc = $element.find("td:eq(3) input").val();
+            let Qty = $element.find("td:eq(4) input").val();
+            let unitId = $element.find("td:eq(5) input").val();
+            let unitPrice = $element.find("td:eq(6) input").val();
+            let discount = $element.find("td:eq(7) input").val();
+            let total = $element.find("td:eq(8) input").val();
 
-                let QuotationItemViewModel = {
-                    itemCode: itemCode,
-                    itemName: itemName,
-                    itemDesc: itemDesc,
-                    Qty: Qty,
-                    unitId: unitId,
-                    unitPrice: unitPrice,
-                    discount: discount,
-                    total: total
-                };
-                itemList.push(QuotationItemViewModel);
-            });
-            let model = {
-                quotationNo: $('#textEditQuotationNo').val(),
-                customer: $('#textEditCusName').val(),
-                customerAddress: $('#textEditCusAddress').val(),
-                customerContact: $('#textEditCusContact').val(),
-                taxId: $('#textEditTaxId').val(),
-                salesName: $('#textEditSellerName').val(),
-                vat: $('#textEditVat').val(),
-                activeStatus: $('#activeCheckboxEdit').prop('checked') ? 'Y' : 'N',
-            }
-            $.ajax({
-                url: '@Url.Action("EditQuotation")',
-                type: 'POST',
-                data: {
-                    quotationModel: model,
-                    itemList: itemList
-                },
-                success: (data, textStatus) => {
-                    console.log(data);
-                },
-                complete: (result) => {
-                    let data = result.responseJSON;
-                    console.log(data);
-                    if (data.isSuccess) {
-                        $("#editQuotationModal").modal("hide");
-                         swal.fire({
-                             title: 'Successfully edited!',
-                             icon: 'success'
-                         }).then(() => {
-                             location.reload();
-                         });
-                     }
-                     else {
-                        swal.fire({
-                            title: 'Error',
-                            text: 'Something went wrong',
-                            icon: 'error'
-                        })
-                     }
-                }
-            });
+            let QuotationItemViewModel = {
+                itemCode: itemCode,
+                itemName: itemName,
+                itemDesc: itemDesc,
+                Qty: Qty,
+                unitId: unitId,
+                unitPrice: unitPrice,
+                discount: discount,
+                total: total
+            };
+            itemList.push(QuotationItemViewModel);
+        });
+        let model = {
+            quotationNo: $('#textEditQuotationNo').val(),
+            customer: $('#textEditCusName').val(),
+            customerAddress: $('#textEditCusAddress').val(),
+            customerContact: $('#textEditCusContact').val(),
+            taxId: $('#textEditTaxId').val(),
+            salesName: $('#textEditSellerName').val(),
+            vat: $('#textEditVat').val(),
+            activeStatus: $('#activeCheckboxEdit').prop('checked') ? 'Y' : 'N',
         }
+        $.ajax({
+            url: '@Url.Action("EditQuotation")',
+            type: 'POST',
+            data: {
+                quotationModel: model,
+                itemList: itemList
+            },
+            success: (data, textStatus) => {
+                console.log(data);
+            },
+            complete: (result) => {
+                let data = result.responseJSON;
+                console.log(data);
+                if (data.isSuccess) {
+                    $("#editQuotationModal").modal("hide");
+                        swal.fire({
+                            title: 'Successfully edited!',
+                            icon: 'success'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    }
+                    else {
+                    swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    })
+                    }
+            }
+        });
+    }
 </script>
