@@ -15,7 +15,7 @@
             </li>
             <li class="@Html.IsSelected(controllers: "Home")">
                 <a href="@Url.Action("Index", "Home")">
-                    <i class="fa fa-address-book"></i>
+                    <i class="fa fa-home"></i>
                     <span class="nav-label">Home</span>
                 </a>
             </li>
@@ -32,7 +32,7 @@
             {
                 <li class="@Html.IsSelected(controllers: "Item")">
                     <a href="@Url.Action("ItemList", "Item")">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-box"></i>
                         <span class="nav-label">Item</span>
                     </a>
                 </li>
@@ -41,7 +41,7 @@
             {
                 <li class="@Html.IsSelected(controllers: "Quotation")">
                     <a href="@Url.Action("QuotationList", "Quotation")">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-file-lines"></i>
                         <span class="nav-label">Quotation</span>
                     </a>
                 </li>
@@ -49,54 +49,27 @@
 
             <li class="@Html.IsSelected(controllers: "CreateLabel")">
                 <a href="@Url.Action("index", "CreateLabel")">
-                    <i class="fa fa-users"></i>
+                    <i class="fa fa-tag"></i>
                     <span class="nav-label">Create label</span>
                 </a>
             </li>
-
             <li class="@Html.IsSelected(controllers: "StockIn")">
-                <a href="@Url.Action("index", "StockIn")">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Stock in</span>
-                </a>
-            </li>
-            
-            <li class="@Html.IsSelected(controllers: "StockAsOn")">
-                <a href="@Url.Action("index", "StockAsOn")">
-                    <i class="fa fa-users"></i>
-                    <span class="nav-label">Stock as on</span>
-                </a>
-            </li>
-
-            <li class="">
-                <a href="#">
-                    <i class="fa fa-send-o"></i><text> </text>
-                    <span class="nav-label">Notify</span>
-                    <span class="fa arrow"></span>
-                </a>
-                <ul class="nav nav-second-level collapse">
-                    <li class="">
-                        <a href="@Url.Action("Index","LineNotify")">
-                            <span class="">Line</span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="@Url.Action("Index","Email")">
-                            <span class="">Email</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="">
                 <a href="#">
                     <i class="fa fa-bars"></i><text> </text>
-                    <span class="nav-label">Functions</span>
+                    <span class="nav-label">Stock</span>
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-second-level collapse">
-                    <li class="">
-                        <a href="@Url.Action("Index","NumberToWord")">
-                            <span class="">Number To Word</span>
+                    <li class="@Html.IsSelected(controllers: "StockIn", actions: "Index")">
+                        <a href="@Url.Action("index", "StockIn")">
+                            <i class="fa fa-users"></i>
+                            <span class="nav-label">Stock in</span>
+                        </a>
+                    </li>
+                    <li class="@Html.IsSelected(controllers: "StockAsOn", actions: "Index")">
+                        <a href="@Url.Action("index", "StockAsOn")">
+                            <i class="fa fa-users"></i>
+                            <span class="nav-label">Stock as on</span>
                         </a>
                     </li>
                 </ul>
