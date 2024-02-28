@@ -1,17 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QuotationSystem.Data.Models;
-using QuotationSystem.Data;
-using QuotationSystem.Data.Repositories;
 using QuotationSystem.Data.Repositories.Interfaces;
 using QuotationSystem.Models.StockAsOn;
-using QuotationSystem.Models.StockIn;
 using System.Collections.Generic;
 using System.Linq;
 using Zero.Core.Mvc.Extensions;
 using Zero.Core.Mvc.Models.DataTables;
-using Microsoft.EntityFrameworkCore;
 using Zero.Extension;
-using Microsoft.AspNetCore.Identity;
 using OfficeOpenXml;
 using System.IO;
 
