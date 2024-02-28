@@ -5,31 +5,53 @@
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="d-flex" style="gap:1rem;">
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Quotaition No.:</div>
-                <input class="form-control" type="text" id="textQuotation"/>
+        <form class="row align-items-center ibox-content" style="row-gap:1rem;">
+            <div class="col-md-6 col-sm-12">
+                <div class="d-flex flex-column" style="gap: 1rem;">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-3 col-12 p-0">
+                            <h4 class="text-sm-right">Quotaition No.:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="text" id="textQuotation" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-3 col-12 p-0">
+                            <h4 class="text-sm-right">Date:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="date" id="startDate" />
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center" style="gap:.5rem;">
-                <div>Date:</div>
-                <input class="form-control" type="date" id="startDate"/>
-                <div>to</div>
-                <input class="form-control" type="date" id="endDate"/>
+            
+            <div class="col-md-6 col-sm-12">
+                <div class="d-flex flex-column" style="gap: 1rem;">
+                    <div class="row align-items-center justify-content-md-start justify-content-center align-items-center">
+                        <div class="col-sm-2 col-12 p-0">
+                            <h4 class="text-sm-right">Customer:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="text" id="textCustomer" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-md-start justify-content-center align-items-center">
+                        <div class="col-sm-2 p-0">
+                            <h4 class="text-sm-right">to:</h4>
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="date" id="endDate" />
+                        </div>
+                        <div class="col-sm-3 col-4 mt-sm-0 mt-2">
+                            <button type="button" class="btn btn-primary" id="search-button"><i class="fa fa-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center" style="gap:.5rem;">
-                <div>Customer:</div>
-                <input class="form-control" type="text" id="textCustomer"/>
-            </div>
-
-            <button type="button" class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
-
-        <!--Add Button-->
-        <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i>Add New</button>
-        </div>
         <!--Modal-->
         <partial name="_AddQuotationPartial" model="Model" />
         <div id="edit-quotation">
@@ -37,6 +59,10 @@
 
         <!--table-->
         <div class="table-responsive ibox-content">
+            <!--Add Button-->
+            <div class="d-flex w-100 justify-content-end">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i> Add New</button>
+            </div>
             <table id="quotation-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
         </div>
     </div>
@@ -120,7 +146,7 @@
             const month = dateToFormat.split('-')[1];
             const date = dateToFormat.split('-')[2];
             let result = `${date}/${month}/${year}`
-            console.log(result);
+            //console.log(result);
             return result;
         }
         function renderActionButtons(data, type, row) {
@@ -171,6 +197,8 @@
                 showCancelButton: true,
                 confirmButtonText: 'Yes',
                 denyButtonText: `No`,
+                cancelButtonColor: '#3085d6',
+                confirmButtonColor: '#d33',
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -181,7 +209,7 @@
                             console.log(result);
                             Swal.fire('Deleted!', '', 'success')
                                 .then(() => {
-                                    location.reload();
+                                    table.ajax.reload();
                                 });
                         },
                         error: (data) => {
