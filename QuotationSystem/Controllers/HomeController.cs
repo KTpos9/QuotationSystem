@@ -6,6 +6,8 @@ using QuotationSystem.Data.Sessions;
 using QuotationSystem.Models;
 using QuotationSystem.Models.Home;
 using System.Diagnostics;
+using Zero.Core.Mvc.Extensions;
+using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
@@ -27,11 +29,12 @@ namespace QuotationSystem.Controllers
         {
             if (sessionContext.IsLoggedIn)
             {
+                (int todayCount, int weeklyCount, int monthlyCount) = quotationRepository.GetQuotationCounts();
                 var model = new HomeViewModel
                 {
-                    QuotationHeader = quotationRepository.GetTodayQuotationHeader(),
-                    WeeklyCount = quotationRepository.GetWeeklyCount(),
-                    MonthlyCount = quotationRepository.GetMonthlyCount()
+                    TodayCount = todayCount,
+                    WeeklyCount = weeklyCount,
+                    MonthlyCount = monthlyCount
                 };
                 return View(model);
             }
@@ -47,6 +50,11 @@ namespace QuotationSystem.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult GetTodayQuotation(DataTableOptionModel option)
+        {
+            var result = quotationRepository.GetTodayQuotationHeader(option);
+            return result.ToJsonResult(option);
         }
     }
 }

@@ -12,7 +12,7 @@
                 <div class="col bg-success">
                     <div class="d-flex flex-column text-right">
                         <h2>Quotation Today</h2>
-                        <h1 class="m-2 font-weight-bolder">@Model.QuotationHeader.Count</h1>
+                        <h1 class="m-2 font-weight-bolder" id="quotationToday">@Model.TodayCount</h1>
                     </div>
                 </div>
 
@@ -34,48 +34,53 @@
 
         <!--table-->
         <div class="ibox-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Quotation No.</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Seller</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Grand Total</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                    int index = 1;
-                    }
-                    @foreach (var quotationHeader in Model.QuotationHeader)
-                    {
-                    <tr>
-                        <th scope="row">@index</th>
-                        <td>@quotationHeader.UpdateDate</td>
-                        <td>@quotationHeader.QuotationNo</td>
-                        <td>@quotationHeader.CustomerName</td>
-                        <td>@quotationHeader.Seller</td>
-                        <td>@quotationHeader.Total.ToString("#,0.00")฿</td>
-                        <td>@quotationHeader.GrandTotal?.ToString("#,0.00")฿</td>
-                        <td>
-                            @if (quotationHeader.ActiveStatus == "Y")
-                            {
-                            <div class="text-success">Active</div>
-                            }
-                            else
-                            {
-                            <div class="text-danger">Inactive</div>
-                            }
-                        </td>
-                    </tr>
-                    index++;
-                    }
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="home-table" class="table table-bordered table-hover table-striped w-100"></table>
+            </div>
         </div>
     </div>
 </div>
+@section Scripts{
+    <script>
+        let table;
+        $(document).ready(function () {
+
+        });
+
+        let colOptions = [
+            { "title": "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+            { "title": "Date", data: "quotationDate", className: "text-center text-nowrap" },
+            { "title": "Quotation No.", data: "quotationNo", className: "text-center text-nowrap" },
+            { "title": "Customer", data: "customerName", className: "text-center text-nowrap" },
+            { "title": "Seller", data: "seller", className: "text-center text-nowrap" },
+            { "title": "Total", data: "total", className: "text-center text-nowrap", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+            { "title": "Grand Total", data: "grandTotal", className: "text-center text-nowrap", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+            { "title": "Status", data: "activeStatus", className: "text-center text-nowrap", render: (data) => data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>' }
+        ]
+
+        table = $('#home-table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "bLengthChange": false,
+            "bFilter": true,
+            "searching": false,
+            "pageLength": 20,
+            "displayStart": 0,
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetTodayQuotation")",
+                "type": "POST",
+                "data": (opt) => {
+                    return opt;
+                }
+            },
+            "columns": colOptions
+        });
+
+        function renderStatus(){
+            if(data == "Y"){
+                return "Active";
+            }
+        }
+    </script>
+}
