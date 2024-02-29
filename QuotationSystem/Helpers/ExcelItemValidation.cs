@@ -38,7 +38,9 @@ namespace QuotationSystem.Helpers
                         UnitId = (string)_worksheet.Cells[row, 5].Value,
                         Remark = _worksheet.Cells[row, 6].Value is null ? "" : (string)_worksheet.Cells[row, 6].Value,
                         ActiveStatus = (string)_worksheet.Cells[row, 7].Value,
+                        CreateDate = DateTime.Now,
                         CreateBy = currentUser,
+                        UpdateDate = DateTime.Now,
                         UpdateBy = currentUser
                     };
 

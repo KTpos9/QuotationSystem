@@ -103,7 +103,7 @@ namespace QuotationSystem.Data.Repositories
             {
                 //await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
                 //await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
-                db.UpdateRange(items);
+                db.AddRange(items);
                 db.SaveChanges();
             }
         }
