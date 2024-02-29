@@ -286,6 +286,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
+                             table.ajax.reload();
                              window.open(`/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`, "_blank");
                          });
                      }
