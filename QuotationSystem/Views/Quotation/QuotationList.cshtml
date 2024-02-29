@@ -163,7 +163,7 @@
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
-            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+            return data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>';
         }
         function getEditQuotationModal(itemCode) {
             $.ajax({
