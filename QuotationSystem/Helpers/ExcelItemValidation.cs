@@ -51,36 +51,42 @@ namespace QuotationSystem.Helpers
 
         private bool IsValidExcel()
         {
+            int rowCount = _worksheet.Dimension?.End.Row ?? 0;
+            if (rowCount == 0)
+            {
+                ErrorLog.Append("The file is empty.\n");
+                return false;
+            }
             IsValidFormat = IsValidExcelHeader() && IsValidExcelData();
             return IsValidFormat;
         }
         private bool IsValidExcelHeader()
         {
-            ErrorLog.Append(_worksheet.Cells[1, 1].Value.ToString() switch
+            ErrorLog.Append(_worksheet.Cells[1, 1].Text switch
             {
                 "ItemCode" => "",
                 _ => "The table header of column 1 should be ItemCode\n"
-            }).Append(_worksheet.Cells[1, 2].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 2].Text switch
             {
                 "ItemName" => "",
                 _ => "The table header of column 2 should be ItemName\n"
-            }).Append(_worksheet.Cells[1, 3].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 3].Text switch
             {
                 "ItemDesc" => "",
                 _ => "The table header of column 3 should be ItemDesc\n"
-            }).Append(_worksheet.Cells[1, 4].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 4].Text switch
             {
                 "UnitPrice" => "",
                 _ => "The table header of column 4 should be UnitPrice\n"
-            }).Append(_worksheet.Cells[1, 5].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 5].Text switch
             {
                 "Unit" => "",
                 _ => "The table header of column 5 should be Unit\n"
-            }).Append(_worksheet.Cells[1, 6].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 6].Text switch
             {
                 "Remark" => "",
                 _ => "The table header of column 6 should be Remark\n"
-            }).Append(_worksheet.Cells[1, 7].Value.ToString() switch
+            }).Append(_worksheet.Cells[1, 7].Text switch
             {
                 "ActiveStatus" => "",
                 _ => "The table header of column 7 should be ActiveStatus\n"
