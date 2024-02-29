@@ -146,6 +146,7 @@ namespace QuotationSystem.Controllers
                     GrandTotal = sumOfItemPrice * (1 + (quotationModel.Vat / 100)),
                     TQuotationDetails = itemList.Select(item => new TQuotationDetail
                     {
+                        QuotationNo = quotationModel.QuotationNo,
                         ItemCode = item.itemCode,
                         ItemQty = item.Qty,
                         DiscountPercent = item.discount / 100,
@@ -159,7 +160,7 @@ namespace QuotationSystem.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(500, new { isSuccess = false, exception = e });
+                return StatusCode(500, Json(new { isSuccess = false, exception = e }));
             }
         }
         private string GenerateQuotationNo()

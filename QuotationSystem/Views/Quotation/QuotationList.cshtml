@@ -5,7 +5,7 @@
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="row align-items-center ibox-content" style="row-gap:1rem;">
+        <form class="row align-items-center ibox-content m-0" style="row-gap:1rem;">
             <div class="col-md-6 col-sm-12">
                 <div class="d-flex flex-column" style="gap: 1rem;">
                     <div class="row align-items-center justify-content-center">
@@ -163,7 +163,7 @@
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
-            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+            return data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>';
         }
         function getEditQuotationModal(itemCode) {
             $.ajax({
@@ -286,6 +286,7 @@
                              title: 'Successfully added!',
                              icon: 'success'
                          }).then(() => {
+                             table.ajax.reload();
                              window.open(`/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`, "_blank");
                          });
                      }

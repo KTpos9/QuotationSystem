@@ -56,15 +56,16 @@ namespace QuotationSystem.Controllers
                 sessionContext.CurrentUser = new UserSessionModel
                 {
                     Id = user.UserId,
+                    Name = user.UserName,
                     RoleIds = user.MUserPermissions
-                                 .Where(permission => permission.ActiveStatus == "Y")
-                                 .Select(permission => permission.MenuId switch
-                                 {
-                                     "USS010" => (int)RoleId.UserManagement,
-                                     "ITS010" => (int)RoleId.ItemManagement,
-                                     "QTS020" => (int)RoleId.QuotationManagement,
-                                     _ => throw new System.NotImplementedException()
-                                 }).ToList()
+                        .Where(permission => permission.ActiveStatus == "Y")
+                        .Select(permission => permission.MenuId switch
+                        {
+                            "USS010" => (int)RoleId.UserManagement,
+                            "ITS010" => (int)RoleId.ItemManagement,
+                            "QTS020" => (int)RoleId.QuotationManagement,
+                            _ => throw new System.NotImplementedException()
+                        }).ToList()
                 };
 
                 if (Url.IsLocalUrl(model.ReturnUrl))
