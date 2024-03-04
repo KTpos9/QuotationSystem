@@ -58,12 +58,14 @@
         </div>
 
         <!--table-->
-        <div class="table-responsive ibox-content">
+        <div class="ibox-content">
             <!--Add Button-->
             <div class="d-flex w-100 justify-content-end">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i> Add New</button>
             </div>
-            <table id="quotation-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            <div class="table-responsive">
+                <table id="quotation-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            </div>
         </div>
     </div>
 </div>
@@ -88,6 +90,7 @@
                 "bLengthChange": false,
                 "bFilter": true,
                 "searching": false,
+                "scrollX": true,
                 "pageLength": 15,
                 "displayStart": 0,
                 "ajax": {
