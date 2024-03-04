@@ -3,30 +3,49 @@
     ViewData["Title"] = "User List";
 }
 <div class="p-3">
-    <style>
-        .label-textbox-gap {
-            gap: .5rem;
-        }
-    </style>
     <div class="d-flex flex-column" style="gap: 1rem">
         <!--Search form-->
-        <form class="d-flex ibox-content" id="search-criteria" style="gap:1rem;">
-            <div class="d-flex align-items-center label-textbox-gap">
-                <div>UserID:</div>
-                <input class="form-control" id="textId" type="text" />
-            </div>
+        <form class="ibox-content" id="search-criteria" style="row-gap:1rem;">
+            <div class="container">
+                <div class="row m-0" style="row-gap:1rem;">
+                    <div class="col-md-6">
+                        <div class="row align-items-center">
+                            <h4 class="col-sm-4 p-0 text-sm-right">UserID:</h4>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="textId" type="text" />
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="d-flex align-items-center label-textbox-gap">
-                <div>Name:</div>
-                <input class="form-control" id="textName" type="text" />
-            </div>
+                    <div class="col-md-6">
+                        <div class="row align-items-center">
+                            <h4 class="col-sm-4 col-md-2 p-0 text-sm-right">Name:</h4>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="textName" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-0 mt-3" style="row-gap:1rem;">
+                    <div class="col-md-6">
+                        <div class="row align-items-center">
+                            <h4 class="col-sm-4 p-0 text-sm-right">Department:</h4>
+                            <div class="col-sm-8">
+                                <input class="form-control" id="textDepartment" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-sm-4 col-md-2 label-1pv">&nbsp;</div>
+                            <div class="col-sm-8">
+                                <button type="button" class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                            </div>
+                        </div>
 
-            <div class="d-flex align-items-center label-textbox-gap">
-                <div>Department:</div>
-                <input class="form-control" id="textDepartment" type="text" />
+                    </div>
+                </div>
             </div>
-
-            <button type="button" class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
         
         <!--Modal-->

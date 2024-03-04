@@ -5,18 +5,30 @@
 <div class="p-3 pt-5">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="d-flex ibox-content" style="gap:1rem;">
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Item Code:</div>
-                <input class="form-control" type="text" id="textId" />
+        <form class="row align-items-center m-0 ibox-content" style="row-gap: 1rem;">
+            <div class="col-md-6 col-sm-12 text-nowrap">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-sm-3 col-12">
+                        <h4 class="text-sm-right">Item Code:</h4>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <input class="form-control" type="text" id="textId" />
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Item Name:</div>
-                <input class="form-control" type="text" id="textName" />
+            <div class="col-md-6 col-sm-12 text-nowrap">
+                <div class="row align-items-center justify-content-md-start justify-content-center">
+                    <div class="col-sm-3 col-12">
+                        <h4 class="text-sm-right">Item Name:</h4>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <input class="form-control" type="text" id="textName" />
+                    </div>
+                    <div class="col-sm-3 col-4 mt-sm-0 mt-2">
+                        <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                    </div>
+                </div>
             </div>
-
-            <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
         
         <!--table-->
@@ -24,7 +36,9 @@
             <div class="d-flex w-100 justify-content-end mb-2">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-upload"></i> Upload Item</button>
             </div>
-            <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            <div class="table-responsive">
+                <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            </div>
         </div>
     </div>
     <!--Modal-->
@@ -56,6 +70,7 @@
                 "bFilter": true,
                 "searching": false,
                 "pageLength": 20,
+                "scrollX": true,
                 "displayStart": 0,
                 "ajax": {
                     url: "@Url.Action("Search")",
@@ -77,6 +92,12 @@
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
+        });
+        $('#fileImport').on('change', function () {
+            //get the file name
+            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
         });
 
         function renderActionButtons(data, type, row) {
