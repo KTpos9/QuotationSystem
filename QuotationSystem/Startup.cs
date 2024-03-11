@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Zero.Core.Mvc.ViewLocators;
 using QuotationSystem.Data.Repositories.Interfaces;
 using FluentValidation;
+using QuotationSystem.Services;
 
 namespace QuotationSystem
 {
@@ -97,6 +98,7 @@ namespace QuotationSystem
             services.AddScoped<IWHRepository, WHRepository>();
             services.AddScoped<IStockRepository, StockRepository>();
 
+            services.AddScoped<IExcelService, ExcelService>();
 
             var connectionString = Configuration.GetConnectionString("RemoteServer");
             services.AddScoped(option => new DbContextOptionBuilder(connectionString));
