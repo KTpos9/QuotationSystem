@@ -13,10 +13,11 @@
     <link rel="stylesheet" href="~/lib/sweetalert/sweetalert2.min.css" />
     <link rel="stylesheet" href="~/css/InspiniaStyle.css" />
     <link rel="stylesheet" href="~/css/animate.css"/>
+    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
     
     @*<link href="~/css/plugin-bundle.min.css" rel="stylesheet" asp-append-version="true" />*@
 </head>
-<body>
+<body hx-boost="true">
     <div id="wrapper" class="">
         <vc:left-navigation></vc:left-navigation>
         <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
