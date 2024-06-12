@@ -131,6 +131,5 @@ namespace QuotationSystem.Controllers
             }
             return list;
         }
-        private 
     }
 }
