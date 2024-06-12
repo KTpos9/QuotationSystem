@@ -1,75 +1,111 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     ViewData["Title"] = "Quotation List";
 }
-<div class="container pt-5">
+@model QuotationSystem.Models.Quotation.QuotationViewModel
+<div class="p-3 pt-5 animated fadeInRight">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="d-flex" style="gap:1rem;">
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Quotaition No.:</div>
-                <input class="form-control" type="text" />
+        <form class="row align-items-center ibox-content m-0" style="row-gap:1rem;">
+            <div class="col-md-6 col-sm-12">
+                <div class="d-flex flex-column" style="gap: 1rem;">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-3 col-12 p-0">
+                            <h4 class="text-sm-right">Quotaition No.:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="text" id="textQuotation" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-sm-3 col-12 p-0">
+                            <h4 class="text-sm-right">Date:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="date" id="startDate" />
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center" style="gap:.5rem;">
-                <div>Date:</div>
-                <input class="form-control" type="date" />
-                <div>to</div>
-                <input class="form-control" type="date" />
+            
+            <div class="col-md-6 col-sm-12">
+                <div class="d-flex flex-column" style="gap: 1rem;">
+                    <div class="row align-items-center justify-content-md-start justify-content-center align-items-center">
+                        <div class="col-sm-2 col-12 p-0">
+                            <h4 class="text-sm-right">Customer:</h4>
+                        </div>
+                        <div class="col-sm-6 col-12">
+                            <input class="form-control" type="text" id="textCustomer" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center justify-content-md-start justify-content-center align-items-center">
+                        <div class="col-sm-2 p-0">
+                            <h4 class="text-sm-right">to:</h4>
+                        </div>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="date" id="endDate" />
+                        </div>
+                        <div class="col-sm-3 col-4 mt-sm-0 mt-2">
+                            <button type="button" class="btn btn-primary" id="search-button"><i class="fa fa-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center" style="gap:.5rem;">
-                <div>Customer:</div>
-                <input class="form-control" type="text" />
-            </div>
-
-            <button class="btn btn-success" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
-
-        <!--Add Button-->
-        <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#quotationManagement"><i class="fa-solid fa-plus"></i>Add New</button>
-        </div>
         <!--Modal-->
-        <vc:add-quotation-modal></vc:add-quotation-modal>
+        <partial name="_AddQuotationPartial" model="Model" />
+        <div id="edit-quotation">
+        </div>
 
         <!--table-->
-        <table class="table" id="quotation-table"></table>
+        <div class="ibox-content">
+            <!--Add Button-->
+            <div class="d-flex w-100 justify-content-end">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addQuotationModal"><i class="fa-solid fa-plus"></i> Add New</button>
+            </div>
+            <div class="table-responsive">
+                <table id="quotation-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts{
     <script>
         $(document).ready(() => {
             var colOptions = [
-                { title: "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
-                { title: "Date", data: "createDate" },
-                { title: "Quotation No.", data: "quotationNo" },
-                { title: "Customer", data: "customerName" },
+                { title: "No", className: "text-center", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+                { title: "Date", data: "quotationDate", className: "text-center", render: formatDate },
+                { title: "Quotation No.", data: "quotationNo", className: "text-center" },
+                { title: "Customer", data: "customerName", className: "text-center"},
                 { title: "Seller", data: "seller", className: "text-center" },
-                { title: "Total", data: "total", className: "text-center" },
-                { title: "Grand Total", data: "grandTotal", className: "text-center" },
+                { title: "Total", data: "total", className: "text-center", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+                { title: "Grand Total", data: "grandTotal", className: "text-center", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
                 { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
-                { title: "Action", data: "itemCode", render: renderActionButtons }
+                { title: "Action", data: "quotationNo", className: "text-center", render: renderActionButtons }
             ];
             table = $('#quotation-table').DataTable({
                 "processing": true,
                 "serverSide": true,
+                "autoWidth": true,
                 "bLengthChange": false,
                 "bFilter": true,
                 "searching": false,
-                "pageLength": 20,
+                "scrollX": true,
+                "pageLength": 15,
                 "displayStart": 0,
                 "ajax": {
                     url: "@Url.Action("Search")",
                     type: "POST",
                     data: (opt) => {
                         console.log($('#search-criteria').serializeToJSON());
+                        console.log(`${$('#startDate').val()}`);
+                        console.log(`${$('#endDate').val()}`);
                         //console.table(opt);
                         return {
-                            itemCode: `${$('#textId').val()}`,
-                            itemName: `${$('#textName').val()}`,
+                            quotationNo: `${$('#textQuotation').val()}`,
+                            customer: `${$('#textCustomer').val()}`,
+                            startDate: `${$('#startDate').val()}`,
+                            endDate: `${$('#endDate').val()}`,
                             option: opt
                         };
                     },
@@ -77,34 +113,69 @@
                 },
                 "columns": colOptions,
             });
-
+            $(window).trigger('resize');
             $("#search-button").click(() => {
                 table.ajax.reload();
             });
-        });
 
+            $("#quotationForm").validate({
+                rules: {
+                    textCusName: { required: true, minlength: 1, maxlength: 30 },
+                    textCusAddress: { required: true, minlength: 1, maxlength: 150 },
+                    textCusContact: { required: true, minlength: 1, maxlength: 30 },
+                    textTaxId: { required: true, minlength: 1, maxlength: 30 },
+                    textSellerName: { required: true, minlength: 1, maxlength: 30 },
+                    textItemCode: { required: true, minlength: 9, maxlength: 9 },
+                    textQty: { required: true, minlength: 1, maxlength: 30 },
+                    textDiscount: { required: true, minlength: 1, maxlength: 30 },
+                    textCusAddress: { required: true, minlength: 1, maxlength: 30 },
+                },
+                messages: {
+                    textCusName: { required: "Please enter the customer name." },
+                }
+            });
+
+            $('#saveQuotationBtn').on('click', () => {
+                // Manually trigger the form validation
+                if ($("#quotationForm").valid()) {
+                    // If the form is valid, call the submitQuotationForm function
+                    submitQuotationForm();
+                }
+            });
+        });
+        function formatDate(data) {
+            const dateToFormat = data.slice(0, 10);
+            const year = dateToFormat.split('-')[0];
+            const month = dateToFormat.split('-')[1];
+            const date = dateToFormat.split('-')[2];
+            let result = `${date}/${month}/${year}`
+            //console.log(result);
+            return result;
+        }
         function renderActionButtons(data, type, row) {
             if (row.activeStatus === 'Y') {
                 return `<div class="d-flex justify-content-center" style="gap:.5rem">
-                            <button class="btn btn-primary" onclick="editQuotation('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn btn-primary" onclick="getEditQuotationModal('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                         </div>`;
             }
             return `<div class="d-flex justify-content-center" style="gap:.5rem">
-                        <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
-                        <button class="btn btn-danger" onclick="getDeleteQuotationModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-primary" onclick="getEditQuotationModal('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
+                        <button class="btn btn-danger" onclick="deleteQuotation('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-outline-success" onclick="previewQuotation('${data}')"><i class="fa fa-file-text"></i></button>
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
-            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+            return data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>';
         }
-        function editQuotation(itemCode) {
+        function getEditQuotationModal(itemCode) {
             $.ajax({
                 url: '@Url.Action("GetEditQuotationModal")',
                 type: 'POST',
                 data: { itemCode: itemCode },
                 success: (result) => {
-                    $("#edit-item").html(result);
-                    $("#editItemModalCenter").modal("show");
+                    $("#edit-quotation").html(result);
+                    $("#editQuotationModal").modal("show");
                 },
                 error: (data) => {
                     console.log(data);
@@ -122,16 +193,39 @@
                 }
             });
         }
-        function deleteQuotation(itemCode) {
-            $.ajax({
-                url: '@Url.Action("DeleteQuotation")',
-                type: 'DELETE',
-                data: { itemCode: itemCode },
-                success: () => {
-                    $("#deleteUserModal").modal("toggle");
-                    $('#user-table').DataTable().ajax.reload();
+        function deleteQuotation(quotationNo) {
+            Swal.fire({
+                title: 'Do you want to delete this quotation?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+                cancelButtonColor: '#3085d6',
+                confirmButtonColor: '#d33',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteQuotation")',
+                        type: 'POST',
+                        data: { quotationNo: quotationNo },
+                        success: (result) => {
+                            console.log(result);
+                            Swal.fire('Deleted!', '', 'success')
+                                .then(() => {
+                                    table.ajax.reload();
+                                });
+                        },
+                        error: (data) => {
+                            console.log(data);
+                            Swal.fire('Error','Something went wrong, Please try again','error')
+                        }
+                    });
                 }
             });
+        }
+
+        function previewQuotation(id) {
+            window.open(`/Quotation/PreviewQuotation?quotationNo=${id}`, "_blank");
         }
 
         function handlerDataTableError(xhr, error, code) {
@@ -140,28 +234,166 @@
                 alert("Session Timeout");
             }
         }
+
+        function submitQuotationForm() {
+            let itemList = new Array();
+            $("#item-table").find(".item-row").each((index, element) => { //don't remove index, it's magic!
+                let $element = $(element);  // Convert it into a jQuery object, **javascript magic, u can't understand it**
+                let itemCode = $element.find("td:eq(1) input").val();
+                let itemName = $element.find("td:eq(2) input").val();
+                let itemDesc = $element.find("td:eq(3) input").val();
+                let Qty = $element.find("td:eq(4) input").val();
+                let unitId = $element.find("td:eq(5) input").val();
+                let unitPrice = $element.find("td:eq(6) input").val();
+                let discount = $element.find("td:eq(7) input").val();
+                let total = $element.find("td:eq(8) input").val();
+
+                let QuotationItemViewModel = {
+                    itemCode: itemCode,
+                    itemName: itemName,
+                    itemDesc: itemDesc,
+                    Qty: Qty,
+                    unitId: unitId,
+                    unitPrice: unitPrice,
+                    discount: discount,
+                    total: total
+                };
+                itemList.push(QuotationItemViewModel);
+            });
+            let model = {
+                quotationNo: $('#textQuotationNo').val(),
+                customer: $('#textCusName').val(),
+                customerAddress: $('#textCusAddress').val(),
+                customerContact: $('#textCusContact').val(),
+                taxId: $('#textTaxId').val(),
+                salesName: $('#textSellerName').val(),
+                vat: $('#textVat').val(),
+                activeStatus: $('#activeCheckbox').prop('checked') ? 'Y' : 'N',
+            }
+            $.ajax({
+                url: '@Url.Action("AddQuotation")',
+                type: 'POST',
+                data: {
+                    model: model,
+                    itemList: itemList
+                },
+                success: (data, textStatus) => {
+                    console.log(data);
+                },
+                complete: (result) => {
+                    let data = result.responseJSON;
+                    console.log(data);
+                    if (data.isSuccess) {
+                        $("#addQuotationModal").modal("hide");
+                         swal.fire({
+                             title: 'Successfully added!',
+                             icon: 'success'
+                         }).then(() => {
+                             table.ajax.reload();
+                             window.open(`/Quotation/PreviewQuotation?quotationNo=${model.quotationNo}`, "_blank");
+                         });
+                     }
+                     else {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong',
+                            icon: 'error'
+                        })
+                     }
+                }
+            });
+        }
+
     </script>
 
     <script>
-        let lineNo = 4;
+        let lineNo = 2;
         $(document).ready(() => {
             $("#btnAddRow").click(() => {
                 markup = `
-                            <tr>
-                                <td>${lineNo}</td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                                <td><input class="form-control" type="text" /></td>
-                            </tr>`;
+                        <tr class="item-row">
+                            <td>${lineNo}</td>
+                            <td><input class="form-control" type="text" name="textItemCode" /></td>
+                            <td><input class="form-control" type="text" name="textItemName" readonly/></td>
+                            <td><input class="form-control" type="text" name="textDescription" readonly/></td>
+                            <td><input class="form-control" type="number" name="textQty" min="0" /></td>
+                            <td><input class="form-control" type="text" name="textUnit" readonly/></td>
+                            <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
+                            <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
+                            <td><input class="form-control" type="text" name="textTotal" min="0" readonly/></td>
+                            <td><button type="button" class="deleteBtn btn btn-outline-danger"><i class="fa fa-xmark"></i></button></td>
+                        </tr>`;
                 console.log("button clicked");
                 tableBody = $("#item-table tr:nth-last-child(2)");
                 tableBody.after(markup);
                 lineNo++;
+            });
+
+            function calculateTotal(row) {
+                const quantity = parseFloat(row.find('input[name="textQty"]').val()) || 0;
+                let unitPriceString = $('input[name="textUnitPrice"]').val().replace(/,/g, '');
+                let unitPrice = parseFloat(unitPriceString) || 0;
+                const discount = parseFloat(row.find('input[name="textDiscount"]').val()) || 0;
+
+                const total = (quantity * unitPrice) * (1 - (discount / 100));
+
+                let formattedTotal = total.toLocaleString();
+                console.log(formattedTotal)
+
+                // Set the formatted total as the value of the textTotal field
+                row.find('input[name="textTotal"]').val(formattedTotal);
+            }
+
+            // Add event listeners to relevant input fields
+            $("#item-table").on('change', 'input[name="textQty"], input[name="textDiscount"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
+            });
+
+            // Trigger total calculation when item code is filled via AJAX
+            $("#item-table").on('change', 'input[name="textItemCode"]', function () {
+                const row = $(this).closest("tr");
+                calculateTotal(row);
+            });
+
+            $("#item-table").on('click', '.deleteBtn', (event) => {
+                console.log('delete button clicked');
+                $(event.target).closest("tr").remove();
+                lineNo = 2;
+            });
+
+            function fetchItemDetails(itemCode, row) {
+                $.ajax({
+                    url: '@Url.Action("GetItemDetailById")',
+                    method: 'POST',
+                    data: { itemCode: itemCode },
+                    success: function (data) {
+                        console.log(data);
+                        row.find('input[name="textItemName"]').val(data.itemName);
+                        row.find('input[name="textDescription"]').val(data.itemDesc);
+                        row.find('input[name="textUnit"]').val(data.unitId);
+                        const formattedUnitPrice = data.unitPrice.toLocaleString();
+                        row.find('input[name="textUnitPrice"]').val(formattedUnitPrice);
+                    },
+                    error: function (error) {
+                        // Handle error if the API call fails
+                        console.error('Error fetching item details:', error);
+                    }
+                });
+            }
+            let timer;
+            $("#item-table").on('change', 'input[name="textItemCode"]', function () {
+                const itemCode = $(this).val();
+                const row = $(this).closest("tr");
+
+                // Clear the previous timer (if any) before setting a new one
+                clearTimeout(timer);
+
+                // Set a new timer to introduce a delay of 500ms before fetching the input value
+                timer = setTimeout(() => {
+                    fetchItemDetails(itemCode, row);
+                    calculateTotal(row);
+                }, 500);
             });
         });
     </script>

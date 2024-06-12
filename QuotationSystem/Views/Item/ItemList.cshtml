@@ -1,41 +1,52 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model QuotationSystem.Models.Item.ItemViewModel
+﻿@model QuotationSystem.Models.Item.ItemViewModel
 @{
     ViewData["Title"] = "Item List";
 }
-<div class="container pt-5">
+<div class="p-3 pt-5 animated fadeInRight">
     <div class="d-flex flex-column" style="gap:1rem">
         <!--Search form-->
-        <form class="d-flex" style="gap:1rem;">
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Item Code:</div>
-                <input class="form-control" type="text" id="textId"/>
+        <form class="row align-items-center m-0 ibox-content" style="row-gap: 1rem;">
+            <div class="col-md-6 col-sm-12 text-nowrap">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-sm-3 col-12">
+                        <h4 class="text-sm-right">Item Code:</h4>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <input class="form-control" type="text" id="textId" />
+                    </div>
+                </div>
             </div>
-
-            <div class="d-flex align-items-center text-nowrap" style="gap:.5rem;">
-                <div>Item Name:</div>
-                <input class="form-control" type="text" id="textName"/>
+            <div class="col-md-6 col-sm-12 text-nowrap">
+                <div class="row align-items-center justify-content-md-start justify-content-center">
+                    <div class="col-sm-3 col-12">
+                        <h4 class="text-sm-right">Item Name:</h4>
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <input class="form-control" type="text" id="textName" />
+                    </div>
+                    <div class="col-sm-3 col-4 mt-sm-0 mt-2">
+                        <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                    </div>
+                </div>
             </div>
-
-            <button class="btn btn-success" type="button" id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
-
-        <!--Add Button-->
-        <div class="d-flex w-100 justify-content-end">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-plus"></i>Upload Item</button>
-        </div>
-        <!--Modal-->
-        <vc:add-item-modal></vc:add-item-modal>
-        <div id="edit-item">
-        </div>
-        <form asp-controller="Item" asp-action="DeleteItem" method="post" id="delete-item">
-        </form>
-
+        
         <!--table-->
-        <table id="item-table" class="table table-striped"></table>
+        <div class="table-responsive ibox-content">
+            <div class="d-flex w-100 justify-content-end mb-2">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#uploadModal"><i class="fa-solid fa-upload"></i> Upload Item</button>
+            </div>
+            <div class="table-responsive">
+                <table id="item-table" class="table table-bordered table-hover table-striped" style="width:100%;" cellspacing="0"></table>
+            </div>
+        </div>
     </div>
+    <!--Modal-->
+    <vc:add-item-modal></vc:add-item-modal>
+    <div id="edit-item">
+    </div>
+    <form asp-controller="Item" asp-action="DeleteItem" method="post" id="delete-item">
+    </form>
 </div>
 
 @section Scripts{
@@ -43,21 +54,23 @@
         $(document).ready(() => {
             var colOptions = [
                 { title: "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
-                { title: "Item Code", data: "itemCode" },
-                { title: "Item Name", data: "itemName" },
-                { title: "Description", data: "itemDesc" },
-                { title: "Unit Price", data: "unitPrice", className: "text-center" },
-                { title: "Unit", data: "unit", className: "text-center" },
+                { title: "Item Code", data: "itemCode", className: "text-center" },
+                { title: "Item Name", data: "itemName", className: "text-center" },
+                { title: "Description", data: "itemDesc", className: "text-center" },
+                { title: "Unit Price", data: "unitPrice", className: "text-center", render: $.fn.dataTable.render.number(',', '.', 2, '฿')},
+                { title: "Unit", data: "unitId", className: "text-center" },
                 { title: "Status", data: "activeStatus", className: "text-center", render: renderActiveStatus },
-                { title: "Action", data: "itemCode", render: renderActionButtons }
+                { title: "Action", data: "itemCode", className: "text-center", render: renderActionButtons }
             ];
             table = $('#item-table').DataTable({
                 "processing": true,
                 "serverSide": true,
                 "bLengthChange": false,
+                "responsive": true,
                 "bFilter": true,
                 "searching": false,
                 "pageLength": 20,
+                "scrollX": true,
                 "displayStart": 0,
                 "ajax": {
                     url: "@Url.Action("Search")",
@@ -80,6 +93,12 @@
                 table.ajax.reload();
             });
         });
+        $('#fileImport').on('change', function () {
+            //get the file name
+            var fileName = $(this).val().replace('C:\\fakepath\\', " ");
+            //replace the "Choose a file" label
+            $(this).next('.custom-file-label').html(fileName);
+        });
 
         function renderActionButtons(data, type, row) {
             if (row.activeStatus === 'Y') {
@@ -89,11 +108,11 @@
             }
             return `<div class="d-flex justify-content-center" style="gap:.5rem">
                         <button class="btn btn-primary" onclick="editItem('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
-                        <button class="btn btn-danger" onclick="getDeleteItemModal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-danger" onclick="deleteItemSwal('${data}')"><i class="fa-solid fa-trash-can"></i></button>
                      </div>`;
         }
         function renderActiveStatus(data, type, row) {
-            return data == 'Y' ? '<div class="text-success">Active</div>' : '<div class="text-danger">Inactive</div>';
+            return data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>';
         }
         function editItem(itemCode) {
             $.ajax({
@@ -120,14 +139,32 @@
                 }
             });
         }
+        function deleteItemSwal(itemCode){
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#3085d6',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteItem(itemCode);
+                }
+            });
+        }
         function deleteItem(itemCode) {
             $.ajax({
                 url: '@Url.Action("DeleteItem")',
                 type: 'DELETE',
                 data: { itemCode: itemCode },
                 success: () => {
-                    $("#deleteItemModal").modal("toggle");
                     $('#item-table').DataTable().ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                    });
                 }
             });
         }

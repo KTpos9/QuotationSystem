@@ -1,4 +1,5 @@
-﻿using QuotationSystem.Data.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using QuotationSystem.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace QuotationSystem.Models.Item
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public string ItemCode { get; set; }
+        public List<SelectListItem> UnitLists { get; set; }
     }
 }

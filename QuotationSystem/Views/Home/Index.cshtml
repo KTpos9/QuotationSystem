@@ -3,105 +3,84 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container pt-3">
+<div class="pt-3 px-3 animated fadeInRight">
 
-    <!--summary card-->
-    <div class="d-flex flex-column">
-        <div class="row" style="gap:1rem;">
-            <div class="col bg-success">
-                <div class="d-flex flex-column text-right">
-                    <h2>Quotation Today</h2>
-                    <h1 class="m-2 font-weight-bolder">@Model.QuotationHeader.Count</h1>
+    <div class="d-flex flex-column" style="gap:2rem;">
+        <!--summary card-->
+        <div class="d-flex flex-column">
+            <div class="row m-0" style="gap:1rem;">
+                <div class="col bg-success">
+                    <div class="d-flex flex-column text-right">
+                        <h2>Quotation Today</h2>
+                        <h1 class="m-2 font-weight-bolder" id="quotationToday">@Model.TodayCount</h1>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col bg-primary">
-                <div class="d-flex flex-column text-right">
-                    <h2>Quotation Weekly</h2>
-                    <h1 class="m-2 font-weight-bolder">@Model.WeeklyCount</h1>
+                <div class="col bg-primary">
+                    <div class="d-flex flex-column text-right">
+                        <h2>Quotation Weekly</h2>
+                        <h1 class="m-2 font-weight-bolder">@Model.WeeklyCount</h1>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col bg-warning">
-                <div class="d-flex flex-column text-right">
-                    <h2>Quotation Monthly</h2>
-                    <h1 class="m-2 font-weight-bolder">@Model.MonthlyCount</h1>
+                <div class="col bg-warning">
+                    <div class="d-flex flex-column text-right">
+                        <h2>Quotation Monthly</h2>
+                        <h1 class="m-2 font-weight-bolder">@Model.MonthlyCount</h1>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!--table-->
-    <table class="table mt-5">
-        <thead>
-            <tr>
-                <th scope="col">No</th>
-                <th scope="col">Date</th>
-                <th scope="col">Quotation No.</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Seller</th>
-                <th scope="col">Total</th>
-                <th scope="col">Grand Total</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{ 
-                int index = 1;
-            }
-            @foreach(var quotationHeader in Model.QuotationHeader)
-            { 
-                <tr>
-                    <th scope="row">@index</th>
-                    <td>@quotationHeader.UpdateDate</td>
-                    <td>@quotationHeader.QuotationNo</td>
-                    <td>@quotationHeader.CustomerName</td>
-                    <td>@quotationHeader.Seller</td>
-                    <td>@quotationHeader.Total</td>
-                    <td>@quotationHeader.GrandTotal</td>
-                    <td>
-                        @if (quotationHeader.ActiveStatus == "Y")
-                        {
-                            <div class="text-success">Active</div>
-                        }
-                        else
-                        {
-                            <div class="text-danger">Inactive</div>
-                        }
-                    </td>
-                </tr>
-                index++;
-            }
-            <tr>
-                <th scope="row">1</th>
-                <td>4/5/2023</td>
-                <td>QT230400999</td>
-                <td>Good Morning</td>
-                <td>david</td>
-                <td>300,000.00</td>
-                <td>321,000.00</td>
-                <td>Active</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>4/5/2023</td>
-                <td>QT230400131</td>
-                <td>September One</td>
-                <td>david</td>
-                <td>2,540,000.00</td>
-                <td>2,717,000.00</td>
-                <td>Active</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>4/5/2023</td>
-                <td>QT230400132</td>
-                <td>Solar Ring</td>
-                <td>david</td>
-                <td>87,540.00</td>
-                <td>93,667.00</td>
-                <td>Active</td>
-            </tr>
-        </tbody>
-    </table>
+        <!--table-->
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table id="home-table" class="table table-bordered table-hover table-striped w-100"></table>
+            </div>
+        </div>
+    </div>
 </div>
+@section Scripts{
+    <script>
+        let table;
+        $(document).ready(function () {
+
+        });
+
+        let colOptions = [
+            { "title": "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
+            { "title": "Date", data: "quotationDate", className: "text-center text-nowrap" },
+            { "title": "Quotation No.", data: "quotationNo", className: "text-center text-nowrap" },
+            { "title": "Customer", data: "customerName", className: "text-center text-nowrap" },
+            { "title": "Seller", data: "seller", className: "text-center text-nowrap" },
+            { "title": "Total", data: "total", className: "text-center text-nowrap", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+            { "title": "Grand Total", data: "grandTotal", className: "text-center text-nowrap", render: $.fn.dataTable.render.number(',', '.', 2, '฿') },
+            { "title": "Status", data: "activeStatus", className: "text-center text-nowrap", render: (data) => data === "Y" ? '<span class="label label-primary">active</span>' : '<span class="label label-danger">inactive</span>' }
+        ]
+
+        table = $('#home-table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "bLengthChange": false,
+            "bFilter": true,
+            "searching": false,
+            "pageLength": 20,
+            "displayStart": 0,
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetTodayQuotation")",
+                "type": "POST",
+                "data": (opt) => {
+                    return opt;
+                }
+            },
+            "columns": colOptions
+        });
+
+        function renderStatus(){
+            if(data == "Y"){
+                return "Active";
+            }
+        }
+    </script>
+}

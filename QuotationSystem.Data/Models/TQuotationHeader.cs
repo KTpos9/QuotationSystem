@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class TQuotationHeader : IUpdateable
+    public partial class TQuotationHeader
     {
         public TQuotationHeader()
         {
@@ -13,13 +13,15 @@ namespace QuotationSystem.Data.Models
         }
 
         public string QuotationNo { get; set; }
-        public DateTime? QuotationDate { get; set; }
+        public DateTime QuotationDate { get; set; }
         public string Seller { get; set; }
         public string CustomerName { get; set; }
         public string CustomerAddress { get; set; }
+        public string CustomerContact { get; set; }
+        public string TaxId { get; set; }
         public string ActiveStatus { get; set; }
         public double? Vat { get; set; }
-        public double? Total { get; set; }
+        public double Total { get; set; }
         public double? GrandTotal { get; set; }
         public string Remark { get; set; }
         public DateTime CreateDate { get; set; }

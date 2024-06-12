@@ -47,13 +47,13 @@ namespace QuotationSystem.Data.Repositories
                         ItemName = i.ItemName,
                         ItemDesc = i.ItemDesc,
                         UnitPrice = i.UnitPrice,
-                        Unit = i.Unit,
+                        UnitId = i.UnitId,
                         ActiveStatus = i.ActiveStatus
                     })
                     .ToDataTableResult(dtOption);
             }
         }
-        public void EditItem(MItem item, string currentUser = "Admin")
+        public void EditItem(MItem item, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
@@ -63,18 +63,33 @@ namespace QuotationSystem.Data.Repositories
                 itemToUpdate.Unit = item.Unit;
                 itemToUpdate.Remark = item.Remark;
                 itemToUpdate.ItemDesc = item.ItemDesc;
+                itemToUpdate.ActiveStatus = item.ActiveStatus switch
+                {
+                    "false" => "N",
+                    _ => "Y"
+                };
+                itemToUpdate.UpdateDate = DateTime.UtcNow;
+                itemToUpdate.UpdateBy = currentUser;
 
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
-        public void DeleteItem(string itemCode, string currentUser = "Admin")
+        public void DeleteItem(string itemCode)
         {
             using (var db = new QuotationContext(option))
             {
-                var item = db.MUsers.Find(itemCode);
-                db.Remove(item);
-                db.SaveChanges();
+                try
+                {
+                    var item = new MItem() { ItemCode = itemCode };
+                    var itemToDelete = db.MItems.Attach(item);
+                    itemToDelete.State = EntityState.Deleted;
+
+                    db.SaveChanges();
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    return;
+                }
             }
         }
         /// <summary>
@@ -82,14 +97,13 @@ namespace QuotationSystem.Data.Repositories
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public async Task AddItemByExcel(List<MItem> items, string currentUser = "Admin")
+        public async Task AddItemByExcel(List<MItem> items)
         {
             using (var db = new QuotationContext(option))
             {
-                await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
-                await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
-                await db.AddRangeAsync(items);
-                db.CurrentUser = currentUser;
+                //await db.Database.ExecuteSqlRawAsync("DELETE FROM t_quotation_detail");
+                //await db.Database.ExecuteSqlRawAsync("DELETE FROM m_item");
+                db.AddRange(items);
                 db.SaveChanges();
             }
         }

@@ -16,16 +16,16 @@ namespace WebApp.Validators.Account
             this.userRepository = userRepository;
 
             RuleFor(x => x.UserId)
-                 .Cascade(CascadeMode.Stop)
-                 .NotEmpty()
-                 .Must((model, userId) => IsExistUser(model.UserId))
-                     .WithMessage("User not found.");
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .Must((model, userId) => IsExistUser(model.UserId))
+                    .WithMessage("User not found.");
 
             RuleFor(x => x.Password)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .Must((model, password) => IsValidPassword(password))
-                    .WithMessage("Username or Password is incorrect.");
+                    .WithMessage("Password is incorrect.");
         }
 
         private bool IsExistUser(string userId)

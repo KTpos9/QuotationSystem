@@ -1,31 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model QuotationSystem.Models.Account.LoginViewModel
+﻿@model QuotationSystem.Models.Account.LoginViewModel
 @{
     Layout = null;
     ViewData["Title"] = "Login";
 }
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-<div class="d-flex justify-content-center align-items-center min-vh-100">
-    <div class="con">
-        <form class="d-flex flex-column" style="gap: .5rem; width:400px" asp-controller="Account" asp-action="Login" method="post">
-            <div class="d-flex justify-content-center">
-                <h3>Welcome to Quotation System</h3>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/InspiniaStyle.css" />
+    <link rel="stylesheet" href="~/lib/ladda/ladda-themeless.min.css">
+    <title>@ViewData["Title"] - Quotation System</title>
+</head>
+<body>
+    <script src="~/js/jquery-bundle.min.js" asp-append-version="true"></script>
+    <script src="~/lib/ladda/spin.min.js"></script>
+    <script src="~/lib/ladda/ladda.min.js"></script>
+    <script src="~/lib/ladda/ladda.jquery.min.js"></script>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="row ibox-content">
+            <div class="col-md-6 bg-info p-3">
+                <h2 class="text-center font-weight-bold">Quotation System</h2>
+                <div class="">
+                    <img src="~/Qutatn.webp" class="img-fluid mx-auto p-3" style="width: 350px;">
+                </div>
             </div>
-            <div>
-                <input class="form-control" asp-for="UserId" type="text" placeholder="Username" />
+            <div class="col-md-6">
+                <form class="d-flex flex-column w-100" style="gap: .5rem;" id="loginForm" asp-controller="Account" asp-action="Login" method="post">
+                    <div class="d-flex justify-content-center">
+                        <h2 class="text-center">Login</h2>
+                    </div>
+                    <div>
+                        <input class="form-control" asp-for="UserId" type="text" placeholder="Username" />
+                    </div>
+                    <span asp-validation-for="UserId" class="text-danger"></span>
+                    <div>
+                        <input class="form-control" asp-for="Password" type="password" placeholder="Password" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <div>
+                        <button type="submit" class="ladda-button ladda-button-login btn btn-primary w-100" data-style="zoom-in">Login</button>
+                    </div>
+                </form>
             </div>
-            <span asp-validation-for="UserId" class="text-danger"></span>
-            <div>
-                <input class="form-control" asp-for="Password" type="password" placeholder="Password" />
-            </div>
-            <span asp-validation-for="Password" class="text-danger"></span>
-            <div>
-                <button type="submit" class="btn btn-primary w-100">Login</button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</body>
+<script>
+    var lbtn = Ladda.create(document.querySelector('.ladda-button-login'));
+    document.querySelector('#loginForm').addEventListener('submit', function (e) {
+        lbtn.start();
+    });
+</script>
 @{
 }

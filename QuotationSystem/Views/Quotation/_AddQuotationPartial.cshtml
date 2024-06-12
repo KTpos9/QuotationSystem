@@ -1,0 +1,115 @@
+﻿@model QuotationSystem.Models.Quotation.QuotationViewModel
+@{
+}
+<div class="modal fade" id="addQuotationModal" tabindex="-1" role="dialog" aria-labelledby="quotationModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <form class="modal-content" id="quotationForm" method="post">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Quotation Management</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column">
+                    <div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="d-flex flex-column" style="gap:1rem">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 1rem">
+                                            <label class="m-0">Quotation No.:</label>
+                                            <input class="form-control" type="text" id="textQuotationNo" value="@Model.QuotationNo" readonly />
+                                        </div>
+                                        <div class="d-flex align-items-center" style="gap: 1rem">
+                                            <label class="m-0">Date:</label>
+                                            <input class="form-control" type="text" readonly value="@Model.Date.ToShortDateString()" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer:</label>
+                                        <input class="col form-control" name="textCusName" id="textCusName" type="text" required />
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer Address:</label>
+                                        <textarea class="col form-control" name="textCusAddress" id="textCusAddress" required></textarea>
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Customer Contact:</label>
+                                        <input class="col form-control" name="textCusContact" id="textCusContact" type="text" required />
+                                    </div>
+
+                                    <div class="row align-items-center">
+                                        <label class="m-0 col-2">Tax Id:</label>
+                                        <input class="col form-control" name="textTaxId" id="textTaxId" type="text" required />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="d-flex flex-column" style="gap:1rem">
+                                    <div class="row align-items-center text-nowrap">
+                                        <label class="m-0 col-2">Sales Name:</label>
+                                        <input class="col form-control" name="textSellerName" id="textSellerName" type="text" required />
+                                    </div>
+
+                                    <div>
+                                        <label class="m-0">Vat:</label>
+                                        <input class="form-control" name="textVat" type="number" id="textVat" placeholder="7%" value="@Model.Vat" readonly />
+                                    </div>
+
+                                    <div>
+                                        <label class="m-0" for="ActiveCheckbox">Active:</label>
+                                        <input class="form-check" type="checkbox" checked id="activeCheckbox" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column">
+                        <h5>Item List</h5>
+                        <table class="table" id="item-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Item Code</th>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Unit</th>
+                                    <th scope="col">Unit Price</th>
+                                    <th scope="col">Discount</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="item-row">
+                                    <td>1</td>
+                                    <td><input class="form-control" type="text" name="textItemCode" /></td>
+                                    <td><input class="form-control" type="text" name="textItemName" readonly/></td>
+                                    <td><input class="form-control" type="text" name="textDescription" readonly/></td>
+                                    <td><input class="form-control" type="number" name="textQty" min="0" /></td>
+                                    <td><input class="form-control" type="text" name="textUnit" readonly/></td>
+                                    <td><input class="form-control" type="text" name="textUnitPrice" readonly/></td>
+                                    <td><input class="form-control" type="number" name="textDiscount" min="0" /></td>
+                                    <td><input class="form-control" type="text" name="textTotal" readonly/></td>
+                                    <td></td>
+                                </tr>
+                                <tr><td class="text-center" colspan="9"><button type="button" class="btn btn-primary" id="btnAddRow"><i class="fa fa-plus"></i></button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="saveQuotationBtn" class="btn btn-primary">Preview & Save</button>
+            </div>
+        </form>
+    </div>
+</div>

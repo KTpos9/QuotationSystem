@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using QuotationSystem.Data.Repositories;
+using QuotationSystem.Data.Sessions;
 using QuotationSystem.Models;
 using QuotationSystem.Models.Home;
 using System.Diagnostics;
+using Zero.Core.Mvc.Extensions;
+using Zero.Core.Mvc.Models.DataTables;
 
 namespace QuotationSystem.Controllers
 {
@@ -13,22 +16,29 @@ namespace QuotationSystem.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IQuotationRepository quotationRepository;
+        private readonly ISessionContext sessionContext;
 
-        public HomeController(ILogger<HomeController> logger, IQuotationRepository quotationRepository)
+        public HomeController(ILogger<HomeController> logger, IQuotationRepository quotationRepository, ISessionContext sessionContext)
         {
             _logger = logger;
             this.quotationRepository = quotationRepository;
+            this.sessionContext = sessionContext;
         }
 
         public IActionResult Index()
         {
-            var model = new HomeViewModel
+            if (sessionContext.IsLoggedIn)
             {
-                QuotationHeader = quotationRepository.GetTodayQuotationHeader(),
-                WeeklyCount = quotationRepository.GetWeeklyCount(),
-                MonthlyCount = quotationRepository.GetMonthlyCount()
-            };
-            return View(model);
+                (int todayCount, int weeklyCount, int monthlyCount) = quotationRepository.GetQuotationCounts();
+                var model = new HomeViewModel
+                {
+                    TodayCount = todayCount,
+                    WeeklyCount = weeklyCount,
+                    MonthlyCount = monthlyCount
+                };
+                return View(model);
+            }
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Privacy()
@@ -40,6 +50,11 @@ namespace QuotationSystem.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        public IActionResult GetTodayQuotation(DataTableOptionModel option)
+        {
+            var result = quotationRepository.GetTodayQuotationHeader(option);
+            return result.ToJsonResult(option);
         }
     }
 }

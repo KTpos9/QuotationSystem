@@ -2,37 +2,42 @@
 using QuotationSystem.Data.Models;
 using QuotationSystem.Data.Sessions;
 using QuotationSystem.Models.User;
-using System.Linq;
 using Zero.Security;
 using Zero.Core.Mvc.Models.DataTables;
 using Zero.Core.Mvc.Extensions;
 using QuotationSystem.Data.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using QuotationSystem.ApplicationCore.Constants;
 
 namespace QuotationSystem.Controllers
 {
+    [Authorize(Policy = Policy.UserManagement)]
     public class UserController : Controller
     {
         private readonly IUserRepository userRepository;
-        private readonly ISessionContext sessionContext;
         private readonly IConfigRepository configRepository;
+        private readonly ISessionContext sessionContext;
         private readonly IDepartmentRepository departmentRepository;
         private static List<SelectListItem> departmentList;
+        private static string CurrentUser;
 
-        public UserController(IUserRepository userRepository, ISessionContext sessionContext = null, IDepartmentRepository departmentRepository = null, IConfigRepository configRepository = null)
+        public UserController(IUserRepository userRepository, ISessionContext sessionContext, IDepartmentRepository departmentRepository, IConfigRepository configRepository)
         {
             this.userRepository = userRepository;
-            this.sessionContext = sessionContext;
             this.departmentRepository = departmentRepository;
-            
+            this.sessionContext = sessionContext;
+            CurrentUser = sessionContext.CurrentUser.Id;
             this.configRepository = configRepository;
         }
+
         public IActionResult UserList()
         {
-            departmentList = this.departmentRepository.GetAllDepartmentIds();
-            ViewBag.DepartmentIds = departmentList;
-            return View();
+            UserViewModel model = sessionContext.GetCriteria(nameof(UserController), () => new UserViewModel { });
+            ViewBag.DepartmentList = departmentRepository.GetAllDepartmentIds();
+            departmentList = departmentRepository.GetAllDepartmentIds();
+            return View(model);
         }
         [HttpPost]
         public IActionResult AddUser(UserModalViewModel userModel, string[] permissions)
@@ -47,7 +52,9 @@ namespace QuotationSystem.Controllers
                     UserName = userModel.Username,
                     Password = defaultPassword,
                     DepartmentId = userModel.Department,
-                    ActiveStatus = userModel.ActiveStatus
+                    ActiveStatus = userModel.ActiveStatus,
+                    CreateBy = CurrentUser,
+                    UpdateBy = CurrentUser
                 };
                 userRepository.AddUser(userToAdd, permissions);
                 return RedirectToAction("UserList");
@@ -80,16 +87,6 @@ namespace QuotationSystem.Controllers
                 DepartmentIds = departmentList
             };
             return PartialView("_EditUserPartial", model);
-            //var model = new UserModalViewModel
-            //{
-            //    UserId = user.UserId,
-            //    Username = user.UserName,
-            //    Department = user.DepartmentId,
-            //    ActiveStatus = user.ActiveStatus,
-            //    MUserPermissions = user.MUserPermissions,
-            //    DepartmentList = departmentList
-            //};
-            //return PartialView("_EditUserPartial", model);
         }
         public PartialViewResult GetDeleteUserModal(string userId)
         {
@@ -102,43 +99,19 @@ namespace QuotationSystem.Controllers
         [HttpPost]
         public IActionResult EditUser(UserViewModel userModel, string[] permissions)
         {
+            userModel.User.UpdateBy = CurrentUser;
             userRepository.EditUser(userModel.User, permissions);
             return RedirectToAction("UserList");
-            //if (ModelState.IsValid)
-            //{
-            //    MUser userToEdit = new MUser
-            //    {
-            //        UserId = userModel.UserId,
-            //        UserName = userModel.Username,
-            //        DepartmentId = userModel.Department,
-            //        ActiveStatus = userModel.ActiveStatus,
-            //    };
-            //    userRepository.EditUser(userToEdit, permissions);
-            //    return RedirectToAction("UserList");
-            //}
-            //var user = userRepository.GetUserByUserId(userModel.UserId);
-            //var model = new UserModalViewModel
-            //{
-            //    UserId = user.UserId,
-            //    Username = user.UserName,
-            //    Department = user.DepartmentId,
-            //    ActiveStatus = user.ActiveStatus,
-            //    MUserPermissions = user.MUserPermissions,
-            //    DepartmentList = departmentList
-            //};
-            //return PartialView("_EditUserPartial", model);
         }
         [HttpPost]
         public IActionResult ResetPassword(string userId)
         {
-            //var userFromSession = sessionContext.CurrentUser;
-            userRepository.ResetPassword(userId);
+            userRepository.ResetPassword(userId, CurrentUser);
             return RedirectToAction("UserList","User");
         }
         [HttpDelete]
         public IActionResult DeleteUser(string userId)
         {
-            //var userFromSession = sessionContext.CurrentUser;
             userRepository.DeleteUser(userId);
             return RedirectToAction("UserList", "User");
         }

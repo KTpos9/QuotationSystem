@@ -8,6 +8,7 @@ using Zero.Core.Mvc.Models.DataTables;
 using Zero.Core.Mvc.Models.Select2;
 using Zero.Extension;
 using Zero.Security;
+using System;
 
 namespace QuotationSystem.Data.Repositories
 {
@@ -34,14 +35,6 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public List<MUser> GetUsers()
-        {
-            using (var db = new QuotationContext(option))
-            {
-                return db.MUsers.Include(u => u.MUserPermissions).ToList();
-            }
-        }
-
         public MUser GetUserByUserId(string userId)
         {
             using (var db = new QuotationContext(option))
@@ -51,70 +44,75 @@ namespace QuotationSystem.Data.Repositories
             }
         }
 
-        public void ChangePassword(string userId, string password, string currentUser = "Admin")
+        public void ChangePassword(string userId, string password, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
-                //var user = db.MUsers.FirstOrDefault(x => x.UserId == userId);
                 var user = db.MUsers.Find(userId);
 
                 var hashedPassword = PasswordEncryption.Hash(password, "");
                 user.Password = hashedPassword;
                 user.ChangePassword = "Y";
+
                 db.SaveChanges();
             }
         }
 
-        public void AddUser(MUser user, string[] permissions,  string currentUser = "Admin")
+        public void AddUser(MUser user, string[] permissions)
         {
             using (var db = new QuotationContext(option))
             {
-                db.CurrentUser = currentUser;
-
                 user.MUserPermissions = db.MMenus.Select(m => new MUserPermission
                 {
-                    MenuId = m.MenuId
+                    MenuId = m.MenuId,
+                    CreateBy = user.CreateBy,
+                    UpdateBy = user.UpdateBy
                 }).ToList();
-                if (user.ActiveStatus == "false")
+
+                user.ActiveStatus = user.ActiveStatus switch
                 {
-                    user.ActiveStatus = "N";
-                }
+                    "false" => "N",
+                    _ => "Y"
+                };
+
                 foreach (var permission in permissions)
                 {
                     user.MUserPermissions.Where(x => x.MenuId == permission).FirstOrDefault().ActiveStatus = "Y";
                 }
+
                 db.Add(user);
                 db.SaveChanges();
             }
         }
-        public void EditUser(MUser user, string[] permissions, string currentUser = "Admin")
+        public void EditUser(MUser user, string[] permissions)
         {
             using (var db = new QuotationContext(option))
             {
                 var userToUpdate = db.MUsers.Include(u => u.MUserPermissions).FirstOrDefault(x => x.UserId == user.UserId);
                 userToUpdate.UserName = user.UserName;
                 userToUpdate.DepartmentId = user.DepartmentId;
-                userToUpdate.ActiveStatus = user.ActiveStatus;
-                if(user.ActiveStatus == "false")
+                userToUpdate.UpdateDate = DateTime.UtcNow;
+
+                userToUpdate.ActiveStatus = user.ActiveStatus switch
                 {
-                    userToUpdate.ActiveStatus = "N";
-                }
+                    "false" => "N",
+                    _ => "Y"
+                };
 
                 foreach (var userPermission in userToUpdate.MUserPermissions)
                 {
-                    userPermission.ActiveStatus = "N";
-                    if (permissions.Any(p => p == userPermission.MenuId))
+                    userPermission.ActiveStatus = permissions.Any(p => p == userPermission.MenuId) switch
                     {
-                        userPermission.ActiveStatus = "Y";
-                    }
+                        true => "Y",
+                        _ => "N"
+                    };
                 }
 
-                db.CurrentUser = currentUser;
                 db.SaveChanges();
             }
         }
 
-        public void ResetPassword(string userId, string currentUser = "Admin")
+        public void ResetPassword(string userId, string currentUser)
         {
             using (var db = new QuotationContext(option))
             {
@@ -122,12 +120,14 @@ namespace QuotationSystem.Data.Repositories
                 var defaultPassword = db.CConfigs.FirstOrDefault(c => c.ConfCode == "C001");
                 user.Password = PasswordEncryption.Hash(defaultPassword.ConfValue, "");
                 user.ChangePassword = "N";
-                db.CurrentUser = currentUser;
+                user.UpdateBy = currentUser;
+                user.UpdateDate = DateTime.UtcNow;
+
                 db.SaveChanges();
             }
         }
 
-        public void DeleteUser(string userId, string currentUser = "Admin")
+        public void DeleteUser(string userId)
         {
             using (var db = new QuotationContext(option))
             {

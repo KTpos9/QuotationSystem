@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace QuotationSystem.Data.Models
 {
-    public partial class MUserPermission : IUpdateable
+    public partial class MUserPermission
     {
         public string UserId { get; set; }
         public string MenuId { get; set; }
