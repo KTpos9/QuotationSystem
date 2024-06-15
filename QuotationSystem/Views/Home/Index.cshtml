@@ -42,12 +42,12 @@
 </div>
 @section Scripts{
     <script>
-        var table;
+        let table;
         $(document).ready(function () {
 
         });
 
-        var colOptions = [
+        let colOptions = [
             { "title": "No", render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1, className: "text-center" },
             { "title": "Date", data: "quotationDate", className: "text-center text-nowrap" },
             { "title": "Quotation No.", data: "quotationNo", className: "text-center text-nowrap" },

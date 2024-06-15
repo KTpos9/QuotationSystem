@@ -100,7 +100,7 @@ namespace QuotationSystem
 
             services.AddScoped<IExcelService, ExcelService>();
 
-            var connectionString = Configuration.GetConnectionString("Default");
+            var connectionString = Configuration.GetConnectionString("RemoteServer");
             services.AddScoped(option => new DbContextOptionBuilder(connectionString));
         }
 
