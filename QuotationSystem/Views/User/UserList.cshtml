@@ -117,7 +117,6 @@
         });
 
         function renderActionButtons(data, type, row) {
-            console.log(row)
             if (row.activeStatus === 'Y') {
                 return `<div class="d-flex justify-content-center" style="gap:.5rem">
                             <button class="btn btn-primary" onclick="editUser('${data}')"> <i class="fa-regular fa-pen-to-square"></i></button>
