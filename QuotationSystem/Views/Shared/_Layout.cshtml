@@ -1,23 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - QuotationSystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
-    @* <link href="~/css/inspinia.min.css" rel="stylesheet" asp-append-version="true" /> *@
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    
-    <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
-    <link rel="stylesheet" href="~/lib/sweetalert/sweetalert2.min.css" />
-    <link rel="stylesheet" href="~/css/InspiniaStyle.css" />
-    <link rel="stylesheet" href="~/css/animate.css"/>
-    <script src="https://unpkg.com/htmx.org@1.9.5"></script>
-    
-    @*<link href="~/css/plugin-bundle.min.css" rel="stylesheet" asp-append-version="true" />*@
-</head>
-<body hx-boost="true">
+﻿﻿@{
+    ViewContext.HttpContext.Response.Headers.Add("Vary", "HX-Boosted");
+}
+@if (ViewContext.HttpContext.Request.Headers["HX-Boosted"].Contains("true"))
+{
+    <title hx-swap-oob=title>@ViewData["Title"] - Wayoprise</title>
     <div id="wrapper" class="">
         <vc:left-navigation></vc:left-navigation>
         <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
@@ -25,18 +11,52 @@
             @RenderBody()
         </div>
     </div>
-
-    <script src="~/js/jquery-bundle.min.js" asp-append-version="true"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/inspinia.min.js" asp-append-version="true"></script>
-    <script src="~/js/plugin-bundle.min.js" asp-append-version="true"></script> @*loading bar + other thing*@
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    
-    <script src="~/lib/dataTables/datatables.min.js"></script>
-    <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
-    <script src="~/lib/sweetalert/sweetalert2.min.js"></script>
     @RenderSection("Scripts", required: false)
-</body>
-</html>
+
+    <!-- all js dependencies are loaded on the initial page load -->
+}
+else
+{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - QuotationSystem</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+        @* <link href="~/css/inspinia.min.css" rel="stylesheet" asp-append-version="true" /> *@
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    
+        <link rel="stylesheet" href="~/lib/dataTables/datatables.min.css" />
+        <link rel="stylesheet" href="~/lib/sweetalert/sweetalert2.min.css" />
+        <link rel="stylesheet" href="~/css/InspiniaStyle.css" />
+        <link rel="stylesheet" href="~/css/animate.css"/>
+        <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+    
+        @*<link href="~/css/plugin-bundle.min.css" rel="stylesheet" asp-append-version="true" />*@
+    </head>
+    <body hx-boost="true">
+        <div id="wrapper" class="">
+            <vc:left-navigation></vc:left-navigation>
+            <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
+                <vc:top-navigation></vc:top-navigation>
+                @RenderBody()
+            </div>
+        </div>
+
+        <script src="~/js/jquery-bundle.min.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/js/inspinia.min.js" asp-append-version="true"></script>
+        <script src="~/js/plugin-bundle.min.js" asp-append-version="true"></script> @*loading bar + other thing*@
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    
+        <script src="~/lib/dataTables/datatables.min.js"></script>
+        <script src="~/lib/dataTables/dataTables.bootstrap4.min.js"></script>
+        <script src="~/lib/sweetalert/sweetalert2.min.js"></script>
+        @RenderSection("Scripts", required: false)
+    </body>
+    </html>
+}
